@@ -77,15 +77,18 @@ If the order of producer scheduling can be controlled by the producers there exi
 
 Steem / BitShares / EOS
 Existing DPOS chains select a set of unlikely to collude entities by approval voting and then schedule them in a pseudorandom order. This shuffling is not really needed because once each of them participates a single block a 2/3+ consensus can be determined. This is why EOS will be removing the random shuffle all together.  
-现有的DPOS链通过批准投票来选择一组不太可能串通的实体，然后以伪随机顺序安排它们。 这种乱序机制并不是真的需要，因为一旦他们中的每一个参与了一个区块，2/3的共识就已经确定了。 这就是为什么EOS将一起去除随机乱序机制的原因。
+现有的DPOS链通过批准投票来选择一组不太可能串通的实体，然后以伪随机顺序安排它们。 这种乱序机制并不是真的需要，因为一旦他们中的每一个参与了一个区块，2/3的共识就已经确定了。 这就是为什么EOS将完全去除随机乱序机制的原因。
 
 
 
-With Ouroboros the length of time until 2/3+ of the stake is “randomly selected” is not known. It is entirely possible that in some windows all block producer slots will be randomly assigned to the same producer. While this is statistically unlikely, it is not unreasonable to presume that a long sequence of blocks could be assigned to collusive peers. 
+With Ouroboros the length of time until 2/3+ of the stake is “randomly selected” is not known. It is entirely possible that in some windows all block producer slots will be randomly assigned to the same producer. While this is statistically unlikely, it is not unreasonable to presume that a long sequence of blocks could be assigned to collusive peers.   
+在Ouroboros中，直到2/3以上的股份被“随机选择”的时间的长度是没法确定的。完全有可能在一些窗口中，所有的区块生产者时段将被随机分配给同一个生产者。 虽然这在统计上是不太可能的，但可以假定是将一长串的连续区块分配给串通好的同伴，这并不是不合理的。
 
-You can think of the process of confirmation on Ouroboros to be like an installation progress bar that jumps by random increments. Sometimes it moves forward quickly, other times it taunts you by not making any real progress despite new blocks being produced.
+You can think of the process of confirmation on Ouroboros to be like an installation progress bar that jumps by random increments. Sometimes it moves forward quickly, other times it taunts you by not making any real progress despite new blocks being produced.  
+您可以将Ouroboros上的确认过程想象为以随机的增量跳变的安装进度条。 有时候，它会快速增加，但有时候它也会跟你开玩笑，尽管有新的区块被生产出来，但进度条却纹丝不动。
 
-This gives Ouroboros unpredictable latency like Bitcoin. In the best case 2/3+ of the stake might get scheduled in the a half dozen blocks, but in the average case it will take much longer, particularly if there are many producers with 1% weight or a producer with 50% weight is scheduled many times in a row by random chance.
+This gives Ouroboros unpredictable latency like Bitcoin. In the best case 2/3+ of the stake might get scheduled in the a half dozen blocks, but in the average case it will take much longer, particularly if there are many producers with 1% weight or a producer with 50% weight is scheduled many times in a row by random chance.  
+
 
 Distribution Security Issues
 I have previously made the case that BitShares, Steem, and EOS are the most decentralized because it has the most unique confirmations per confirmation window. In a 6 block confirmation window for Bitcoin only 5 unique individuals confirm a block on average (usually at least one mining pool goes twice in a random 6 block window). In Steem 14 people confirm a block each round.
