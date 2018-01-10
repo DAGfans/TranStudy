@@ -1,13 +1,20 @@
 Origin: https://arxiv.org/pdf/1707.01873.pdf  
 Author: [Christian Cachin](https://arxiv.org/find/cs/1/au:+Cachin_C/0/1/0/all/0/1), [Marko Vukolić](https://arxiv.org/find/cs/1/au:+Vukolic_M/0/1/0/all/0/1)
 
-Blockchain Consensus Protocols in the Wild
+# Blockchain Consensus Protocols in the Wild
+# 真实世界中的区块链共识协议
 
-Christian Cachin Marko Vukoli´c IBM Research - Zurich (cca|mvu)@zurich.ibm.com 2017-07-07
+Christian Cachin Marko Vukoli´c 
+IBM Research - Zurich 
+(cca|mvu)@zurich.ibm.com 
+2017-07-07
 
-Abstract
+## Abstract
+## 摘要
 
-A blockchain is a distributed ledger for recording transactions, maintained by many nodes without central authority through a distributed cryptographic protocol. All nodes validate the information to be appended to the blockchain, and a consensus protocol ensures that the nodes agree on a unique order in which entries are appended. Consensus protocols for tolerating Byzantine faults have re- ceived renewed attention because they also address blockchain systems. This work discusses the process of assessing and gaining conﬁdence in the resilience of a consensus protocols exposed to faults and adversarial nodes. We advocate to follow the established practice in cryptography and computer security, relying on public reviews, detailed models, and formal proofs; the designers of several practical systems appear to be unaware of this. Moreover, we review the consensus proto- cols in some prominent permissioned blockchain platforms with respect to their fault models and resilience against attacks. The protocol comparison covers Hyperledger Fabric, Tendermint, Sym- biont, R3 Corda, Iroha, Kadena, Chain, Quorum, MultiChain, Sawtooth Lake, Ripple, Stellar, and IOTA.
+A blockchain is a distributed ledger for recording transactions, maintained by many nodes without central authority through a distributed cryptographic protocol. All nodes validate the information to be appended to the blockchain, and a consensus protocol ensures that the nodes agree on a unique order in which entries are appended. Consensus protocols for tolerating Byzantine faults have re- ceived renewed attention because they also address blockchain systems. This work discusses the process of assessing and gaining conﬁdence in the resilience of a consensus protocols exposed to faults and adversarial nodes. We advocate to follow the established practice in cryptography and computer security, relying on public reviews, detailed models, and formal proofs; the designers of several practical systems appear to be unaware of this. Moreover, we review the consensus proto- cols in some prominent permissioned blockchain platforms with respect to their fault models and resilience against attacks. The protocol comparison covers Hyperledger Fabric, Tendermint, Sym- biont, R3 Corda, Iroha, Kadena, Chain, Quorum, MultiChain, Sawtooth Lake, Ripple, Stellar, and IOTA.  
+区块链是用于记录交易的分布式账本，在没有中央管理机构的情况下，由许多节点通过分布式密码协议维护。所有节点验证要追加到区块链的信息，共识协议确保所有节点都同意以唯一的顺序追加条目。Byzantine容错的共识协议因同样能够处理区块链而重新受到关注。针对暴露在故障和攻击节点外的共识协议，本文探讨其恢复能力并对此进行评估。我们主张遵循密码学和计算机安全的惯例，即依靠公开评审，细化模型和形式化证明；而许多实用系统的设计者并没有意识到这一点。此外，我们评审了一些有代表性的许可链平台的共识协议的容错模型和从攻击中恢复的能力。协议评比涵盖了Hyperledger Fabric，Tendermint，Symphony，R3 Corda，Iroha，Kadena，Chain，Quorum，MultiChain，Sawtooth Lake，Ripple，Stellar和IOTA。
+
 
 -   [Introduction](#introduction)
 -   [Trust in a blockchain protocol](#sec:trust)
