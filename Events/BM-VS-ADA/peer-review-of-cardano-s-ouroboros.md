@@ -87,19 +87,19 @@ I have previously made the case that BitShares, Steem, and EOS are the most dece
 之前我曾经提到BitShares，Steem和EOS是最去中心的，因为它们在每个确认窗口中拥有最多的唯一（生产者）的确认。 在比特币的6个区块确认窗口中，只有平均5个唯一的生产者确认一个区块（通常至少一个矿池在随机的6个区块窗口中会出现两次）。 在Steem中， 每轮14人确认一个区块。
 
 Because stake and votes are distributed by pareto principle, we know that Ouroboros will assign block producers like mining assigns mining pools. It is exceedingly unlikely that 100 producers will each have 1% of the delegated stake. It is far more likely that there will be fewer than 20 individuals with more than 1% stake required to be approved. Furthermore, there are voting paradoxes in play where voting for someone who doesn’t already have 1% or more of the stake is a wasted vote.  
-由于股权和投票是按照pareto原理（80-20原理）分配的，我们知道，Ouroboros会分配区块生产者，就像挖矿会分配矿池。 100个生产者每个都有1％的代表股份是极不可能的。 更有可能的是，只有拥有超过1％股份的不到20人才有资格。此外，投票中存在悖论，投票权不足1％及以上的人的投票是无效的。
+由于股权和投票是按照pareto规律（80-20规律）分配的，我们知道，Ouroboros会分配区块生产者，就像挖矿会分配矿池。 100个生产者每个都有1％的代表股份是极不可能的。 更有可能的是，只有拥有超过1％股份的不到20人才有资格。此外，投票中存在悖论，投票权不足1％及以上的人的投票是无效的。
 
 In past articles on proof of stake I have also shown that even if Ouroboros removed the 1% requirement to participate, it would be economically unviable to cover the cost of operating a node with income from less than 1% of the block rewards. I have also argued in the past that because stake is distributed by pareto principle, and voter selection of candidates is also selected by pareto principle, the resulting distribution of stake among producers is pareto2. In other words, stake-weighted voting creates a very high centralization that can only be countered with approval voting followed by giving the top N equal weight (like BitShares, Steem, and EOS do).    
-在过去的关于股权证明的文章中，我也表明，即使Ouroboros取消了1％的参与要求，不到1%的区块收益在经济上也是不可行的。 我以前也曾经说过，由于股权是按照pareto原理来分配的，候选人的投票也是根据pareto原理来选择，所以生产者之间的股权分布是两级pareto原理。 换句话说，股权加权的投票机制会导致非常高的中心化，只有通过给前N个相同权重（像BitShares, Steem, 和 EOS 那样）的投票权才能反制。
+在过去的关于股权证明的文章中，我也表明，即使Ouroboros取消了1％的参与要求，不到1%的区块收益在经济上也是不可行的。 我以前也曾经说过，由于股权是按照pareto规律来分配的，候选人的投票也是根据pareto规律来选择，所以生产者之间的股权分布是两级pareto规律。 换句话说，股权加权的投票机制会导致非常高的中心化，只有通过给前N个相同权重（像BitShares, Steem, 和 EOS 那样）的投票权才能反制。
 
 Even if the stakeholders divide their stakes and votes to attempt to even out the producer weights, the system is still ultimately under pareto control 1% of the individuals control 51% of the stake. Corruption takes place at the individual level, not the stake level. Furthermore, it is wrong to assume that large stake holders will behave like a group of smaller stakeholders of similar size. Regardless of their stake, they only have one opinion and one interest and therefore the information (good or bad) they contribute to the system is independent of the size of their stake.  
-即使股权持有者拆分他们的股份和选票以试图平衡生产者的权重，根据pareto原则，系统仍然最终会导致1％的人控制51％的股份。 腐败发生在个人层面，而不是股权层面。 此外，假定大股东将表现得像一组规模相似的小股东，这是错误的。 不管他们的股权有多少，他们只有一个目的和利益，因此他们为系统贡献的信息（好的或坏的）与其股份的多少无关。  
+即使股权持有者拆分他们的股份和选票以试图平衡生产者的权重，根据pareto规律，系统仍然最终会导致1％的人控制51％的股份。（译注：有朋友认为这里翻译成股份不合适，应该是指控制力，因为51%的股份是很难达到的，但是根据上述两级pareto的选择后，个人认为还是有可能的，故先保留） 腐败发生在个人层面，而不是股权层面。 此外，假定大股东将表现得像一组规模相似的小股东，这是错误的。 不管他们的股权有多少，他们只有一个目的和利益，因此他们为系统贡献的信息（好的或坏的）与其股份的多少无关。  
 
 Conclusion
 结论
 Cardano’s Ouroboros algorithm is not mathematically secure due to bad assumptions regarding the relationship between stake and individual-judgment being distributed by the pareto principle. Furthemore, their algorithm is not “new” but a less secure slower variation of the DPOS algorithm I originally introduced in April 2014. The authors of the paper failed to cite relevant prior art or to justify why their deviations from existing art are an improvement.  
 
-股权和个人判断之间的分布是遵循pareto原理的，而Cardano的Ouroboros算法在这方面的假设是错误的，因此其在数学上不是安全的。 此外，他们的算法并不是“新”的，而是我在2014年4月最初引入的DPOS算法上的一个低效和低安全性的变种。文章的作者没有引用相关的现有技术或证明为什么他们差异是对现有技术的一种改进。
+股权和个人判断之间的分布是遵循pareto规律的，而Cardano的Ouroboros算法在这方面的假设是错误的，因此其在数学上不是安全的。 此外，他们的算法并不是“新”的，而是我在2014年4月最初引入的DPOS算法上的一个低效和低安全性的变种。文章的作者没有引用相关的现有技术或证明为什么他们差异是对现有技术的一种改进。
 
 A blockchain consensus algorithm claiming to value peer review needs to consider who they consider their peers and all such reviews should be public. In the blockchain space, our peers are other blockchain technology companies. From this we can see that DPOS (and variations thereof) is one of the fastest growing consensus algorithms in terms of the number of unique projects choosing it.  
 
