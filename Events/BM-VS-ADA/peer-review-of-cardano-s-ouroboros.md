@@ -15,7 +15,7 @@ Before getting into the more technical review of Ouroboros, let’s look at the 
 Block Interval  
 区块周期  
 Block interval determines the latency until a transaction is included in the first block. This is the lower-bound on the responsiveness of decentralized applications built on the protocol. Applications like Steem and BitShares are not really viable unless there is low latency and high certainty of finality.  
-区块周期决定了交易第一次打包进区块的延迟时间。 这是分部式应用程序在网络协议上的响应时间的最低值。 像Steem和BitShares这样的应用程序如果没有低延迟和高确定性的终结性，是不可行的。
+区块周期决定了交易第一次打包进区块的延迟时间。 这是分步式应用程序在网络协议上的响应时间的最低值。 像Steem和BitShares这样的应用程序如果没有低延迟和高确定性的终结性，是不可行的。
 
 EOS: 0.5 秒
 Steem/BitShares: 3 秒
