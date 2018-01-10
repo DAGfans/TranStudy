@@ -8,8 +8,8 @@ DPOS系列项目和Cardano都是我们非常值得学习项目，我们不去评
 ## 事件起因和大致介绍
 ### 人物
 - [Daniel Larimer（ByteMaster）](https://steemit.com/@dan)
-- [Charles Hoskinson](https://twitter.com/IOHK_Charles）
-- [Ned](https://steemit.com/@ned) 
+- [Charles Hoskinson](https://twitter.com/IOHK_Charles)
+- [Ned Scott](https://steemit.com/@ned) 
 
 ## 事件线
 
@@ -48,7 +48,7 @@ DPOS系列项目和Cardano都是我们非常值得学习项目，我们不去评
       - 定义什么是安全的账本的标准
       - 然后POW因为满足了上述标准所以这个标准是可靠的
       - 所以你得证明你的POS也是满足的上述标准的
-    - BM认为CH这个逻辑推导有问题因为POW带来了中心化等很多问题，所以本身就不是安全的，而且很多问题其实是超出这个所谓的标准的范围的，所以即使满足了也不一定就是安全的，然后还贴了个图DISS了下，挺有意思的
+    - BM认为CH这个逻辑推导有问题因为POW带来了中心化等很多问题，所以本身就不是安全的，而且很多问题其实是超出这个所谓的标准的范围的，所以即使满足了也不一定就是安全的，然后还贴了两个个图DISS了下。。
 
 ### 20180110 bitcoin.com新闻报道
 * 原文：https://news.bitcoin.com/eos-1-billion-war-chest-will-dan-larimer-stick-around-long-enough-enjoy/
