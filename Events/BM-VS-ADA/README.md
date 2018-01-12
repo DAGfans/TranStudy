@@ -10,6 +10,7 @@ DPOS系列项目和Cardano都是我们非常值得学习项目，我们不去评
 - [Daniel Larimer（ByteMaster）](https://steemit.com/@dan)
 - [Charles Hoskinson](https://twitter.com/IOHK_Charles)
 - [Ned Scott](https://steemit.com/@ned) 
+- [Aggelos Kiayias](https://iohk.io/team/aggelos-kiayias/)
 
 ## 事件线
 
@@ -53,4 +54,8 @@ DPOS系列项目和Cardano都是我们非常值得学习项目，我们不去评
 ### 20180110 bitcoin.com新闻报道
 * 原文：https://news.bitcoin.com/eos-1-billion-war-chest-will-dan-larimer-stick-around-long-enough-enjoy/
 * 简介：有兴趣自己看，列举了下BM的知名战役，也提到了此次事件
+
+### 20180111 Cardano的官方回应
+* 原文：https://iohk.io/blog/on-the-ouroboros-design-how-rigour-and-engineering-are-essential-for-critical-infrastructure/?utm_content=buffer14679&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer
+* 译文：*TODO*
 
