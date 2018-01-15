@@ -3,7 +3,8 @@
 
 # On the Ouroboros Design: How rigour and engineering are essential for critical infrastructure
 
-A [blog post][1] on the Steemit website appeared recently making a number of claims regarding [Ouroboros][2]. The article contains several factual inaccuracies. For instance, it is claimed that "DPOS" in the Ouroboros paper stands for "delegated proof of stake", while in fact, DPOS means "dynamic proof of stake", or that the protocol requires a "2/3+" ratio of parties being honest, while in reality it just requires an honest majority, i.e. the stake controlled by parties following the protocol is more than half the total stake.
+A [blog post][1] on the Steemit website appeared recently making a number of claims regarding [Ouroboros][2]. The article contains several factual inaccuracies. For instance, it is claimed that "DPOS" in the Ouroboros paper stands for "delegated proof of stake", while in fact, DPOS means "dynamic proof of stake", or that the protocol requires a "2/3+" ratio of parties being honest, while in reality it just requires an honest majority, i.e. the stake controlled by parties following the protocol is more than half the total stake.  
+最近在Steemit上有一篇博客对于Ouroboros有很多论断  . 这篇文章有很多事实性的不准确的地方. 例如, 它论断 Ouroboros 论文中的“DPOS” 是代表 "delegated proof of stake", 而事实上, DPOS 是代表 "dynamic proof of stake", 再者认为协议需要“2/3以上”的诚实节点，事实上只需要大多数诚实节点就可以了, 也就是说. 遵守协议的节点的股权之和只要大于全部股权就可以了. 
 
 For the benefit of those that are interested in the Ouroboros protocol and who appreciate its general philosophy, we feel it is appropriate to provide here a response to this article making along the way a few broader points. While pointing out inaccuracies in the blog, we take the opportunity to highlight some of the general approaches followed in the design of Ouroboros and in the related research efforts that are currently underway at IOHK.
 
