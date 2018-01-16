@@ -57,5 +57,5 @@ DPOS系列项目和Cardano都是我们非常值得学习项目，我们不去评
 
 ### 20180111 Cardano的官方回应
 * 原文：https://iohk.io/blog/on-the-ouroboros-design-how-rigour-and-engineering-are-essential-for-critical-infrastructure/?utm_content=buffer14679&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer
-* 译文：*TODO*
+* 译文：https://github.com/DAGfans/TranStudy/blob/master/Events/BM-VS-ADA/on-the-ouroboros-design-how-rigour-and-engineering-are-essential-for-critical-infrastructure.md
 
