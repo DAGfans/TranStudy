@@ -32,7 +32,7 @@ This brings us to the final distinguishing advantage of the philosophy of Cardan
 
 
 Being invited to serve in the committee as an expert is an important recognition of an individual's long-term commitment to the area of cryptography (and even a precise count of how many times one has served is [maintained][6]). Blockchain protocols fit perfectly within the cryptography scientific literature and thus scientific peer review is to be done by this community. Of course, we welcome reviews from anyone. That is why we make public very detailed whitepapers with precise and specific claims that leave no uncertainty about what is being claimed, and we appreciate any factual discussion about any of these claims. We strongly encourage other projects to submit their work for scientific peer review as well. They will enjoy the benefits of thorough, well-founded and objective critique and they will have the opportunity to showcase any advantages and novelty that their approach possesses.  
-被邀请进委员会担任专家是个人长期致力于密码学领域的很重要的认可（甚至可以精确地指出一个人(服务)[6]了多少次）。 区块链协议完全符合密码学科学文献，因此同行科学评审将由该社区完成。 当然，我们欢迎任何人的评论。 这就是为什么我们公开了非常详细的白皮书，并提供确切而具体的声明以确保声明的内容不会产生不确定性，我们也非常感谢任何有关这些声明的实质性的讨论。 我们强烈鼓励其他项目也提交他们的作品进行同行科学评审。 他们将享受彻底的，有根据的和客观的批评带来的好处，他们也将有机会展示他们方法的所有优势和创新。
+被邀请进委员会担任专家是个人长期致力于密码学领域的很重要的认可（甚至可以精确地指出一个人[服务][6]了多少次）。 区块链协议完全符合密码学科学文献，因此同行科学评审将由该社区完成。 当然，我们欢迎任何人的评论。 这就是为什么我们公开了非常详细的白皮书，并提供确切而具体的声明以确保声明的内容不会产生不确定性，我们也非常感谢任何有关这些声明的实质性的讨论。 我们强烈鼓励其他项目也提交他们的作品进行同行科学评审。 他们将享受彻底的，有根据的和客观的批评带来的好处，他们也将有机会展示他们方法的所有优势和创新。
 
 [1]: https://steemit.com/cardamon/@dan/peer-review-of-cardano-s-ouroboros "Peer Review of Cardano's Ouroboros, steemit.com"
 [2]: https://iohk.io/research/papers/#9BKRHCSI "Ouroboros: A Provably Secure Proof-of-Stake Blockchain Protocol, iohk.io"
