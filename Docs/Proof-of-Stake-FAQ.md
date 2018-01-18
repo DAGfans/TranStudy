@@ -19,16 +19,20 @@ In **chain-based proof of stake**, the algorithm pseudo-randomly selects a valid
 在**基于链的股权证明**中，算法在每个时段期间伪随机地选择验证人（例如，每个10秒的周期可以是一个时段），并且授权验证人创建单个区块 ，并且这个区块必须指向一些先前的区块（通常是以前最长的链末尾的区块），并且随着时间的流逝，大部分区块汇聚成单个不断增长的链。
   
 In **BFT-style proof of stake**, validators are **randomly** assigned the right to _propose_ blocks, but _agreeing on which block is canonical_ is done through a multi-round process where every validator sends a "vote" for some specific block during each round, and at the end of the process all (honest and online) validators permanently agree on whether or not any given block is part of the chain. Note that blocks may still be _chained together_; the key difference is that consensus on a block can come within one block, and does not depend on the length or size of the chain after it.     
- 在**BFT风格的股权证明**中，验证人被**随机**赋予_提交_区块的权限，但是_确认哪个区块是合法的_是通过多轮处理完成的，在每一轮中每个验证人“投票”给在某个特定的区块，在这个过程结束时，所有（诚实的和在线的）验证人会永久确认给定的区块是否是链中的一部分。 请注意，区块可能仍然是_链在一起的_; 关键的区别在于可以在一个区块内达成共识，而不依赖于其后的链的长度或大小。  
- 
+ 在**BFT风格的股权证明**中，验证人被**随机**赋予 _提交_ 区块的权限，但是 _确认哪个区块是合法的_ 是通过多轮处理完成的，在每一轮中每个验证人“投票”给在某个特定的区块，在这个过程结束时，所有（诚实的和在线的）验证人会永久确认给定的区块是否是链中的一部分。 请注意，区块可能仍然是 _链在一起的_ ; 关键的区别在于可以在一个区块内达成共识，而不依赖于其后的链的长度或大小。  
 
 ### What are the benefits of proof of stake as opposed to proof of work?
+### 股权证明相比工作量证明的优点是什么？
 
-See [A Proof of Stake Design Philosophy](https://medium.com/@VitalikButerin/a-proof-of-stake-design-philosophy-506585978d51) for a more long-form argument.
+See [A Proof of Stake Design Philosophy](https://medium.com/@VitalikButerin/a-proof-of-stake-design-philosophy-506585978d51) for a more long-form argument.  
+请参阅[股权证明的设计哲学]（https://medium.com/@VitalikButerin/a-proof-of-stake-design-philosophy-506585978d51）以获得详细
+
 
 In short:
+简而言之:
 
-* **No need to consume large quantities of electricity** in order to secure a blockchain (eg. it's estimated that both Bitcoin and Ethereum burn over $1 million worth of electricity and hardware costs per day as part of their consensus mechanism).
+* **No need to consume large quantities of electricity** in order to secure a blockchain (eg. it's estimated that both Bitcoin and Ethereum burn over $1 million worth of electricity and hardware costs per day as part of their consensus mechanism).  
+* **不需要消耗大量的电力**来保障区块链的安全（例如，由于这是它们共识机制的一部分，比特币和以太坊每天的电力和硬件成本都超过了100万美元，）。
 * Because of the lack of high electricity consumption, there is **not as much need to issue as many new coins** in order to motivate participants to keep participating in the network. It may theoretically even be possible to have _negative_ net issuance, where a portion of transaction fees is "burned" and so the supply goes down over time.
 * Proof of stake opens the door to a wider array of techniques that use game-theoretic mechanism design in order to better **discourage centralized cartels** from forming and, if they do form, from acting in ways that are harmful to the network (eg. like [selfish mining](https://www.cs.cornell.edu/~ie53/publications/btcProcFC.pdf) in proof of work).
 * **Reduced centralization risks**, as economies of scale are much less of an issue. $10 million of coins will get you exactly 10 times higher returns than $1 million of coins, without any additional disproportionate gains because at the higher level you can afford better mass-production equipment.
