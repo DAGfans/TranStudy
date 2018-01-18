@@ -9,13 +9,18 @@
 在基于PoS的公有区块链中（例如以太坊即将推出的Casper的实现），一组验证人轮流提交并投票给接下来的区块，验证人的投票取决于保证金的大小（即股权） 
 PoS显著的优势包括**安全性, 低中心化风险, 以及能源效率**.
 
-In general, a proof of stake algorithm looks as follows. The blockchain keeps track of a set of validators, and anyone who holds the blockchain's base cryptocurrency (in Ethereum's case, ether) can become a validator by sending a special type of transaction that **locks up their ether into a deposit**. The process of creating and agreeing to new blocks is then done through a consensus algorithm that all current validators can participate in.
+In general, a proof of stake algorithm looks as follows. The blockchain keeps track of a set of validators, and anyone who holds the blockchain's base cryptocurrency (in Ethereum's case, ether) can become a validator by sending a special type of transaction that **locks up their ether into a deposit**. The process of creating and agreeing to new blocks is then done through a consensus algorithm that all current validators can participate in.  
+一般而言，股权证明算法大概如下所示. 区块链记录了一组验证人，任何持有区块链基础虚拟货币(例如以太坊的ether)的人可以发送一种特殊类型的交易，**将他们的以太锁定到保证金里面**，从而成为见证人 然后通过所有当前验证人可以参与的共识算法来完成创建和确认新区块的过程.  
 
-There are many kinds of consensus algorithms, and many ways to assign rewards to validators who participate in the consensus algorithm, so there are many "flavors" of proof of stake. From an algorithmic perspective, there are two major types: chain-based proof of stake and [BFT](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)-style proof of stake.
+There are many kinds of consensus algorithms, and many ways to assign rewards to validators who participate in the consensus algorithm, so there are many "flavors" of proof of stake. From an algorithmic perspective, there are two major types: chain-based proof of stake and [BFT](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)-style proof of stake.    
+共识算法有很多种，给参与共识算法的验证人分配奖励的方法很多，所以有很多“风格”的股权证明。 从算法的角度来看，有两种主要类型：基于链的股权证明和[BFT]（https://en.wikipedia.org/wiki/Byzantine_fault_tolerance）风格的股权证明。  
 
-In **chain-based proof of stake**, the algorithm pseudo-randomly selects a validator during each time slot (eg. every period of 10 seconds might be a time slot), and assigns that validator the right to create a single block, and this block must point to some previous block (normally the block at the end of the previously longest chain), and so over time most blocks converge into a single constantly growing chain.
-
-In **BFT-style proof of stake**, validators are **randomly** assigned the right to _propose_ blocks, but _agreeing on which block is canonical_ is done through a multi-round process where every validator sends a "vote" for some specific block during each round, and at the end of the process all (honest and online) validators permanently agree on whether or not any given block is part of the chain. Note that blocks may still be _chained together_; the key difference is that consensus on a block can come within one block, and does not depend on the length or size of the chain after it.
+In **chain-based proof of stake**, the algorithm pseudo-randomly selects a validator during each time slot (eg. every period of 10 seconds might be a time slot), and assigns that validator the right to create a single block, and this block must point to some previous block (normally the block at the end of the previously longest chain), and so over time most blocks converge into a single constantly growing chain.  
+在**基于链的股权证明**中，算法在每个时段期间伪随机地选择验证人（例如，每个10秒的周期可以是一个时段），并且授权验证人创建单个区块 ，并且这个区块必须指向一些先前的区块（通常是以前最长的链末尾的区块），并且随着时间的流逝，大部分区块汇聚成单个不断增长的链。
+  
+In **BFT-style proof of stake**, validators are **randomly** assigned the right to _propose_ blocks, but _agreeing on which block is canonical_ is done through a multi-round process where every validator sends a "vote" for some specific block during each round, and at the end of the process all (honest and online) validators permanently agree on whether or not any given block is part of the chain. Note that blocks may still be _chained together_; the key difference is that consensus on a block can come within one block, and does not depend on the length or size of the chain after it.     
+ 在**BFT风格的股权证明**中，验证人被**随机**赋予_提交_区块的权限，但是_确认哪个区块是合法的_是通过多轮处理完成的，在每一轮中每个验证人“投票”给在某个特定的区块，在这个过程结束时，所有（诚实的和在线的）验证人会永久确认给定的区块是否是链中的一部分。 请注意，区块可能仍然是_链在一起的_; 关键的区别在于可以在一个区块内达成共识，而不依赖于其后的链的长度或大小。  
+ 
 
 ### What are the benefits of proof of stake as opposed to proof of work?
 
