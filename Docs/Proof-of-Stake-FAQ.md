@@ -28,15 +28,19 @@ See [A Proof of Stake Design Philosophy](https://medium.com/@VitalikButerin/a-pr
 请参阅[股权证明的设计哲学]（https://medium.com/@VitalikButerin/a-proof-of-stake-design-philosophy-506585978d51）以获得详细
 
 
-In short:
+In short:  
 简而言之:
 
 * **No need to consume large quantities of electricity** in order to secure a blockchain (eg. it's estimated that both Bitcoin and Ethereum burn over $1 million worth of electricity and hardware costs per day as part of their consensus mechanism).  
-* **不需要消耗大量的电力**来保障区块链的安全（例如，由于这是它们共识机制的一部分，比特币和以太坊每天的电力和硬件成本都超过了100万美元，）。
-* Because of the lack of high electricity consumption, there is **not as much need to issue as many new coins** in order to motivate participants to keep participating in the network. It may theoretically even be possible to have _negative_ net issuance, where a portion of transaction fees is "burned" and so the supply goes down over time.
-* Proof of stake opens the door to a wider array of techniques that use game-theoretic mechanism design in order to better **discourage centralized cartels** from forming and, if they do form, from acting in ways that are harmful to the network (eg. like [selfish mining](https://www.cs.cornell.edu/~ie53/publications/btcProcFC.pdf) in proof of work).
-* **Reduced centralization risks**, as economies of scale are much less of an issue. $10 million of coins will get you exactly 10 times higher returns than $1 million of coins, without any additional disproportionate gains because at the higher level you can afford better mass-production equipment.
+* **不需要消耗大量的电力**来保障区块链的安全（例如，由于这是比特币和以太坊共识机制的一部分，预计它们每天的电力和硬件成本都超过了100万美元，）。
+* Because of the lack of high electricity consumption, there is **not as much need to issue as many new coins** in order to motivate participants to keep participating in the network. It may theoretically even be possible to have _negative_ net issuance, where a portion of transaction fees is "burned" and so the supply goes down over time.  
+* 因为假设不会有高电量的损耗，所以**没有太多必要发放很多新币**来激励参与者持续参与网络。 理论上甚至有可能出现 _负的_ 净发行量，因为其中一部分交易费用会被“损耗”掉，所以供应量随着时间的推移而下降。
+* Proof of stake opens the door to a wider array of techniques that use game-theoretic mechanism design in order to better **discourage centralized cartels** from forming and, if they do form, from acting in ways that are harmful to the network (eg. like [selfish mining](https://www.cs.cornell.edu/~ie53/publications/btcProcFC.pdf) in proof of work).  
+* 股权证明打开了一扇大门，从而可以通过更广泛使用博弈论机制设计的技术来更好地 **阻止中心化的垄断联盟** 的形成，即便形成，也是以对网络有害的方式进行 （例如，[自私挖矿]（https://www.cs.cornell.edu/~ie53/publications/btcProcFC.pdf））。  
+* **Reduced centralization risks**, as economies of scale are much less of an issue. $10 million of coins will get you exactly 10 times higher returns than $1 million of coins, without any additional disproportionate gains because at the higher level you can afford better mass-production equipment.  
+* **减少中心化风险**，因为规模经济的影响更小。 1000万美元的币就仅获得比100万美元的币高10倍的回报，而没有任何额外的不成比例的收益，因为在更大的收益规模上，你可以买得起更好的大规模生产设备。  
 * Ability to use economic penalties to **make various forms of 51% attacks vastly more expensive** to carry out than proof of work - to paraphrase Vlad Zamfir, "it's as though your ASIC farm burned down if you participated in a 51% attack".
+* 能使用经济处罚使得**各种形式的51％的攻击成本远高于**工作量证明。 Vlad Zamfir解释说，“就好像一旦你参加了51％攻击，你的ASIC矿场就会被烧毁”。
 
 ### How does proof of stake fit into traditional Byzantine fault tolerance research?
 
