@@ -15,6 +15,7 @@ structure is a Direct Acyclic Graph (DAG) of transactions where each transaction
 more previous transactions. The confirmation security of a transaction is measured in accumulated
 amount of proof-of-work referencing the transaction. In this paper we present the DagCoin design,
 solve the double-spend problem and show several optimizations to aid for an efficient implementation.
+DagCoin是一个高度去中心化的加密货币的设计，其整合了交易和区块的概念并能让每一个用户成为矿工。每笔交易都携带一个工作量证明并引用一个或者多个之前的交易。生成的已授权的数据结构是由交易组成有向无环图（DAG），其中每笔交易“确认”一笔或者多笔之前的交易。交易的确认安全性是以引用该交易的累计工作量证明来衡量的。在本论文中，我们将介绍DagCoin的设计，解决双花问题，并展示几个优化让实现更有效率。
 
 DagCoin is a cryptocurrency design that merges the concepts of transactions and blocks and making
 each user a miner. Each transaction carries a proof-or-work and references one or more previous
@@ -23,7 +24,9 @@ transactions where each transaction “confirms” one or more previous transact
 security of a transaction is measured in accumulated amount of proof-of-work referencing the
 transaction. This structure is better suited for a cryptocurrency without subsidy (such as a side-chain),
 since the cost of reversal of a transaction can be easily measured, where in merged-mining the reversal
-cost depends on the good will of the non-merged hashing power.
+cost depends on the good will of the non-merged hashing power.  
+DagCoin是一个高度去中心化的加密货币的设计，其整合了交易和区块的概念并能让每一个用户成为矿工。每笔交易都携带一个工作量证明并引用一个或者多个之前的交易。生成的已授权的数据结构是由交易组成有向无环图（DAG），其中每笔交易“确认”一笔或者多笔之前的交易。交易的确认安全性是以引用该交易的累计工作量证明来衡量的。这个结构更适合没有分支结构（例如侧链）的加密货币，因为逆转交易的成本能很简单地测量，在合并挖矿中逆转成本取决于非合并的算力，
+
 One of the problems with the DAG approach is how to limit the maximum cut of the generated DAG
 or, in other words, how to prevent all new transactions from referencing the same set of parent
 transactions, and degenerating the DAG into a star graph. The DAG must not increase in “width”,
