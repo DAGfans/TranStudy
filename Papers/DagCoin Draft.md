@@ -25,32 +25,38 @@ security of a transaction is measured in accumulated amount of proof-of-work ref
 transaction. This structure is better suited for a cryptocurrency without subsidy (such as a side-chain),
 since the cost of reversal of a transaction can be easily measured, where in merged-mining the reversal
 cost depends on the good will of the non-merged hashing power.  
-DagCoin是一个高度去中心化的加密货币的设计，其整合了交易和区块的概念并能让每一个用户成为矿工。每笔交易都携带一个工作量证明并引用一个或者多个之前的交易。生成的已授权的数据结构是由交易组成有向无环图（DAG），其中每笔交易“确认”一笔或者多笔之前的交易。交易的确认安全性是以引用该交易的累计工作量证明来衡量的。这个结构更适合没有分支结构（例如侧链）的加密货币，因为逆转交易的成本能很简单地测量，在合并挖矿中逆转成本取决于非合并的算力，
+DagCoin是一个高度去中心化的加密货币的设计，其整合了交易和区块的概念并能让每一个用户成为矿工。每笔交易都携带一个工作量证明并引用一个或者多个之前的交易。生成的已授权的数据结构是由交易组成有向无环图（DAG），其中每笔交易“确认”一笔或者多笔之前的交易。交易的确认安全性是以引用该交易的累计工作量证明来衡量的。这个结构更适合没有补贴的加密货币（例如侧链），因为逆转交易的成本能很简单地测量，即逆转恶意的已联合的挖矿取决于善意的未联合的算力。
+*译注：这里的补贴其实指的是挖矿奖励或者手续费，参见https://blockstream.com/sidechains.pdf subsidy的有关章节*
 
 One of the problems with the DAG approach is how to limit the maximum cut of the generated DAG
 or, in other words, how to prevent all new transactions from referencing the same set of parent
 transactions, and degenerating the DAG into a star graph. The DAG must not increase in “width”,
-and it must “look” more like a yarn under microscope. I will call this structure a DAG-chain.
+and it must “look” more like a yarn under microscope. I will call this structure a DAG-chain.  
+DAG方法的其中一个问题怎样限制生成的DAG的最大份额或者换句话说怎样阻止所有新交易引用同样的一组父交易，导致把DAG降级为一张星图。DAG一定不能增加“宽度”，并且必须“看上去”更像一个在显微镜下的纱线（yarn）。我将称这个结构为DAG-链。
 
-A DAG-chain can be informally defined as DAG that:
+A DAG-chain can be informally defined as DAG that:  
+一个DAG-链可以被非正式地定义为DAG需要满足：
 
 - After taking all border (non-parent) nodes k times, it becomes a chain
+- 在被所有的边缘（非父）节点引用k次后，它成为一条链
 - The resulting chain length is proportional to the original node count by a factor close to 2k.
+- 生成的链的长度会和原始节点的数量保持因子为大约两千的比例
 - If the DAG has more than 2k nodes, you can cut it in two separate DAGs, and the same
     properties hold for each half (each half having a factor k which is close to the original k factor).
+- 如果DAG有超过两千节点，你可以将其拆分成两个独立的DAG，并且每一半保持同样的属性（每一半的因子k是和原始k因子接近的）
 
 To be able to create a DAG-chain the protocol must prevent users from choosing old transactions to
 extend the DAG. Merging branches should be incentivized, but not too much such that users merge
 the same branches over and over. The problem of spam is of less importance, as no transaction can
-get a “free ride” in a block. We show that the election of an adequate data structure allows the DAG-
+get a “free ride” in a block. We show that the election of an adequate data structure allows the DAG-chain to be formed, but it requires us to change how we think about double-spends.
+要能创建DAG-链，协议必须阻止用户选择旧的交易去拓展DAG。合并分支应该被激励，但不能太多以至于用户会反复地合并同一个分支。垃圾交易的问题不是那么重要，因为没有交易能在区块中“搭顺风车”（*译注：指交易是有成本的*）。我们发现，选择一个合适的数据结构可以形成DAG链，但这需要我们改变我们对于双重花费的看法。
 
 
-chain to be formed, but it requires us to change how we think about double-spends.
+The premises used to design the DagCoin cryptocurrency are the following:  
+设计DagCoin加密货币的前提有：
 
-The premises used to design the DagCoin cryptocurrency are the following:
-
-PREMISE: _The cryptocurrency network benefits from creating a DAG-chain growing as “thin” (low
-k) as possible._
+PREMISE: _The cryptocurrency network benefits from creating a DAG-chain growing as “thin” (low k) as possible._
+前提： _加密货币网络受益于创建一个尽可能越来越“瘦”（低k）的DAG-链。_
 
 In other words, having the average maximal cut as low as possible. Referencing many previous
 transactions (high out degree) can make the DAG thinner only if the following transactions reference
