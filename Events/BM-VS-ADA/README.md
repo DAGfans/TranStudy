@@ -37,7 +37,6 @@ DPOS系列项目和Cardano都是我们非常值得学习项目，我们不去评
   - 回应中的文档链接
       - Paper765: [The Bitcoin Backbone Protocol: Analysis and Applications](https://eprint.iacr.org/2014/765)
       - Paper216: [SCRAPE: Scalable Randomness Attested by Public Entities](https://eprint.iacr.org/2017/216)
-   - 截图 ![截图](https://i.imgur.com/7bfqKDI.png)
 * 简介：开始说BM习惯性地质疑知名项目而且还曾经赞赏过他们项目（都是些翻旧帐的事情，暗指BM人品和动机。。就不深入了）, 然后说明Cardano是根据[Paper765](https://eprint.iacr.org/2014/765)中对于安全性的定义进行了严格的论证
 
 
