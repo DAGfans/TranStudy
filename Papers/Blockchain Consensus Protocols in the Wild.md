@@ -68,7 +68,7 @@ maintaining shared state, mediating exchanges, and providing a secure
 computing engine. Many blockchains can execute arbitrary tasks,
 typically called *smart contracts*, written in a domain-specific or a
 general-purpose programming language.  
-*区块链*或*分布式账本*是提供一个系统可靠的服务给一组*节点*或者互不可信的团体。 它们替代传统的分布式协议为安全的多方密码学计算以及在分布式系统中拜占庭容错的复制服务。区块链也包含来自加密货币的许多元素，尽管是区块链系统可以被设想为没有货币或价值代币。 通常，区块链作为一个值得信赖和可靠的第三方来保持共享状态，协调交易以及提供安全计算引擎。 许多区块链可以执行任意任务，通常称为*智能合约*，领域特定语言或通用编程语言编写。
+*区块链*或*分布式账本*是提供一个系统可靠的服务给一组*节点*或者互不可信的团体。 它们替代传统的分布式协议为安全的多方密码学计算以及在分布式系统中拜占庭容错的复制服务。区块链也包含来自加密货币的许多元素，尽管是区块链系统可以被设想为没有货币或价值代币。 通常，区块链作为一个值得信赖和可靠的第三方来保持共享状态，协调交易以及提供安全计算引擎。 许多区块链可以执行任意任务，通常称为*智能合约*，用领域特定语言或通用编程语言编写。
 
 In a *permissionless blockchain*, such as Bitcoin or Ethereum, anyone
 can be a user or run a node, anyone can “write” to the shared state
@@ -81,7 +81,8 @@ permissioned blockchain network. Permissioned blockchains systems have
 means to identify the nodes that can control and update the shared
 state, and often also have ways to control who can issue transactions. A
 *private blockchain* is a special permissioned blockchain operated by
-one entity, i.e., within one single trust domain.
+one entity, i.e., within one single trust domain.  
+在*公有链*中，比如比特币或者以太坊，任何人可以是用户或运行节点，任何人都可以通过调用交易（提供交易费用）“写”到共享状态，任何人都可以参与共识过程来确定“有效”状态。 相反，A *许可链*是通过已知的实体来运行的，如*联盟区块链*，其中的成员或利益相关者在特定的商业环境下运行许可的区块链网络。 许可的区块链系统意味着可以识别控制和更新共享状态的节点，而且通常也有办法控制谁可以发出交易。 一个*私有链*是由单一实体运行的许可区块链，即在一个单一的信任域内。
 
 Permissioned blockchains address many of the problems that have been
 studied in the field of distributed computing over decades, most
@@ -95,6 +96,7 @@ technologies has triggered new research on practical distributed
 consensus protocols. There is also a growing number of startups,
 programmers, and industry groups developing blockchain protocols based
 on their own ideas, not relying on established knowledge.
+许可链解决了许多在分布式计算领域研究了数十年的问题，最重要的是开发了*拜占庭容错（BFT）*系统。这种区块链可以从许多为在网络连接不确定的环境，节点可能会崩溃或被对手颠覆，节点之间的相互作用本质上是异步的环境中达成共识，复制状态，广播交易等等而开发的技术中受益。 在区块链上的广泛兴趣技术引发了对新的实用分布式共识协议的研究。 也有越来越多的创业公司，程序员和行业团体开发基于区块链协议依靠自己的想法，而不是依靠已建立的知识。
 
 The purpose of this paper is to give an overview of consensus protocols
 actually being used in the context of permissioned blockchains, to
@@ -103,6 +105,7 @@ trustworthiness of some protocols. We leave out permissionless (or
 “public”) blockchains that are coupled to a cryptocurrency and their
 consensus protocols, such as *proof-of-work* or *proof-of-stake*,
 although this is a very interesting subject by itself.
+本文的目的是给出实际上被用在许可链的环境中共识协议的概述来评议基本原则，并比较可恢复性和一些协议的可靠性。 我们不讨论集成进一个加密货币的非许可（或“公共”）区块链和它们的共识协议，如*工作量证明*或*股权证明*,虽然这本身是一个非常有趣的主题。
 
 We start by pointing out that developing consensus protocols is
 difficult and should not be undertaken in an ad-hoc manner
@@ -117,7 +120,8 @@ underlying assumptions, detailed security models, formal reasoning, and
 wide-spread public discussion. Any claim for a “superior” consensus
 protocol that does not come with the necessary formal justification
 should be dismissed, analogously to the approach of “security by
-obscurity,” which is universally rejected by experts.
+obscurity,” which is universally rejected by experts.  
+我们首先指出，制定共识协议是困难的，不应该以特别的方式进行，不应该以特别的方式进行(Sec. <a href="#sec:trust" data-reference-type="ref" data-reference="sec:trust">2</a>)。一个有弹性的共识协议只有在大面积地对节点和网络上攻击下仍能继续提供预期的服务时才有用。 详细的分析和正式的论证对于协议有信心实现其目标是有必要的。
 
 The text continues in
 Section <a href="#sec:consensus" data-reference-type="ref" data-reference="sec:consensus">3</a>
