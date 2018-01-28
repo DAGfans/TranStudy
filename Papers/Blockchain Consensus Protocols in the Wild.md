@@ -321,7 +321,7 @@ satisfies its guarantees. Such assumptions should cover all elements in
 the system, including the network, the availability of synchronized
 clocks, and the expected (mis-)behavior of the nodes. For instance, the
 typical generic trust assumption for a system with *n* independent nodes
-says that no more than *f* &lt; *n*/*k* nodes become *faulty* (crash,
+says that no more than *f* < *n*/*k* nodes become *faulty* (crash,
 leak information, perform arbitrary actions, and so on), for some
 *k* = 2, 3, …. The other *n* − *f* nodes are *correct*. A trust
 assumption always represents an idealization of the real world; if some
@@ -450,7 +450,7 @@ Then *p* delivers *m*<sub>1</sub> before *m*<sub>2</sub> if and only if
 *q* delivers *m*<sub>1</sub> before *m*<sub>2</sub>.
 
 The most important and most prominent way to implement atomic broadcast
-(i.e., consensus) in distributed systems prone to *t* &lt; *n*/2 node
+(i.e., consensus) in distributed systems prone to *t* < *n*/2 node
 crashes is the family of protocols known today as *Paxos*  and
 *Viewstamped Replication (VSR)* . Discovered independently, their core
 mechanisms exploit the same ideas . They have been implemented in dozens
@@ -484,7 +484,7 @@ eventual-synchrony model considered here, the most prominent protocol is
 *PBFT (Practical Byzantine Fault-Tolerance)* . It can be understood as
 an extension of the Paxos/VSR family  and also uses a progression of
 views and a unique leader within every view. In a system with *n* nodes
-PBFT tolerates *f* &lt; *n*/3 Byzantine nodes, which is optimal. Many
+PBFT tolerates *f* < *n*/3 Byzantine nodes, which is optimal. Many
 research works have analyzed and improved aspects of it and made it more
 robust in prototypes . A proposed extension of the Raft variant of
 Paxos/VSR called *Tangaroa* has been analyzed in
@@ -565,7 +565,7 @@ a random time. A leader election phase follows, from which one node will
 emerge as leader and be accepted by all other (follower) nodes. Once
 established, the leader orders and replicates messages within its view.
 
-For extending the structure behind Raft to tolerate *f* &lt; *n*/3
+For extending the structure behind Raft to tolerate *f* < *n*/3
 Byzantine nodes, one has to solve at least the leader-election problem
 and the reliable message replication within a view. Although it is
 well-known how to achieve this, as demonstrated by PBFT , many related
@@ -745,15 +745,15 @@ not need special discussion here.
 |:-------------|:-----------:|:-----------------:|:-----------------:|
 |              | **Generic** | **Any *t* nodes** | **Any *f* nodes** |
 |              |  **nodes**  |     **crash**     |   **subverted**   |
-| **Safety**   |     *n*     |   *t* &lt; *n*/2  |         −         |
-| **Liveness** |     *n*     |   *t* &lt; *n*/2  |         −         |
+| **Safety**   |     *n*     |   *t* < *n*/2  |         −         |
+| **Liveness** |     *n*     |   *t* < *n*/2  |         −         |
 
 |              |             |                   |                   |
 |:-------------|:-----------:|:-----------------:|:-----------------:|
 |              | **Generic** | **Any *t* nodes** | **Any *f* nodes** |
 |              |  **nodes**  |     **crash**     |   **subverted**   |
-| **Safety**   |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |
-| **Liveness** |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |
+| **Safety**   |     *n*     |   *t* < *n*/3  |   *f* < *n*/3  |
+| **Liveness** |     *n*     |   *t* < *n*/3  |   *f* < *n*/3  |
 
 Tendermint
 ----------
@@ -795,8 +795,8 @@ correctness analysis.
 |:-------------|:-----------:|:-----------------:|:-----------------:|
 |              | **Generic** | **Any *t* nodes** | **Any *f* nodes** |
 |              |  **nodes**  |     **crash**     |   **subverted**   |
-| **Safety**   |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |
-| **Liveness** |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |
+| **Safety**   |     *n*     |   *t* < *n*/3  |   *f* < *n*/3  |
+| **Liveness** |     *n*     |   *t* < *n*/3  |   *f* < *n*/3  |
 
 Symbiont – BFT-SMaRt
 --------------------
@@ -823,8 +823,8 @@ the eventually-synchronous model considered here.
 |:-------------|:-----------:|:-----------------:|:-----------------:|
 |              | **Generic** | **Any *t* nodes** | **Any *f* nodes** |
 |              |  **nodes**  |     **crash**     |   **subverted**   |
-| **Safety**   |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |
-| **Liveness** |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |
+| **Safety**   |     *n*     |   *t* < *n*/3  |   *f* < *n*/3  |
+| **Liveness** |     *n*     |   *t* < *n*/3  |   *f* < *n*/3  |
 
 R3 Corda – Raft and BFT-SMaRt
 -----------------------------
@@ -873,24 +873,24 @@ crash-tolerant implementation using Raft
 and for distributing it using the open-source BFT-SMaRt toolkit
 (Sec. <a href="#ssec:byzcons" data-reference-type="ref" data-reference="ssec:byzcons">3.3</a>).
 When using Raft deployed on *n* nodes, a Corda notary tolerates crashes
-of any *t* &lt; *n*/2 of these nodes
+of any *t* < *n*/2 of these nodes
 (Sec. <a href="#ssec:crashcons" data-reference-type="ref" data-reference="ssec:crashcons">3.2</a>).
 With BFT-SMaRt running on *n* nodes, the notary is resilient to the
-subversion of *f* &lt; *n*/3 nodes.
+subversion of *f* < *n*/3 nodes.
 
 |              |            |                   |                   |     |
 |:-------------|:----------:|:-----------------:|:-----------------:|:---:|
 |              | **Notary** | **Any *t* nodes** | **Any *f* nodes** |     |
 |              |  **nodes** |     **crash**     |   **subverted**   |     |
-| **Safety**   |     *n*    |   *t* &lt; *n*/2  |         −         |     |
-| **Liveness** |     *n*    |   *t* &lt; *n*/2  |         −         |     |
+| **Safety**   |     *n*    |   *t* < *n*/2  |         −         |     |
+| **Liveness** |     *n*    |   *t* < *n*/2  |         −         |     |
 
 |              |            |                   |                   |     |
 |:-------------|:----------:|:-----------------:|:-----------------:|:---:|
 |              | **Notary** | **Any *t* nodes** | **Any *f* nodes** |     |
 |              |  **nodes** |     **crash**     |   **subverted**   |     |
-| **Safety**   |     *n*    |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |     |
-| **Liveness** |     *n*    |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |     |
+| **Safety**   |     *n*    |   *t* < *n*/3  |   *f* < *n*/3  |     |
+| **Liveness** |     *n*    |   *t* < *n*/3  |   *f* < *n*/3  |     |
 
 Iroha – Sumeragi
 ----------------
@@ -933,8 +933,8 @@ Fabric v0.6, Tendermint, and Symbiont.
 |:-------------|:-----------:|:-----------------:|:-----------------:|
 |              | **Generic** | **Any *t* nodes** | **Any *f* nodes** |
 |              |  **nodes**  |     **crash**     |   **subverted**   |
-| **Safety**   |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |
-| **Liveness** |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |
+| **Safety**   |     *n*     |   *t* < *n*/3  |   *f* < *n*/3  |
+| **Liveness** |     *n*     |   *t* < *n*/3  |   *f* < *n*/3  |
 
 Kadena – Juno and ScalableBFT
 -----------------------------
@@ -943,7 +943,7 @@ Kadena – Juno and ScalableBFT
 for running smart contracts that has been developed until about November
 2016 according to its website. Juno claims to use a “Byzantine Fault
 Tolerant Raft” protocol for consensus and appears to address the
-standard BFT model with *n* nodes, *f* &lt; *n*/3 Byzantine faults among
+standard BFT model with *n* nodes, *f* < *n*/3 Byzantine faults among
 them, and eventual synchrony  as timing assumption. Later Juno has been
 deprecated in favor of a “proprietary BFT-consensus protocol” called
 *ScalableBFT* , which is “inspired by the Tangaroa protocol” and
@@ -961,7 +961,7 @@ When a majority of nodes have replicated the transaction, the
 transaction is committed.” As is well-known from the literature  in the
 model considered here, with public-key cryptography for message
 authentication and asynchrony, agreement in a consensus protocol can
-only be ensured with *n* &gt; 3*f* and Byzantine quorums  of size
+only be ensured with *n* > 3*f* and Byzantine quorums  of size
 *strictly larger* than $\\frac{n+f}{2}$, which reduces to 2*f* + 1 with
 *n* = 3*f* + 1 nodes. Hence “replicating among a majority” does *not*
 suffice.
@@ -1032,8 +1032,8 @@ signer cannot later repudiate having observed a block.
 |:-------------|:-----------:|:-----------------:|:-----------------:|:-----------:|:-------------------:|:-----------------:|
 |              | **Generic** | **Any *t* nodes** | **Any *f* nodes** | **Special** | **Any *s* special** | **Special nodes** |
 |              |  **nodes**  |     **crash**     |   **subverted**   |  **nodes**  |   **nodes crash**   |   **subverted**   |
-| **Safety**   |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |   *m* = 1   |          −          |         −         |
-| **Liveness** |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |   *m* = 1   |          −          |         −         |
+| **Safety**   |     *n*     |   *t* > *n*/3  |   *f* < *n*/3  |   *m* = 1   |          −          |         −         |
+| **Liveness** |     *n*     |   *t* < *n*/3  |   *f* < *n*/3  |   *m* = 1   |          −          |         −         |
 
 Quorum – QuorumChain and Raft
 -----------------------------
@@ -1087,8 +1087,8 @@ consensus in any realistic sense.
 |:-------------|:-----------:|:-----------------:|:-----------------:|:-----------:|:-------------------:|:-----------------:|
 |              | **Generic** | **Any *t* nodes** | **Any *f* nodes** | **Special** | **Any *s* special** | **Special nodes** |
 |              |  **nodes**  |     **crash**     |   **subverted**   |  **nodes**  |   **nodes crash**   |   **subverted**   |
-| **Safety**   |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |   *m* = 1   |          −          |         −         |
-| **Liveness** |     *n*     |   *t* &lt; *n*/3  |   *f* &lt; *n*/3  |   *m* = 1   |          −          |         −         |
+| **Safety**   |     *n*     |   *t* < *n*/3  |   *f* < *n*/3  |   *m* = 1   |          −          |         −         |
+| **Liveness** |     *n*     |   *t* < *n*/3  |   *f* < *n*/3  |   *m* = 1   |          −          |         −         |
 
 #### Raft-based consensus.
 
@@ -1099,7 +1099,7 @@ in *etcd* (<https://github.com/coreos/etcd>) and co-locates every
 Quorum-node with an etcd-node (itself running Raft). Raft will replicate
 the transactions to all participating nodes and ensure that each node
 locally outputs the same sequence of transactions, despite crashes of
-nodes. The deployment actually tolerates that any *t* &lt; *n*/2 of the
+nodes. The deployment actually tolerates that any *t* < *n*/2 of the
 *n* etcd-nodes may crash. Raft relies on timeliness and synchrony only
 for liveness, not for safety.
 
@@ -1112,8 +1112,8 @@ adversarial nodes.
 |:-------------|:-----------:|:-----------------:|:-----------------:|:---:|
 |              | **Generic** | **Any *t* nodes** | **Any *f* nodes** |     |
 |              |  **nodes**  |     **crash**     |   **subverted**   |     |
-| **Safety**   |     *n*     |   *t* &lt; *n*/2  |         −         |     |
-| **Liveness** |     *n*     |   *t* &lt; *n*/2  |         −         |     |
+| **Safety**   |     *n*     |   *t* < *n*/2  |         −         |     |
+| **Liveness** |     *n*     |   *t* < *n*/2  |         −         |     |
 
 MultiChain
 ----------
@@ -1175,8 +1175,8 @@ one single correct node.
 |:-------------|:-----------:|:-----------------:|:-----------------:|:---:|
 |              | **Generic** | **Any *t* nodes** | **Any *f* nodes** |     |
 |              |  **nodes**  |     **crash**     |   **subverted**   |     |
-| **Safety\*** |     *n*     |    *t* &lt; *n*   |         −         |     |
-| **Liveness** |     *n*     |    *t* &lt; *n*   |         −         |     |
+| **Safety\*** |     *n*     |    *t* < *n*   |         −         |     |
+| **Liveness** |     *n*     |    *t* < *n*   |         −         |     |
 
 Further platforms
 -----------------
@@ -1194,7 +1194,7 @@ The *Swirlds hashgraph algorithm* is built into a proprietary
 paper is available  and the protocol is also implemented in an
 open-source consensus platform for distributed applications, called
 *Babble* (<https://github.com/babbleio/babble>). It targets consensus
-for a permissioned blockchain with *n* nodes and *f* &lt; *n*/3
+for a permissioned blockchain with *n* nodes and *f* < *n*/3
 Byzantine faults among them, i.e., the standard Byzantine consensus
 problem according to
 Section <a href="#ssec:byzcons" data-reference-type="ref" data-reference="ssec:byzcons">3.3</a>.
@@ -1210,12 +1210,17 @@ available.
 
 Permissionless blockchains
 ==========================
+非许可链
+==========================
 
 The most widely used consensus protocols in permissionless blockchains
 are *proof-of-work* and *proof-of-stake*, which appear always coupled to
 a cryptocurrency. There is a lot of research and development activity
 addressing them at the moment, and covering this would go beyond the
-scope of this text.
+scope of this text.  
+在许可链中使用最广泛的共识协议是*工作量证明*和*股权证明*，这似乎总是集成进一个加密货币。 有很多的研究和开发活动
+目前正在处理这些问题，并且覆盖这个问题将超出这个本文的范围。
+
 
 Instead, this section reviews some notable variants of protocols that do
 not rely on a strict notion of membership and therefore differ from the
@@ -1223,7 +1228,8 @@ permissioned blockchain platforms reviewed in the last section. The
 protocols described here depart in other ways from the traditional
 consensus notions (crash-tolerant, Byzantine, and proof-of-work-style
 consensus). Conceptually they fall somewhere between the extremes of a
-BFT protocol and Nakamoto’s proof-of-work consensus.
+BFT protocol and Nakamoto’s proof-of-work consensus.  
+然而，本节会综述一些不是严格概念上成员资格的知名的协议变体，因此不同于在上一节中评审的许可链平台。这里描述的协议与传统的共识概念（崩溃容错的，拜占庭式的和工作量风格的共识）有所不同。 从概念上讲，它们处在BFT协议和中本聪的工作量证明共识的界限之间。
 
 Sawtooth Lake – Proof of Elapsed Time
 -------------------------------------
@@ -1275,10 +1281,12 @@ However, with known nodes, traditional BFT consensus protocols have
 several advantages compared to PoET: they are more efficient, do not
 rely on a single vendor’s hardware, and create final decisions.
 Moreover, if trusted modules are available, then BFT consensus can
-increase the resilience to *f* &lt; *n*/2 subverted nodes and achieve
+increase the resilience to *f* < *n*/2 subverted nodes and achieve
 more than 70’000 tps throughput in a LAN .
 
 Ripple and Stellar
+------------------
+Ripple和恒星
 ------------------
 
 Ripple (<https://ripple.com/>) and Stellar (<https://www.stellar.org/>)
@@ -1287,15 +1295,17 @@ cryptocurrencies; unlike Bitcoin, they do not involve mining and operate
 in a somewhat permissioned fashion. The *Ripple protocol consensus
 algorithm (RPCA)* and its offspring *Stellar consensus protocol (SCP)*
 depart from the traditional security assumption for consensus protocols
-(i.e., some *f* &lt; *n*/3 faulty nodes) by making their trust
+(i.e., some *f* < *n*/3 faulty nodes) by making their trust
 assumptions *flexible* . This means that each node would declare on its
 own which nodes it trusts, instead of accepting a global assumption on
 which node collusions the protocol tolerates. Each node designates a
 list of other nodes sufficient to *convince* itself (through the *unique
 node list* in Ripple or the *quorum slice* of Stellar).
+Ripple（<https://ripple.com/>）和Stellar（<https://www.stellar.org/>）是两个全球性正在运营的交易网络，内置加密货币; 与比特币不同的是，它们不涉及挖矿并以某种许可风格的形式运营。 *Ripple协议一致性算法（RPCA*及其后代*恒星一致性协议（SCP)*通过让信任假设*灵活*,从而区别传统共识协议的安全假设（即，一些*f*<*n*/3个故障节点） 。 这意味着每个节点将自己声明它信任的是哪个节点，而不是接受一个全局的假设，协议能容忍哪些节点串通。 每个节点指定一个自己足够*信任*的其他节点的列表（通过Ripple中的*独立节点列表*或Stellar的*群体分片*）。
 
 Ripple and Stellar each maintain one distributed ledger governed by the
 protocol, which records exchanges on the respective network.
+Ripple和Stellar分别维护一个由协议管理的分布式账本，协议记录各个网络上的交易。
 
 #### Ripple.
 
@@ -1308,7 +1318,7 @@ it receives match.
 
 Ripple’s documentation states that 4/5 ⋅ *n* of *all* *n* validator
 nodes must be correct for maintaining correctness . This would
-correspond to tolerating *f* &lt; *n*/5 subverted nodes in traditional
+correspond to tolerating *f* < *n*/5 subverted nodes in traditional
 BFT systems.
 
 Furthermore, it is obvious that a minimal overlap among the
@@ -1373,6 +1383,8 @@ open problem.
 
 IOTA Tangle
 -----------
+IOTA缠结
+-----------
 
 IOTA (<http://iota.org/>) is heralded as a “cryptocurrency without a
 blockchain” and creates a Hash-DAG instead, which is called the
@@ -1389,7 +1401,8 @@ supposed to choose the *k* transactions to confirm randomly, from all
 transactions it is aware of, and to verify the two transactions plus
 *all* transitive predecessor transactions of them. Implicitly it should
 also verify the transaction(s) that have earlier assigned the tokens to
-the node.
+the node.  
+IOTA（<http://iota.org/>）被宣称为“没有区块链的加密货币”，取代的是创建了一个叫做*缠结*的散列有向无环图(Hash-DAG)。所有的代币都是从一开始就创建的。交易像比特币中一样在对等网络传播;每个交易将一个节点所拥有的代币传递给其他节点，并且必须由所有者的密钥签名。交易还包括解决工作量证明的难题，通过在交易中包含它们的散列*确认*两个或任何*k*≥2交易。这创建了DAG，从每个确认的交易*指向*新的边缘。为了创建交易需要解决难题, 与它难度成比例的权重被分配给交易。节点应该从所有它知道的交易中随机选择*k*个来确认，并验证两个交易加上它们*所有*传递前辈交易。隐含地，它也应该验证先前已经将代币分配给节点的交易。
 
 A node can cheat by (1) issuing an invalid transaction
 (double-spending), (2) including invalid predecessor transactions, or
@@ -1397,7 +1410,8 @@ A node can cheat by (1) issuing an invalid transaction
 nodes would intuitively not include invalid transactions produced from
 (1) or (2), and therefore such a transaction would become orphaned. In a
 dense graph, it is expected that most transactions of a certain age are
-approved by a vast majority of all newly generated transactions.
+approved by a vast majority of all newly generated transactions.  
+节点可以通过如下方来来作弊（1）发出无效的交易（双花），（2）包含无效的前辈交易，或（3）不随机选择交易来确认。 但是，其他节点将直观地不包括由（1）或（2）产生的无效交易，因此这样的交易将变成孤立的。 在一张密集的图表中，预计大部分一定年龄的交易被绝大多数新交易确认。
 
 How strongly a new transaction approves its predecessor transactions
 depends on the weight, i.e., the computational work, that went into
@@ -1408,14 +1422,16 @@ graph, each node will decide on its own which side to trust. This is
 done through a probabilistic sampling algorithm and deciding according
 to a statistical test. The construction of the DAG is reminiscent of
 Lewenberg et al.’s  *inclusive* blockchain protocols, but the details
-differ.
+differ.  
+新交易确认其前辈交易的强度取决于它的权重，即计算工作量。 因此，系统的稳定性取决于节点之间的大部分计算能力存在于正确工作的节点的假设。 而且，如果图中有冲突的部分，则每个节点将自行决定哪一方要信任。 这是通过概率抽样算法完成的，并根据统计测试来决定。 DAG的构建让人想起Lewenberg等人的*包含*区块链协议，但细节不同。
 
 The white paper  and documentation claim that the tangle hash-DAG
 ensures a similar level of consistency as other permissionless
 blockchain systems. No publicly reviewed, formal analysis is available,
 however. Without any independent assessment of the protocol’s
 properties, it remains unclear how strictly the tangle emulates a notion
-of consensus among the nodes.
+of consensus among the nodes.  
+白皮书和文档声称，缠结散列有向无环图(tangle hash-DAG)确保了与其他非许可区块链系统类似的一致性水平。 然而，没有公开的评审，正式的分析是可用的。 如果没有对协议属性进行独立的评估，那么这个缠结是如何严格地模拟节点之间的一致性概念还不清楚。
 
 Conclusion
 ==========
