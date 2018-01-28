@@ -67,7 +67,8 @@ the blockchain acts as a trusted and dependable third party, for
 maintaining shared state, mediating exchanges, and providing a secure
 computing engine. Many blockchains can execute arbitrary tasks,
 typically called *smart contracts*, written in a domain-specific or a
-general-purpose programming language.
+general-purpose programming language.  
+*区块链*或*分布式账本*是提供一个系统可靠的服务给一组*节点*或者互不可信的团体。 它们替代传统的分布式协议为安全的多方密码学计算以及在分布式系统中拜占庭容错的复制服务。区块链也包含来自加密货币的许多元素，尽管是区块链系统可以被设想为没有货币或价值代币。 通常，区块链作为一个值得信赖和可靠的第三方来保持共享状态，协调交易以及提供安全计算引擎。 许多区块链可以执行任意任务，通常称为*智能合约*，领域特定语言或通用编程语言编写。
 
 In a *permissionless blockchain*, such as Bitcoin or Ethereum, anyone
 can be a user or run a node, anyone can “write” to the shared state
