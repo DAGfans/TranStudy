@@ -767,7 +767,8 @@ their transactions to the validating nodes (or, simply, validators)
 using a gossip protocol. The external validity condition, evaluated
 within the Bracha-broadcast pattern, requires that a validator receives
 the transactions by gossip before it can vote for inclusion of the
-transaction in a block, much like in PBFT.
+transaction in a block, much like in PBFT.  
+* Tendermint Core *（<https://github.com/tendermint/tendermint>）是一个BFT协议,可以被最好地描述为PBFT的一个变种，因为它的常见的消息模式是Bracha式拜占庭可靠广播的变体。 与PBFT中客户发送一个新的直接交易给所有节点相反，Tendermint中的客户端使用流言协议传播他们的交易到验证节点（或简单地说，验证者）。 在Bracha广播模式中评估的外部有效性条件，要求验证者在投票将某交易打进区块之前通过流言协议接收该交易，很像PBFT。
 
 Tendermint’s most significant departure from PBFT is the continuous
 rotation of the leader. Namely, the leader is changed after every block,
@@ -778,7 +779,8 @@ following: while a validator expects the first message in the Bracha
 broadcast pattern from the leader, it also waits for a timeout, which
 resembles the view-change timer in PBFT. However, if the timer expires,
 a validator continues participating in the Bracha-broadcast message
-pattern, but votes for a *nil* block.
+pattern, but votes for a *nil* block.  
+Tendermint与PBFT最显着的区别是连续的领导者的轮换。 也就是说，领导者在每个区块之后都会改变，一种由*Spinning*协议首次在BFT共识领域中使用的技术。 就像Spinning协议，Tendermint嵌入PBFT的视图更改(view-change)机制进常见案例(common-case)模式。 这反映在以下内容：验证者期望Bracha的广播模式中的第一条消息来自领导者，它也等待超时，类似于PBFT中的视图更改(view-change)计时器。 但是，如果定时器到期，验证者继续参与Bracha广播消息模式，则投票给一个*空(nil)*块。
 
 Tendermint as originally described by Buchman  suffers from a livelock
 bug, pertaining to locking and unlocking votes by validators in the
@@ -786,7 +788,8 @@ protocol. However, the protocol contains additional mechanisms not
 described in the cited report that prevent the livelock from occurring .
 While it appears to be sound, the Tendermint protocol and its
 implementation are still subject to a thorough, peer-reviewed
-correctness analysis.
+correctness analysis.  
+如Buchman最初描述的, Tendermint有活锁的问题，与协议中验证者锁定和解锁验证者投票有关。 但是，该协议包含没有在报告中引用的其他机制防止活锁发生。虽然看起来很合理，Tendermint协议和它的实现仍然需要经过全面的同行评审正确性分析。
 
 |              |             |                   |                   |
 |:-------------|:-----------:|:-----------------:|:-----------------:|
