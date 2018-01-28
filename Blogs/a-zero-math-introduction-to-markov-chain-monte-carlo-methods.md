@@ -1,9 +1,13 @@
 [查看原文](https://towardsdatascience.com/a-zero-math-introduction-to-markov-chain-monte-carlo-methods-dcba889e0c50)
 [边学边译](https://github.com/DAGfans/TranStudy/new/master/Blogs/a-zero-math-introduction-to-markov-chain-monte-carlo-methods.md)
+[原始译文](http://www.iotachina.com/lingshuxuejichulijiemcmcmengtekaluomaerkefulian.html)
+[译文作者](http://www.iotachina.com/author/tigermumu)
 
 * * *
 
 A Zero-Math Introduction to Markov Chain Monte Carlo Methods
+============================================================
+零数学基础理解MCMC（蒙特卡洛马尔科夫链）
 ============================================================
 
 For many of us, Bayesian statistics is voodoo magic at best, or completely subjective nonsense at worst. Among the trademarks of the Bayesian approach, Markov chain Monte Carlo methods are especially mysterious. They’re math-heavy and computationally expensive procedures for sure, but the basic reasoning behind them, like so much else in data science, can be made intuitive. That is my goal here.
@@ -18,11 +22,9 @@ In this article, I will explain that short answer, without any math.
 
 First, some terminology. A **_parameter of interest_** is just some number that summarizes a phenomenon we’re interested in. In general we use statistics to estimate parameters. For example, if we want to learn about the height of human adults, our parameter of interest might be average height in in inches. A **_distribution_** is a mathematical representation of every possible value of our parameter and how likely we are to observe each one. The most famous example is a bell curve:
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*ZnhfX8oUe0biQRR6.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*ZnhfX8oUe0biQRR6.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*ZnhfX8oUe0biQRR6.">
 
 Courtesy [M. W. Toews](https://commons.wikimedia.org/wiki/File:Standard_deviation_diagram.svg)
 
@@ -30,31 +32,22 @@ In the **_Bayesian_** way of doing statistics, distributions have an additional 
 
 As it happens, human heights do follow a normal curve, so let’s say we believe the true value of average human height follows a bell curve like this:
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*tlqbgInNAYyi3dgx.?q=20)
-
 ![](https://cdn-images-1.medium.com/max/1600/0*tlqbgInNAYyi3dgx.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*tlqbgInNAYyi3dgx.">
 
 Clearly, the person with beliefs represented by this graph has been living among giants for years, because as far as they know, the most likely average adult height is 6'2" (but they’re not super confident one way or another).
 
 Lets imagine this person went and collected some data, and they observed a range of people between 5' and 6'. We can represent that data below, along with another normal curve that shows which values of average human height _best explain the data:_
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*kkaO7QpZeGOg9DRf.?q=20)
-
 ![](https://cdn-images-1.medium.com/max/1600/0*kkaO7QpZeGOg9DRf.)
-
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*kkaO7QpZeGOg9DRf.">
 
 In Bayesian statistics, the distribution representing our beliefs about a parameter is called the **_prior distribution_**_,_ because it captures our beliefs _prior_ to seeing any data. The **_likelihood distribution_** summarizes what the observed data are telling us, by representing a range of parameter values accompanied by the likelihood that each each parameter explains the data we are observing. Estimating the parameter value that maximizes the likelihood distribution is just answering the question: what parameter value would make it most likely to observe the data we have observed? In the absence of prior beliefs, we might stop there.
 
 The key to Bayesian analysis, however, is to combine the prior and the likelihood distributions to determine the **_posterior distribution_**. This tells us which parameter values maximize the chance of observing the particular data that we did, taking into account our prior beliefs. In our case, the posterior distribution looks like this:
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*3M3HCM8goJjlS-KX.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*3M3HCM8goJjlS-KX.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*3M3HCM8goJjlS-KX.">
 
 Above, the red line represents the posterior distribution. You can think of it as a kind of average of the prior and the likelihood distributions. Since the prior distribution is shorter and more spread out, it represents a set of belief that is ‘less sure’ about the true value of average human height. Meanwhile, the likelihood summarizes the data within a relatively narrow range, so it represents a ‘more sure’ guess about the true parameter value.
 
@@ -62,11 +55,9 @@ When the prior the likelihood are combined, the data (represented by the likelih
 
 In the case of two bell curves, solving for the posterior distribution is very easy. There is a simple equation for combining the two. But what if our prior and likelihood distributions weren’t so well-behaved? Sometimes it is most accurate to model our data or our prior beliefs using distributions which don’t have convenient shapes. What if our likelihood were best represented by a distribution with two peaks, and for some reason we wanted to account for some really wacky prior distribution? I’ve visualized that scenario below, by hand drawing an ugly prior distribution:
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*PcWai087HhpJtbkm.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*PcWai087HhpJtbkm.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*PcWai087HhpJtbkm.">
 
 Visualizations rendered in Matplotlib, enhanced using MS Paint
 
@@ -80,29 +71,23 @@ Monte Carlo simulations are just a way of estimating a fixed parameter by repeat
 
 Suppose that we’d like to estimate the area of the follow circle:
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*OVzsV_Mw2OGi1mQ4.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*OVzsV_Mw2OGi1mQ4.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*OVzsV_Mw2OGi1mQ4.">
 
 Since the circle is inside a square with 10 inch sides, the area can be easily calculated as 78.5 square inches. Instead, however, we can drop 20 points randomly inside the square. Then we count the proportion of points that fell within the circle, and multiply that by the area of the square. That number is a pretty good approximation of the area of the circle.
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*OuLZBu6HPdhignVB.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*OuLZBu6HPdhignVB.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*OuLZBu6HPdhignVB.">
 
 Since 15 of the 20 points lay inside the circle, it looks like the circle is approximately 75 square inches. Not too bad for a Monte Carlo simulation with only 20 random points.
 
 Now, imagine we’d like to calculate the area of the shape plotted by the [Batman Equation](http://mathworld.wolfram.com/BatmanCurve.html):
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*5ahw9HtOjbMK0tmO.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*5ahw9HtOjbMK0tmO.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*5ahw9HtOjbMK0tmO.">
 
 Here’s a shape we never learned an equation for! Therefore, finding the area of the bat signal is very hard. Nevertheless, by dropping points randomly inside a rectangle containing the shape, Monte Carlo simulations can provide an approximation of the area quite easily!
 
@@ -116,11 +101,9 @@ An important feature of Markov chains is that they are **_memoryless_**: everyth
 
 In the 19th century, the bell curve was observed as a common pattern in nature. (We’ve noted, for example, that human heights follow a bell curve.) Galton Boards, which simulate the average values of repeated random events by dropping marbles through a board fitted with pegs, reproduce the normal curve in their distribution of marbles:
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*HDeFoQPFGs9ueUI0.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*HDeFoQPFGs9ueUI0.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*HDeFoQPFGs9ueUI0.">
 
 Pavel Nekrasov, a Russian mathematician and theologian, [argued](https://www.americanscientist.org/article/first-links-in-the-markov-chain) that the bell curve and, more generally, the law of large numbers, were simply artifacts of children’s games and trivial puzzles, where every event was completely independent. He thought that interdependent events in the real world, such as human actions, did not conform to nice mathematical patterns or distributions.
 
@@ -138,11 +121,9 @@ With some knowledge of Monte Carlo simulations and Markov chains, I hope the mat
 
 Recall that we are trying to estimate the posterior distribution for the parameter we’re interested in, average human height:
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*XeUN0u_-EPh6MMCV.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*XeUN0u_-EPh6MMCV.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*XeUN0u_-EPh6MMCV.">
 
 I am not a visualization expert, nor apparently am I any good at keeping my example within the bounds of common sense: my example of the posterior distribution seriously overestimates average human height.
 
@@ -152,31 +133,25 @@ To begin, MCMC methods pick a random parameter value to consider. The simulation
 
 To explain this visually, lets recall that the height of a distribution at a certain value represents the probability of observing that value. Therefore, we can think of our parameter values (the x-axis) exhibiting areas of high and low probability, shown on the y-axis. For a single parameter, MCMC methods begin by randomly sampling along the x-axis:
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*fqwsnMwAXnAdWxDH.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*fqwsnMwAXnAdWxDH.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*fqwsnMwAXnAdWxDH.">
 
 Red points are random parameter samples
 
 Since the random samples are subject to fixed probabilities, they tend to converge after a period of time in the region of highest probability for the parameter we’re interested in:
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*aYE_6eWzDWfVCOsQ.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*aYE_6eWzDWfVCOsQ.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*aYE_6eWzDWfVCOsQ.">
 
 Blue points just represent random samples after an arbitrary point in time, when convergence is expected to have occurred. Note: I’m stacking point vertically purely for illustrative purposes.
 
 After convergence has occurred, MCMC sampling yields a set of points which are samples from the posterior distribution. Draw a histogram around those points, and compute whatever statistics you like:
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*fMEvHsN-xlVzLw1H.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*fMEvHsN-xlVzLw1H.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*fMEvHsN-xlVzLw1H.">
 
 Any statistic calculated on the set of samples generated by MCMC simulations is our best guess of that statistic on the true posterior distribution.
 
