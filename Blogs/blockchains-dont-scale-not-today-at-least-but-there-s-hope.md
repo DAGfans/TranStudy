@@ -1,13 +1,13 @@
-* * *
+原文: https://hackernoon.com/blockchains-dont-scale-not-today-at-least-but-there-s-hope-2cb43946551a
+作者: [Preethi Kasireddy](https://hackernoon.com/@preethikasireddy?source=post_header_lockup)
+
 
 Blockchains don’t scale. Not today, at least. But there’s hope.
 ===============================================================
 
-![](https://cdn-images-1.medium.com/freeze/max/60/1*5GYihIK-T57p-vSp1p07nA.jpeg?q=20)
 
 ![](https://cdn-images-1.medium.com/max/2000/1*5GYihIK-T57p-vSp1p07nA.jpeg)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/2000/1*5GYihIK-T57p-vSp1p07nA.jpeg">
 
 The first Bitcoin [paper](https://bitcoin.org/bitcoin.pdf) was first released in 2008. My excitement about the potential of blockchain technology has been building ever since.   
    
@@ -41,21 +41,17 @@ So what do the scalability numbers actually look like? Let’s take a look.
    
 An Ethereum node’s maximum theoretical transaction processing capacity is over 1,000 transactions per second \[1\]. Unfortunately, this is not the actual throughput due to Ethereum’s “gas limit”, which is currently around 6.7 million gas on average for each block \[2\].
 
-![](https://cdn-images-1.medium.com/freeze/max/60/1*IiZQ9W_NsApYOvB2e3S_uA.png?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/1*IiZQ9W_NsApYOvB2e3S_uA.png)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/1*IiZQ9W\_NsApYOvB2e3S\_uA.png">
 
 Source: etherscan.io
 
 Quick “gas” primer in case the measurement is new to you: in Ethereum, gas is a measure of computational effort, and each operation is assigned a fixed amount of gas (for example, getting the balance of an account costs 400 gas, creating a contract costs 32,000 gas, sending a transaction costs 21,000 gas, etc.). Transactions have a gas limit field to specify the maximum amount of gas the sender is willing to buy. **Hence, the “gas limit” for each block determines how many transactions will fit in a block based on the gas limit specified by each transaction in the block.**
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*G73nhag-Bzf-ZuvC.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*G73nhag-Bzf-ZuvC.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*G73nhag-Bzf-ZuvC.">
 
 Ethereum’s gas limit is somewhat similar to Bitcoin’s 1 MB limit on the size of each block, with the difference being that Ethereum’s gas limit is dynamically set by miners while Bitcoin’s block size limit is hard-coded into the protocol.   
    
@@ -103,11 +99,9 @@ Out of these elements, the digital signature (\`scriptSig\`) is the largest in t
 
 Segregated witness (also commonly known as Segwit) is solution to separate (i.e. “segregate” ) transaction signatures (i.e. “witnesses”) from the rest of the transaction data. The signature is stripped off from within the input and moved to a structure towards the end of a transaction.
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*i23mB7G2Zmc09g4A.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/2000/0*i23mB7G2Zmc09g4A.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/2000/0*i23mB7G2Zmc09g4A.">
 
 Moreover, with SegWit, the witnesses are moved to a new “witness” field in the transaction data, which allows for us to change the way block sizes are calculated. The block size limit is no longer measured in bytes. Instead, blocks and transactions are given a new metric called “weight” that correspond to the demand they place on node resources. Specifically, each byte of a segregated witness is given a weight of 1, each other byte in a block is given a weight of 4, and the maximum allowed weight of a block is 4 million, which allows a block containing SegWit transactions to hold more data than allowed by the current maximum block size. **This would effectively increase the limit from 1 MB limit to a little under 4 MB, giving us a ~70% increase in transactions.**
 
@@ -117,11 +111,9 @@ SegWit also solves other issues besides scalability, such as transaction malleab
 
 While one side of the Bitcoin community (the users) strongly support SegWit, the other side of the community (the miners) prefers a hard fork that would change the 1 MB block size limit to 2 MB (Keep in mind that the 1 MB limit cannot be modified without a hard fork). **The basic idea is simple: by increasing the block size, it would allow for more transactions to fit in each block, allowing the network to handle more transactions per second.**
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*EdR8zdZyzllOsyk-.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*EdR8zdZyzllOsyk-.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*EdR8zdZyzllOsyk-.">
 
 Plans of this block size increase have long been a [subject](https://www.mail-archive.com/bitcoin-development@lists.sourceforge.net/msg08276.html) of [heated debate](https://en.bitcoin.it/wiki/Block_size_limit_controversy) in the Bitcoin community, and have gained increasing attention since the beginning of 2015, when the size of blocks started to approach the current hard limit of 1 MB.
 
@@ -137,11 +129,9 @@ Plans of this block size increase have long been a [subject](https://www.mail-ar
 
 Steps 1 and 3 involve blockchain operations which are published to the network, pay fees and wait for confirmations. However, Step 2 does not involve the blockchain at all. It can contain an unlimited number of updates and can remain open indefinitely. In this sense, the blockchain is used purely as a settlement layer to process the final transaction of a series of interactions for the final settlement, which helps lifts the burden from the underlying blockchain.
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*2RP1YRRhLOAyzhFd.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*2RP1YRRhLOAyzhFd.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*2RP1YRRhLOAyzhFd.">
 
 At any point during the process, any participant can send a transaction into the contract to close the channel and start a settlement procedure. This starts a time limit within which participants can submit transactions, and the transaction with the highest sequence number is processed. If one of the participants leaves or tries to cheat, another one can at any time publish the latest transaction to the blockchain to finalize the state, assuming all the participants completely agree on the state.
 
@@ -155,29 +145,22 @@ There are several different implementations of this. For example, [Lightning Net
 
 Sharding in the blockchain world is similar to database sharding in traditional software systems. With traditional databases, a shard is a horizontal partition of the data in a database, where each shard is stored on a separate database server instance. This helps spread the load across different servers.
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*Yl_rv1QvhMTY5SX1.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*Yl_rv1QvhMTY5SX1.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*Yl_rv1QvhMTY5SX1.">
 
 Similarly, with blockchain sharding, the overall state of the blockchain is separated into different shards, and each part of the state would be stored by different nodes in the network.
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*leh2IGdJ8fwUPB9s.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*leh2IGdJ8fwUPB9s.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*leh2IGdJ8fwUPB9s.">
 
 A single shard
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*WPxBsWYkW0q_5hoT.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*WPxBsWYkW0q_5hoT.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*WPxBsWYkW0q_5hoT.">
 
-![](https://cdn-images-1.medium.com/max/2000/0*WPxBsWYkW0q_5hoT.)
 
 Top level diagram of blockchain sharding \[6\]
 
@@ -185,19 +168,15 @@ Transactions that occur on the network are directed to different nodes depending
 
 There are various ways to implement message-passing. In Ethereum’s case, the approach they are taking is a “receipt” paradigm: when a transaction within a shard executes, it can change the state of its own local shard, while also generating “receipts”, which are stored in some sort of distributed shared memory that can later be viewed (but not modified) by other shards.
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*xOw61dfPoapRlOon.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*xOw61dfPoapRlOon.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*xOw61dfPoapRlOon.">
 
 Ethereum’s receipt paradigm \[1\]
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*IXTBDFrl6tWHWQ7M.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*IXTBDFrl6tWHWQ7M.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*IXTBDFrl6tWHWQ7M.">
 
 Ethereum’s receipt paradigm \[6\]
 
@@ -207,11 +186,9 @@ Why?
 
 Well, for one, the blockchain protocol assumes that all nodes in the network don’t trust each other. Still, the transactions need to agree on a common state despite being processed on different computers. Since each node does not trust one other, it is not enough for a node processing transactions on shard A to simply say to the nodes processing transactions on shard B that a transaction occurred; rather, it would need to _prove_ it to them somehow.
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*JC0_rpvDq0_eHWbP.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*JC0_rpvDq0_eHWbP.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*JC0\_rpvDq0\_eHWbP.">
 
 Additionally, since the goal of sharding is to not have every node validating every transaction, we need to figure out a mechanism that determines which nodes validate which shard in a secure way, without creating opportunities for an attacker who might have a lot of power in the system to disrupt the network.
 
@@ -225,21 +202,17 @@ There’s a lot more technical goodies to how sharding will be implemented in Et
 
 Plasma is essentially a series of contracts that run on top of a root blockchain (i.e. the main Ethereum blockchain). The root blockchain enforces the validity of the state in the Plasma chains using something called “fraud proofs”. (Note: Fraud proofs are a mechanism by which nodes can determine if a block is invalid using mathematical proofs).
 
-![](https://cdn-images-1.medium.com/freeze/max/60/1*inSZwzJG_gSrEDpCpzpz0g.png?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/1*inSZwzJG_gSrEDpCpzpz0g.png)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/1*inSZwzJG_gSrEDpCpzpz0g.png">
 
 Source: Plasma Whitepaper
 
 The blockchains are composed into a tree hierarchy, and each branch is treated as a blockchain that has its own blockchain history and computations that are map-reducable. We call the child chains “Plasma blockchains”, each of which are a chain within a blockchain.
 
-![](https://cdn-images-1.medium.com/freeze/max/60/1*AJRODYqunApFeUI0QG7m9w.png?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/1*AJRODYqunApFeUI0QG7m9w.png)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/1*AJRODYqunApFeUI0QG7m9w.png">
 
 Source: Plasma Whitepaper
 
@@ -247,11 +220,9 @@ The Plasma blockchain does not disclose the contents of the blockchain on the ro
 
 **As a result, the root blockchain processes only a tiny amount of commitments from child blockchains, which in turn decreases the amount of data passed onto the root blockchain and allows for a much larger number of computations.**
 
-![](https://cdn-images-1.medium.com/freeze/max/60/1*3Po_2cKvsGjdpn1Hquvvjw.png?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/1*3Po_2cKvsGjdpn1Hquvvjw.png)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/1*3Po_2cKvsGjdpn1Hquvvjw.png">
 
 Source: Plasma Whitepaper
 
@@ -259,19 +230,15 @@ In addition, data is only propagated to those who wish to validate a particular 
 
 Additionally, if there is an attack on a particular chain, participants can rapidly and cheaply do a mass-exit from the corrupt child chain.
 
-![](https://cdn-images-1.medium.com/freeze/max/60/1*WTR-TRDkxo1KvIMrm3mKwA.png?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/1*WTR-TRDkxo1KvIMrm3mKwA.png)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/1*WTR-TRDkxo1KvIMrm3mKwA.png">
 
 Source: Plasma Whitepaper
 
-![](https://cdn-images-1.medium.com/freeze/max/60/1*8lfwS0jEkp7Swx8b6kH6xw.png?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/1*8lfwS0jEkp7Swx8b6kH6xw.png)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/1*8lfwS0jEkp7Swx8b6kH6xw.png">
 
 Source: Plasma Whitepaper
 
@@ -279,11 +246,9 @@ Plasma might seem similar to state channels implementations (e.g. Lightning Netw
 
 The neat part about Plasma is that state channel type solutions like Lightning Network could be the main interface layer for rapid financial payments/contracts on top of Plasma, while Plasma maintains updates to the state with minimal root chain state commitments.
 
-![](https://cdn-images-1.medium.com/freeze/max/60/1*Soxn_7jM9hTd1gekldRRdg.png?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/1*Soxn_7jM9hTd1gekldRRdg.png)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/1*Soxn_7jM9hTd1gekldRRdg.png">
 
 Source: Plasma Whitepaper
 
@@ -299,11 +264,9 @@ The Verification Games goes like this: You have a set of participants in the net
 
 At the end of this game, if the Solver was in fact cheating, it will be discovered and punished. If not, then the Challenger will pay for the resources consumed by the false alarm.
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*r2efaTqdSynPD2g6.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*r2efaTqdSynPD2g6.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*r2efaTqdSynPD2g6.">
 
 A very rough diagram of off-chain computations as proposed by TrueBit
 
@@ -333,11 +296,9 @@ There are several different kinds of Proof-of-stake consensus algorithms as well
 
 One example is with sharding. Sharding with Proof-of-work is tricky to do securely. Recall that with sharding, we split up the validation responsibility among many nodes so that every node doesn’t have to process everything. However, Proof-of-work is implemented to be completely anonymous, which poses a problem because even if a single shard is secured by only a small portion of a miners hashpower, an attacker can direct all of their hashpower toward attacking this shard and disrupt the network. For example, let’s say we have two shards, A and B. A has 90% of the hashpower and B has 10%. A can attack B with only 5.1% of the total hashpower (by virtue of the [majority 51% attack](https://en.bitcoin.it/wiki/Majority_attack)).
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*OZ1LYMjankkW_hGf.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*OZ1LYMjankkW_hGf.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*OZ1LYMjankkW_hGf.">
 
 This changes with Ethereum’s current Proof-of-Stake proposal because it is designed such that validators have known identities (i.e. Ethereum addresses). Knowing their identities allows us to solve this type of targeted attack by randomly choosing a set of nodes from the entire set of validators to process any given set of transactions on a shard, which makes it impossible for an attacker to specifically target any particular shard.
 
@@ -353,11 +314,9 @@ In the current system, users only pay for bytes of storage. However, in reality,
 
 Another solution for keeping the network lighter is using a decentralized storage service such as [Swarm](http://swarm-guide.readthedocs.io/en/latest/introduction.html). Swarm is a peer-to-peer file sharing protocol for Ethereum that lets you store application code and data off the main blockchain in swarm nodes, which are connected to Ethereum blockchain, and later exchange this data on the blockchain .**The basic premise here is that instead of nodes storing everything on the blockchain, they only store data that is more frequently requested locally and leave other data on the “cloud” via Swarm.**
 
-![](https://cdn-images-1.medium.com/freeze/max/60/0*oYqhcYIbd-lKeD0Y.?q=20)
 
 ![](https://cdn-images-1.medium.com/max/1600/0*oYqhcYIbd-lKeD0Y.)
 
-<img class="progressiveMedia-noscript js-progressiveMedia-inner" src="https://cdn-images-1.medium.com/max/1600/0*oYqhcYIbd-lKeD0Y.">
 
 A very rough diagram of decentralized storage using Swarm
 
