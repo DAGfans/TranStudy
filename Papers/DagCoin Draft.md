@@ -1,17 +1,12 @@
-[Source](https://bitslog.files.wordpress.com/2015/09/dagcoin-v41.pdf)
+原文: https://bitslog.files.wordpress.com/2015/09/dagcoin-v41.pdf  
+作者: [Sergio Demian Lerner](https://twitter.com/sdlerner)
 
-```
-DagCoin Draft
-September 11, 2015
-Sergio Demian Lerner
-```
-### Abstract
-### 摘要
+# DagCoin Draft 
+## Abstract
+## 摘要
+> DagCoin is a cryptocurrency design that attempts to be highly decentralized by merging the concepts of transactions and blocks and making each user that transact a miner. Each transaction carries a proof-or-work and references one or more previous transactions. The resulting authenticated data structure is a Direct Acyclic Graph (DAG) of transactions where each transaction “confirms” one or more previous transactions. The confirmation security of a transaction is measured in accumulated amount of proof-of-work referencing the transaction. In this paper we present the DagCoin design, solve the double-spend problem and show several optimizations to aid for an efficient implementation.    
 
-#### DagCoin is a cryptocurrency design that attempts to be highly decentralized by merging the concepts of transactions and blocks and making each user that transact a miner. Each transaction carries a proof-or-work and references one or more previous transactions. The resulting authenticated data structure is a Direct Acyclic Graph (DAG) of transactions where each transaction “confirms” one or more previous transactions. The confirmation security of a transaction is measured in accumulated amount of proof-of-work referencing the transaction. In this paper we present the DagCoin design, solve the double-spend problem and show several optimizations to aid for an efficient implementation.    
-
-
-#### DagCoin是一个高度去中心化的加密货币的设计，其整合了交易和区块的概念并能让每一个用户成为矿工。每笔交易都携带一个工作量证明并引用一个或者多个之前的交易。生成的已认证的数据结构是由交易组成有向无环图（DAG），其中每笔交易“确认”一笔或者多笔之前的交易。交易的确认安全性是以引用该交易的累计工作量证明来衡量的。在本论文中，我们将介绍DagCoin的设计，解决双花问题，并展示几个优化让实现更有效率。
+> DagCoin是一个高度去中心化的加密货币的设计，其整合了交易和区块的概念并能让每一个用户成为矿工。每笔交易都携带一个工作量证明并引用一个或者多个之前的交易。生成的已认证的数据结构是由交易组成有向无环图（DAG），其中每笔交易“确认”一笔或者多笔之前的交易。交易的确认安全性是以引用该交易的累计工作量证明来衡量的。在本论文中，我们将介绍DagCoin的设计，解决双花问题，并展示几个优化让实现更有效率。
 
 
 DagCoin is a cryptocurrency design that merges the concepts of transactions and blocks and making each user a miner. Each transaction carries a proof-or-work and references one or more previous transactions. The resulting authenticated data structure is a Direct Acyclic Graph (DAG) of transactions where each transaction “confirms” one or more previous transactions. The confirmation security of a transaction is measured in accumulated amount of proof-of-work referencing the transaction. This structure is better suited for a cryptocurrency without subsidy (such as a side-chain), since the cost of reversal of a transaction can be easily measured, where in merged-mining the reversal cost depends on the good will of the non-merged hashing power.  
@@ -21,6 +16,8 @@ DagCoin是一个高度去中心化的加密货币的设计，其整合了交易�
 One of the problems with the DAG approach is how to limit the maximum cut of the generated DAG
 or, in other words, how to prevent all new transactions from referencing the same set of parent transactions, and degenerating the DAG into a star graph. The DAG must not increase in “width”, and it must “look” more like a yarn under microscope. I will call this structure a DAG-chain.   
 DAG方法的其中一个问题怎样限制生成的DAG的最大份额或者换句话说怎样阻止所有新交易引用同样的一组父交易，导致把DAG降级为一张星图。DAG一定不能增加“宽度”，并且必须“看上去”更像一个在显微镜下的纱线（yarn）。我将称这个结构为DAG-链。
+
+![dagcoin-1](https://user-images.githubusercontent.com/22833166/35629520-cb1f9c86-06d9-11e8-9914-f8918476265f.jpg)
 
 A DAG-chain can be informally defined as DAG that:    
 一个DAG-链可以被非正式地定义为DAG需要满足：
@@ -56,20 +53,14 @@ DagCoin尝试使用如下激励来实现这个前提:
 - There is no competition between users to reference a previous transaction.
 - 用户之间没有引用之前交易的竞争
 
-**Safely accepting Double-spends in the DAG-chain**
+**Safely accepting Double-spends in the DAG-chain**  
 **安全地接受DAG链中的双花**
 
 In Bitcoin, a transaction in a valid block-chain can never be a double-spend, as double-spending violates a protocol rule. DagCoin allows two conflicting transactions to be included in the DAG-chain as long as the second does not references the first (over one or more hops). We assign each transaction a confirmation score. If two conflicting transactions appear, as more transactions are added to the DAG-chain, the number of confirmations of one of the two will increase, but the other will not. Each transaction adds one unit of confirmation. The score of a node without children is zero. The score of a referenced transaction is the sum of all transactions that recursively reference it (including double-spends). Whenever a transaction is added, it modifies the scores of all transactions recursively referenced by it. Whenever a transaction references a list of previous transactions, if there are two conflicting transactions, then the one with highest score prevails. If both have the same score, then the order of referencing establishes preferences over the conflicting transactions, such that the first transaction gets its score increased but any following double-spend will not.  
 在比特币中，有效区块链中的交易永远不会是双花的，因为双花违反协议规则。 DagCoin允许两个冲突交易包含在DAG链中，只要第二个交易不引用第一个（直接或者间接）。我们为每笔交易分配一个确认分数。如果出现两个相冲突的交易，随着更多的交易被添加到DAG链中，两个中的一个的确认数量将增加，而另一个不会。每笔交易增加一个确认单位。没有孩子的节点的分数是零。引用交易的分数是递归引用的所有交易的总和（包括双花）。无论何时添加交易，都会修改由其递归引用的所有交易的分数。每当一笔交易引用一笔以前的交易时，如果有两笔冲突的交易，则以最高分为准。如果两者都具有相同的分数，则用引用的顺序来建立冲突交易的优先级,使得第一笔交易分数增加但是任何后续的双花则不会.
 
-- (a) Before transaction 5 arrives 
-- (a) 五笔交易到来之前 
-- (b) After transaction 5 arrives
-- (b) 五笔交易到来之后
-- (c) After 3 more transactions have been appended
-- (c) 追加了三笔交易之后
-- (d) after a new transaction conflicting with 2 and 3 has appear
-- (d) 在一笔与2和3号交易冲突的新交易
+<img width="885" alt="screen shot 2018-01-31 at 10 57 31 pm" src="https://user-images.githubusercontent.com/22833166/35629720-4ff83404-06da-11e8-91bb-7fe5f72164db.png">
+
 
 Figure 1  
 图1
@@ -81,7 +72,7 @@ Preventing too many transactions merging too many transactions
 防止太多的交易合并太多的交易
 
 The core idea proposed is that each transaction commits to an authenticated forest of previous unreferenced transactions. To do so, it includes the value C(N), where C(i)=Commit(C(i-1) || T(i)), where T(i) is the hash of a transaction parent and C(0) is the empty string. These are simple recursive commitments so that C(N) allows the payer to reveal any number of parent hashes between 1 to N. The important decision is how many parents the commitment should reveal. Using the transaction as a header, the payer tries to find a proof of work with certain base difficulty (more on this base difficulty later). If the obtained a proof-of-work whose difficulty is 2^k times harder than the base difficulty, it will reveal and reference the first (k+1) nodes of the list. Half of the times a transaction will have a single parent, so only the first node T(N) will be revealed, by providing the complementary hash chain head (C(N-1)). One fourth of the times, two transactions will be referenced, by providing the hashes T(N), T(N-1) and C(N-2).  
-提出的核心思想是，每个交易都被提交到一个以前未被引用的已授权的交易集中。为此，它包括值C（N），其中C（i）= Commit（C（i-1）|| T（i）），其中T（i）是父交易的散列，C(0）是空字符串。这些都是简单的递归提交，因此C（N）允许付款人在1到N之间暴露任意数量的父散列。重要的决定是提交应暴露多少父散列。使用这个交易作为头部，付款人试图找到具有某些基本难度的工作证明（以后这个基本难度会更大）。如果获得了难度是基本难度2^k倍的工作证明，它将暴露和引用列表的第（k + 1）个节点。通过提供互补的散列链头（C（N-1）），交易在一半的机会下的将具有单个父节点，所以只暴露第一个节点T（N）。四分之一的机会里，通过提供哈希值T（N），T（N-1）和C（N-2）,两个交易会被引用。
+提出的核心思想是，每个交易都被提交到一个以前未被引用的已认证的交易集中。为此，它包括值C(N)，其中C(i)=Commit(C(i-1) || T(i))，其中T(i)是父交易的散列，C(0)是空字符串。这些都是简单的递归提交，因此C(N)允许付款人在1到N之间暴露任意数量的父散列。重要的决定是提交应暴露多少父散列。使用这个交易作为头部，付款人试图找到具有某些基本难度的工作证明（以后这个基本难度会更大）。如果获得了难度是基本难度2^k倍的工作证明，它将暴露和引用列表的第(k+1)个节点。通过提供互补的散列链头(C(N-1))，交易在一半的机会下的将拥有单个父节点，所以只暴露第一个节点T(N)。四分之一的机会里，通过提供哈希值T(N)，T(N-1)和C(N-2),两个交易会被引用。
 (*TODO: 翻得我云里雾里*)
 
 This system provides a logarithm distribution in the amount of parents, with an average of 2. Also this method cannot be gamed, since referring more parents has a PoW cost.  
@@ -91,8 +82,9 @@ There should be an incentive to include as many references as possible in the au
 应该有一个动机，让已认证的分支中包含尽可能多的参考。这可以通过几种方法来实现：
 
 1. Invalidating a transaction that has less references than what the PoW requires.
+2. Incrementing the score of a transaction that has more revealed references. For instance, a transaction having K revealed references could add a fractional score of (K-1)/K to the transaction score.
+
 1. 如果少于PoW要求的引用,则交易是无效的。
-2. Incrementing the score of a transaction that has more revealed references. For instance, a     transaction having K revealed references could add a fractional score of (K-1)/K to the     transaction score.
 2. 增加有更多已暴露引用的交易的分数。 例如，有K个已暴露引用的交易可以增加(K-1)/K倍分数到交易分数上。
 
 Preventing Unbounded Cascade Updates to Confirmation Scores  
@@ -101,14 +93,8 @@ Preventing Unbounded Cascade Updates to Confirmation Scores
 Suppose that for each transaction we save an integer score that we update for each new  transaction that references it directly or recursively. It is evident that the proposed data structure requires updating almost all previous confirmation scores each time a transaction is added. To reduce the workload, we use pointers and checkpoints. At a certain frequency the software chooses a transaction that references a high number of parent nodes. Figure 2 show how a checkpoint is found.  
 假设对于每个交易，我们保存一个整数分数，每当有新的交易直接或递归地引用它时,我们需要更新它。 显然,每当一笔交易加入的时候,提交的数据结构需要更新几乎所有之前的确认分数。 为了减少工作量，我们使用指针和检查点。 在某个频率上，软件选择一笔引用大量父节点的交易。 图2显示了如何找到检查点。
 
-```
-Figure 2
-Red box is a checkpoint
-```
-```
-图 2
-红框就是检查点
-```
+<img width="444" alt="screen shot 2018-01-31 at 11 12 46 pm" src="https://user-images.githubusercontent.com/22833166/35630410-4e1f29ec-06dc-11e8-91a3-98c4354204f3.png">
+
 Of course, not every past transaction could be reachable, as users may decide to never reference certain published transaction. However, the parent selection, with average out-degree 2, and low network latency, can guarantee that there will be frequent checkpoints referencing almost all previous transactions.
 当然，并不是每一个过去的交易都是可以达到的，因为用户可能决定从不引用某个已发布的交易。 然而，在平均出度为2和低网络延迟的情况下, 父交易的选择可以保证将会有频繁的检查点引用几乎所有以前的交易。
 
@@ -143,12 +129,8 @@ an accumulated score which is propagated to previous nodes.
 虽然我们使用了检查点，但是计算负载依然很高。当一个钱包检测到一笔交易的目标地址已经是自己拥有的地址时，它会开始追踪并找出这笔交易的确认深度。但是计算每一笔新的交易的确认得分的成本是很高的。为了减小这个计算负载，钱包可以等确认书达到一个确切的累计工作量证明数量之后再进行计算得分，这样就创造了交易的任意『区块』。每一个区块都会被分开处理并找到区块『输入』的所有父交易，并且每一个输入都会被添加一个得分。将区块输入和比特币的 UTXO 的概念区分开来是很重要的，因为 DagCoin
 的区块输入与花费和表示父区块的哈希（而不是一个单个的父哈希）并没有什么关系。输入的数量取决于网络延迟，但是通常来说都会很低并且独立于区块的大小。举个例子，对于一个 tps 为 10 以及传播延迟为 1 秒的网络来说，区块的输入集基数应该是 10 左右。然后输入集就会被处理。图表 3 展示了一个区块以及输入集是如何被每一个钱包软件构造出来的（没必要使用同样的方式）。每一个输入都有一个累计得分，这个累计得分会被传播到之前的节点上。
 
-```
-Figure 3
-Red boxes are the input set of the block
-图表 3
-红色的盒子是区块的输入集
-```
+<img width="445" alt="screen shot 2018-01-31 at 11 14 32 pm" src="https://user-images.githubusercontent.com/22833166/35630516-97a52aee-06dc-11e8-8362-d109d7c0f32e.png">
+
 
 For instance, and to provide a comparison to Bitcoin, the wallet may consider 10K units of transaction
 PoW as equivalent 1 “block confirmation” and so pack 10K transactions into a block and re-compute
@@ -159,30 +141,6 @@ the nonexistence of a subsidy and Bitcoin will face the same problem if the pric
 stantly.
 例如，对于比特币来说，钱包或许会认为 10000 个单位的交易工作量证明等于一个『区块确认』，所以它会将 10000 个交易打包进一个区块并对接收到的每 10000 笔交易再次计算得分。一个更好的方法则是每 N 秒构造一个区块，这个 N
 独立于区块中交易的数量。要注意的一点是，如果被监控的交易之后没有发生任何新的交易那么确认分数就不会改变。这就是没有经济激励最直接的结果，如果价格持续不断的增长的话，那么比特币也会面临同样的问题。
-
-## 2
-
-## 3
-
-## 4
-
-## 5
-
-## 6
-
-## 9
-
-## 8
-
-## 7
-
-## 10
-
-## (5)
-
-## (3)
-
-## (1)
 
 
 ## Targeting a fixed transactions/rate vs no maximum rate
