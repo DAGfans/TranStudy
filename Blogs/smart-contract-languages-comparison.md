@@ -1,11 +1,13 @@
-[Source](https://steemkr.com/smart/@alexbafana/smart-contract-languages-comparison "Permalink to Smart-Contract Languages Comparison — Steemkr")
+[Source](https://steemkr.com/smart/@alexbafana/smart-contract-languages-comparison "Permalink to Smart-Contract Languages Comparison — Steemkr")  
 Author: https://steemkr.com/@alexbafana
 
 # Smart-Contract Languages Comparison
+# 智能合约比较
 
 ![][1]
 
-The traditional understanding of a contract is a written or spoken agreement enforceable by law. In most business cases, contracts are documents [1] that identify the contracting parties uniquely, a service that is offered for some form of compensation that is usually monetary, and a set of additional clauses such as service-delivery dates, penalties for delivery failure, compensation clauses, and so on. Subsequent transactions are trust-based and contracting parties usually consider contracts as a symbol for an existing business deal. Another problem with the traditional form of setting up and managing contracts is that they are often underspecified. Most importantly, traditional contracts do not provide sufficient details about the actual transaction process and consequently, frictions  with conflicts between the contracting parties are very likely.   
+The traditional understanding of a contract is a written or spoken agreement enforceable by law. In most business cases, contracts are documents [1] that identify the contracting parties uniquely, a service that is offered for some form of compensation that is usually monetary, and a set of additional clauses such as service-delivery dates, penalties for delivery failure, compensation clauses, and so on. Subsequent transactions are trust-based and contracting parties usually consider contracts as a symbol for an existing business deal. Another problem with the traditional form of setting up and managing contracts is that they are often underspecified. Most importantly, traditional contracts do not provide sufficient details about the actual transaction process and consequently, frictions  with conflicts between the contracting parties are very likely.   
+传统的合约理解是法律强制执行的书面或口头协议。 在大多数商业案例中，合同是文档[1]，能唯一标识缔约方，提供某种形式的通常是货币形式的补偿的服务，以及一系列附加条款，如服务交付日期，处罚交货失败 ，赔偿条款等等。 后续交易以信托为基础，合约方通常将合约视为现有业务交易的标志。 传统的建立和管理合同的另一个问题是，他们通常没有详细说明。 最重要的是，传统的合同并没有提供有关实际交易过程的足够细节，因此，与缔约方之间的冲突的摩擦很可能发生。
 
 ### Smart Contracts and Decentralized Autonomous Organizations
 
