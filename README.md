@@ -11,5 +11,6 @@
 - Papers 论文, 原文一般是PDF文档
 
 ### 排版Tips
-如果原文是在线的,建议用https://domchristie.github.io/turndown/ 或者 http://heckyesmarkdown.com/ 直接转成近似的MD;  
-如果原文是PDF文档, 建议用 http://pdf2md.morethan.io/ 转成MD,还原度不是很高, 我们会改进这个开发工具
+- 如果原文是在线的,建议用https://domchristie.github.io/turndown/ 或者 http://heckyesmarkdown.com/ 直接转成近似的MD;  
+- 如果原文是PDF文档, 建议用 http://pdf2md.morethan.io/ 转成MD,还原度不是很高, 我们会改进这个开发工具
+- 我们有建议的中文排版指南https://github.com/aakloxu/chinese-copywriting-guidelines，建议可以用文中提到的格式化工具如https://github.com/vinta/paranoid-auto-spacing 统一处理
