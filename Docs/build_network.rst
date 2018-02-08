@@ -10,19 +10,23 @@ Building Your First Network
           setup utilities within the supplied tar file. If you run
           these commands with images or tools from the current master
           branch, it is possible that you will see configuration and panic
-          errors.
+          errors.  
+.. note::  这些指南经过验证是可以在标记为“1.0.3”版本的Docker镜像和已提供的打包在tar文件内的预编译配置工具之上工作的. 如果你从当前的master分支上执行这些命令或工具, 很有可能你会遇到配置错误.  
 
 The build your first network (BYFN) scenario provisions a sample Hyperledger
 Fabric network consisting of two organizations, each maintaining two peer
-nodes, and a "solo" ordering service.
+nodes, and a "solo" ordering service.  
+创建你第一个网络(BYFN)场景提供了一个有两个组织组成的样例Hyperledger Fabric 网络, 每个组织维护两个节点, 以及一个“单独的”排序服务.
 
 Install prerequisites
+---------------------
+安装先决条件
 ---------------------
 
 Before we begin, if you haven't already done so, you may wish to check that
 you have all the :doc:`prereqs` installed on the platform(s)
 on which you'll be developing blockchain applications and/or operating
-Hyperledger Fabric.
+Hyperledger Fabric.  
 
 You will also need to download and install the :doc:`samples`. You will notice
 that there are a number of samples included in the ``fabric-samples``
