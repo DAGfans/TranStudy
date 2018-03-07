@@ -1,4 +1,4 @@
-原文：https://github.com/DAGfans/DAG_paper/blob/master/SZ18_PHANTOM_A%20Scalable%20BlockDAG%20protocol.pdf
+原文：https://eprint.iacr.org/2018/104.pdf
 
 # PHANTOM: A Scalable BlockDAG protocol
 
