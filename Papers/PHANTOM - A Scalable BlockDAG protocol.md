@@ -44,8 +44,8 @@ PHANTOM在blockDAG上使用贪婪算法来区分诚实节点正确挖出的区�
 #### 1. INTRODUCTION
 #### 1. 介绍 
 
-A. The Bitcoin protocol  
-A. 比特币协议
+##### A. The Bitcoin protocol  
+##### A. 比特币协议
 
 The Bitcoin protocol instructs miners how to create blocks of transactions. 
 The body of a block contains new transactions published by users, a proof-of-work puzzle, and a pointer to one previous block. 
@@ -86,8 +86,8 @@ As a result, Bitcoin suffers from a highly restrictive throughput in the order o
 为了保证这一特性，协议规定块的创建每10分钟进行一次。
 因此，比特币的吞吐量高度受限, 大约每秒3-7次交易（tps）。
 
-B. The PHANTOM protocol  
-B.  PHANTOM 协议
+##### B. The PHANTOM protocol  
+##### B. PHANTOM 协议
 
 In this work we present PHANTOM, a protocol that enjoys a very large transaction throughput compared to Bitcoin. 
 PHANTOM structures blocks in a Directed Acyclic Graph, a blockDAG.
@@ -166,37 +166,42 @@ presumably, its malicious miner received already some blocks from(B,C,D,G), but 
 类似地，区块K接受在其待序集（B，C，G，F，I，J）中有6个蓝色方块;
 据推测，其恶意矿工已经收到了来自（B，C，D，G）的一些块，但没有引用它们而违反了挖矿协议。
 
-C. Related work
+##### C. Related work  
+##### C. 相关工作
 
-Many suggestions to improve Bitcoin’s scalability have been proposed in recent years. These
-proposals fall into two categories,on-chain scalingandoff-chain scaling. Roughly speaking, the
-former includes protocols where all valid transactions are those that appear – as in Bitcoin –
-inside blocks that are organized in some data structure (aka “the ledger”).
+Many suggestions to improve Bitcoin’s scalability have been proposed in recent years. 
+These proposals fall into two categories, on-chain scaling and off-chain scaling. 
+Roughly speaking, the former includes protocols where all valid transactions are those that appear – as in Bitcoin – inside blocks that are organized in some data structure (aka “the ledger”).
+近年来提出了许多改善比特币可扩展性的建议。
+这些建议分为两类，即链上扩容和链下扩容。
+粗略地说，前者包括的协议要求所有有效交易出现在以某种数据结构(又称账本)组织的区块内部(如比特币)
 
-On-chain scaling.The protocols in this category may differ e.g. in how fast blocks are created,
-how blocks are organized in the ledger (a chain, a tree, a DAG, etc.), which transactions in the ledger are considered valid, and more. PHANTOM belongs to this line of works. Previous
-works in this family of protocols includes GHOST [9], where a main chain of blocks is chosen
-according to a greedy algorithm and not through the longest chain rule; Inclusive [5], where
-any chain-selection rule is extended to an ordered DAG and transactions off the main chain are
-added in a consistent manner; Bitcoin NG [1], where the ledger consists of slowkey blocks
-(containing no transactions) and fastmicroblocksthat contain transactions. The sole purpose of
-key blocks in Bitcoin NG is to define the miner that is eligible to create microblocks in that
-epoch and confirm thus transactions at a high rate.
-GHOST is still susceptible to some attacks, one of which was described in [3]. The DAG
-in Iclusive adds throughput but not security to the main chain, hence suffers from the same
-limitations as the underlying main chain selection rule. Key blocks in Bitcoin NG are still
-generated slowly, thus confirmation times remain high.
-Our work is most similar to the SPECTRE protocol [8]. SPECTRE enjoys both high throughput
-and fast confirmation times. It uses the structure of the DAG as representing an abstract vote
-regarding the order between each pair of blocks. One caveat of SPECTRE is that the output of
-this pairwise ordering may not be extendable to a full linear ordering, due to possible Condorcet
-cycles. PHANTOM solves this issue and provides a linear ordering over the blocks of the DAG.
-As such, PHANTOM can support consensus regarding any general computation, also known as
-Smart Contracts, which SPECTRE cannot. Indeed, in order for a computation or contract to be
-processed correctly and consistently, the full order of events in the ledger is usually required,
-and particularly the order of inputs to the contract.^1 PHANTOM’s linear ordering does not come
-without cost—confirmation times are mush slower than those in SPECTRE. In Section 7 we
-describe how the same system can simultaneously enjoy the best of both protocols.
+**On-chain scaling.** The protocols in this category may differ e.g. in how fast blocks are created, how blocks are organized in the ledger (a chain, a tree, a DAG, etc.), which transactions in the ledger are considered valid, and more. 
+PHANTOM belongs to this line of works. 
+Previous works in this family of protocols includes GHOST [9], where a main chain of blocks is chosen according to a greedy algorithm and not through the longest chain rule; 
+Inclusive [5], where any chain-selection rule is extended to an ordered DAG and transactions off the main chain are added in a consistent manner; 
+Bitcoin NG [1], where the ledger consists of slow key blocks (containing no transactions) and fast micro blocks that contain transactions. 
+The sole purpose of key blocks in Bitcoin NG is to define the miner that is eligible to create micro blocks in that epoch and confirm thus transactions at a high rate.  
+**链上扩容.** 该类别中的协议可能不同，例如 在创建块的速度方面，在账本中如何组织块（链，树，DAG等），账本中的哪些交易被认为是有效的等等。
+PHANTOM属于这一类。
+在这个协议族中，以前的作品包括GHOST [9]，其根据贪婪算法选择块的主链，而不是通过最长链规则;
+Inclusive [5]，其中任何链选择规则被扩展到一个有序的DAG，并且非主链上的交易以一致的方式被添加;
+Bitcoin NG [1]，其中帐本由慢速密钥块（不包含交易）和包含交易的快速微块组成。
+Bitcoin NG中密钥块的唯一目的是确定有资格在该时期创建微块的矿工，并确认交易的速度很快。  
+
+GHOST is still susceptible to some attacks, one of which was described in [3]. 
+The DAG in Iclusive adds throughput but not security to the main chain, hence suffers from the same limitations as the underlying main chain selection rule. 
+Key blocks in Bitcoin NG are still generated slowly, thus confirmation times remain high.
+
+Our work is most similar to the SPECTRE protocol [8]. 
+SPECTRE enjoys both high throughput and fast confirmation times. 
+It uses the structure of the DAG as representing an abstract vote regarding the order between each pair of blocks. 
+One caveat of SPECTRE is that the output of this pairwise ordering may not be extendable to a full linear ordering, due to possible Condorcet cycles. 
+PHANTOM solves this issue and provides a linear ordering over the blocks of the DAG.
+As such, PHANTOM can support consensus regarding any general computation, also known as Smart Contracts, which SPECTRE cannot. 
+Indeed, in order for a computation or contract to be processed correctly and consistently, the full order of events in the ledger is usually required, and particularly the order of inputs to the contract.
+^1 PHANTOM’s linear ordering does not come without cost—confirmation times are mush slower than those in SPECTRE. 
+In Section 7 we describe how the same system can simultaneously enjoy the best of both protocols.  
 
 Off-chain scaling.Another totally different approach keeps block creations infrequent and their
 sizes small (so that propagation delay remains negligible), yet this slow chain is not used for
@@ -217,7 +222,7 @@ by orders-of-magnitude. For instance, when the DAG is used to serve channel-sett
 transactions of LN, it allows for a much cheaper access (due to larger supply of blocks and
 capacity) and much faster processing than if the LN were operating over a chain.
 
-#### 2. THEPHANTOMPROTOCOL
+#### 2. THE PHANTOM PROTOCOL
 
 In this section we describe the operation of the PHANTOM protocol. PHANTOM consists of
 the following three-step procedure:
