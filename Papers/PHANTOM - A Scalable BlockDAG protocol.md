@@ -36,48 +36,55 @@ Using this distinction, PHANTOM provides a full order on the blockDAG in a way t
 中本聪的最长链规则（通常称为比特币协议）的安全性，要求所有诚实的节点实时地了解彼此的块。
 为此，吞吐量被人为地抑制，使得每个块在下一个块被创建之前可以完全传播，并且没有任何分叉产生的“孤块”可以自发创建。
 在本文中，我们介绍PHANTOM，用于交易确认的协议，在网络可支持的任何吞吐量下都是安全的。
-因此，PHANTOM不会受到中本聪协议所面临的要在安全和可扩展性之间权衡的问题。
+因此，PHANTOM没有中本聪协议所面临的要在安全和可扩展性之间权衡的问题。
 PHANTOM利用有向无环图区块，又称blockDAG，一个更适合快速或大区块配置下的广义上的中本聪式区块链。
-PHANTOM在blockDAG上使用贪婪算法来区分诚实节点正确开采的区块和偏离DAG采矿协议的非协作节点开采的区块。
+PHANTOM在blockDAG上使用贪婪算法来区分诚实节点正确挖出的区块和偏离DAG采矿协议的非协作节点挖出的区块。
 利用这个区别，PHANTOM以最终由所有诚实节点同意的方式在blockDAG上提供全序。
 ```
 #### 1. INTRODUCTION
+#### 1. 介绍 
 
 A. The Bitcoin protocol
+A. 比特币协议
 
-The Bitcoin protocol instructs miners how to create blocks of transactions. The body of a
-block contains new transactions published by users, a proof-of-work puzzle, and a pointer to
-one previous block. The latter rule implies that blocks naturally form in a tree structure. When
-creating his next block, the miner is instructed to reference the tip of the longest chain within
-the tree and ignore the rest of blocks (akaorphans).
-Miners share and propagate a block immediately upon receiving or creating it, and reference
-the latest block in the chain they observe. The security of Bitcoin relies on honest nodes being
-sufficiently connected so that when one miner extends the chain with a new block, it propagates
-in time to all honest nodes before the next one is created.
+The Bitcoin protocol instructs miners how to create blocks of transactions. 
+The body of a block contains new transactions published by users, a proof-of-work puzzle, and a pointer to one previous block. 
+The latter rule implies that blocks naturally form in a tree structure. 
+When creating his next block, the miner is instructed to reference the tip of the longest chain within the tree and ignore the rest of blocks (aka orphans).
+Miners share and propagate a block immediately upon receiving or creating it, and reference the latest block in the chain they observe. 
+The security of Bitcoin relies on honest nodes being sufficiently connected so that when one miner extends the chain with a new block, it propagates in time to all honest nodes before the next one is created.
+比特币协议指示矿工如何创建交易块。
+块体包含用户发布的新交易，工作量证明难题和指向前一个块的指针。
+后一条规则意味着块会自然形成树结构。
+当创建下一个区块时，矿工会被指示引用树中最长链的末端，并忽略其余区块（又名孤块）。
+矿工们在收到或创建区块后立即分享和传播该区块，并引用他们观察到的最新区块。
+比特币的安全性依赖于诚实的节点被充分连接，以便当一个矿工用一个新块扩展链时，它会及时传播到所有诚实的节点，然后再创建下一个区块。
 
+![fig 1](https://user-images.githubusercontent.com/22833166/37459465-2018d836-2883-11e8-9bc3-ee753150014d.jpg)
 
-```
-Fig. 1:An example of a block DAGG. Each block
-references all blocks to which its miner was aware at
-the time of its creation. The DAG terminology, applied
-to blockHas an example, is as follows:
-past(H) = {Genesis,C,D,E} – blocks which
-H references directly or indirectly, and which were
-provably created beforeH;
-future(H) ={J,K,M}– blocks which referenceH
-directly or indirectly, and which were provably created
-afterH;
-anticone(H) = {B,F,I,L}– the order between
-these blocks andHis ambiguous.Deciding the order
-betweenHand blocks inanticone(H)is the main
-challenge of a DAG protocol.
-tips(G) = {J,L,M}– leaf-blocks, namely, blocks
-with in-degree 0; these will be referenced in the header
-of the next block
-```
-In order to guarantee this property, the creation of blocks is regulated by the protocol to occur
-once every 10 minutes. As a result, Bitcoin suffers from a highly restrictive throughput in the
-order of 3-7 transactions per second (tps).
+**Fig. 1:** An example of a block DAG G. 
+Each block references all blocks to which its miner was aware at the time of its creation. 
+The DAG terminology, applied to block H as an example, is as follows:
+past(H) = {Genesis,C,D,E} – blocks which H references directly or indirectly, and which were provably created before H;
+future(H) ={J,K,M}– blocks which reference H directly or indirectly, and which were provably created after H;
+anticone(H) = {B,F,I,L}– the order between these blocks and H is ambiguous.
+Deciding the order between H and blocks in anticone(H) is the main challenge of a DAG protocol.
+tips(G) = {J,L,M}– leaf-blocks, namely, blocks with in-degree 0; 
+these will be referenced in the header of the next block  
+**图 1:** 块DAG G的一个例子。
+每个块都会引用矿工在创建时知道的所有块。
+DAG术语，以块H为例子，如下所示：
+past(H) = {Genesis,C,D,E} - H直接或间接引用，并且很可能在H之前创建的块;
+future(H) ={J,K,M} - 直接或间接引用H，并且很可能在H之后创建的块;
+anticone(H) = {B,F,I,L} - 这些块与H之间的顺序是不明确的。
+决定H和anticone(H)中块的顺序是一个DAG协议的主要挑战。
+tips(G) = {J,L,M - 叶块，即入度为0的块;
+这些将在下一个块的头部中引用
+
+In order to guarantee this property, the creation of blocks is regulated by the protocol to occur once every 10 minutes. 
+As a result, Bitcoin suffers from a highly restrictive throughput in the order of 3-7 transactions per second (tps).  
+为了保证这一特性，协议规定块的创建每10分钟进行一次。
+因此，比特币的吞吐量高度受限, 大约每秒3-7次交易（tps）。
 
 B. The PHANTOM protocol
 
