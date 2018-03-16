@@ -1,6 +1,7 @@
-## 原文：https://eprint.iacr.org/2018/104.pdf
+## Source：https://eprint.iacr.org/2018/104.pdf
 
 # PHANTOM: A Scalable BlockDAG protocol
+# PHANTOM: 可扩展的 BlockDAG 协议
 
 ### Yonatan Sompolinsky and Aviv Zohar
 
@@ -13,8 +14,8 @@
 ### {yoni sompo,avivz}@cs.huji.ac.il
 
 ## Abstract
-```
-In 2008 Satoshi Nakamoto invented the basis for what would come to be known as blockchain technology. 
+
+> In 2008 Satoshi Nakamoto invented the basis for what would come to be known as blockchain technology. 
 The core concept of this system is an open and anonymous network of nodes, or miners, which together maintain a public ledger of transactions. 
 The ledger takes the form of a chain of blocks, the blockchain, where each block is a batch of new transactions collected from users. 
 One primary problem with Satoshi’s blockchain is its highly limited scalability. 
@@ -25,10 +26,10 @@ PHANTOM thus does not suffer from the security-scalability tradeoff which Satosh
 PHANTOM utilizes a Directed Acyclic Graph of blocks, aka blockDAG, a generalization of Satoshi’s chain which better suits a setup of fast or large blocks. 
 PHANTOM uses a greedy algorithm on the blockDAG to distinguish between blocks mined properly by honest nodes and those mined by non-cooperating nodes that deviated from the DAG mining protocol. 
 Using this distinction, PHANTOM provides a full order on the blockDAG in a way that is eventually agreed upon by all honest nodes.
-```
+
 ## 摘要
-```
-2008年，中本聪发明了被称为区块链技术的基础。
+
+> 2008年，中本聪发明了被称为区块链技术的基础。
 这个系统的核心概念是一个开放和匿名的节点或矿工网络，
 它们共同维护着交易的公共账本。
 账本采取区块的链式形式，即区块链，每个区块是从用户收集的一批新交易。
@@ -40,7 +41,7 @@ Using this distinction, PHANTOM provides a full order on the blockDAG in a way t
 PHANTOM利用有向无环图区块，又称blockDAG，一个更适合快速或大区块配置下的广义上的中本聪式区块链。
 PHANTOM在blockDAG上使用贪婪算法来区分诚实节点正确挖出的区块和偏离DAG采矿协议的非协作节点挖出的区块。
 利用这个区别，PHANTOM以最终由所有诚实节点同意的方式在blockDAG上提供全序。
-```
+
 #### 1. INTRODUCTION
 #### 1. 介绍 
 
