@@ -110,12 +110,12 @@ DAG协议的核心挑战是如何将嵌入其中的交易排序，以便在发�
 由于合作的PHANTOM矿工会尽快传播他们的区块，并引用其他矿工的区块，我们应该可以期待在DAG中看到一个连接良好的区块集群。
 相反，由非协作节点挖掘的块将显示为异常值，并且很容易被识别。
 实际上，偏离PHANTOM挖矿协议的形式是（i）扣留一个新区块，或者（ii）创建一个没有引用当时可用的其他区块的新区块，这两种情况下的区块都可以被识别并受到惩罚。
-根据这种直觉以及诚实节点占据大部分散列率的假设，我们认为具有良好互连性的最大的区块集合由诚实节点挖出，其概率很高。 
+根据这个观察以及诚实节点占据大部分散列率(译注：可以理解为算力)的假设，我们认为具有良好互连性的最大的区块集合有很高的概率由诚实节点挖出。 
 因此，给定一个blockDAG，我们想要解决下面的优化问题：
 
 > **Maximum** _k_**-cluster SubDAG** (_MCSk_)  
 > **Input:** DAG _G= (C,E)_   
-> **Output:** A subset _S∗⊂C_ of maximum size, s.t. _|anticone(B)∩S∗|≤k_ for all _B∈S∗_ .
+> **Output:** A subset ![](http://latex.codecogs.com/png.latex?%5Cinline%20%5Cdpi%7B300%7D%20%5Ctiny%20S%5E*%5Csubset%20C)  of maximum size, s.t. ![](http://latex.codecogs.com/png.latex?%5Cinline%20%5Cdpi%7B300%7D%20%5Ctiny%20%5Cleft%20%7C%20anticone%28B%29%5Ccap%20S%5E*%20%5Cright%20%7C%5Cleqslant%20k) for all ![](http://latex.codecogs.com/png.latex?%5Cinline%20%5Cdpi%7B300%7D%20%5Ctiny%20B%5Cin%20S%5E*) .
 
 Here, anticone(B) is the set of blocks in the DAG which did not reference B(directly or indirectly via their predecessors) and were not referenced by B(directly or indirectly via B’s predecessors). 
 The parameter k is related to an assumption that PHANTOM makes regarding the network’s propagation delay; 
@@ -172,7 +172,7 @@ presumably, its malicious miner received already some blocks from(B,C,D,G), but 
 
 Many suggestions to improve Bitcoin’s scalability have been proposed in recent years. 
 These proposals fall into two categories, on-chain scaling and off-chain scaling. 
-Roughly speaking, the former includes protocols where all valid transactions are those that appear – as in Bitcoin – inside blocks that are organized in some data structure (aka “the ledger”).
+Roughly speaking, the former includes protocols where all valid transactions are those that appear – as in Bitcoin – inside blocks that are organized in some data structure (aka “the ledger”).  
 近年来提出了许多改善比特币可扩展性的建议。
 这些建议分为两类，即链上扩容和链下扩容。
 粗略地说，前者包括的协议要求所有有效交易出现在以某种数据结构(又称账本)组织的区块内部(如比特币)
@@ -182,7 +182,7 @@ PHANTOM belongs to this line of works.
 Previous works in this family of protocols includes GHOST [9], where a main chain of blocks is chosen according to a greedy algorithm and not through the longest chain rule; 
 Inclusive [5], where any chain-selection rule is extended to an ordered DAG and transactions off the main chain are added in a consistent manner; 
 Bitcoin NG [1], where the ledger consists of slow key blocks (containing no transactions) and fast micro blocks that contain transactions. 
-The sole purpose of key blocks in Bitcoin NG is to define the miner that is eligible to create micro blocks in that epoch and confirm thus transactions at a high rate.  
+The sole purpose of key blocks in Bitcoin NG is to define the miner that is eligible to create micro blocks in that epoch and confirm thus transactions at a high rate.   
 **链上扩容.** 该类别中的协议可能不同，例如 在创建块的速度方面，在账本中如何组织块（链，树，DAG等），账本中的哪些交易被认为是有效的等等。
 PHANTOM属于这一类。
 在这个协议族中，以前的作品包括GHOST [9]，其根据贪婪算法选择块的主链，而不是通过最长链规则;
@@ -220,13 +220,13 @@ Off-chain scaling.Another totally different approach keeps block creations infre
 Instead, most of the transactions occur outside the chain, with better scalability, and the chain itself is used for the purpose of resolving conflicts or settling transactions. 
 One example is Hybrid Consensus [6], improving over [4], which uses the chain to select a rotating committee of nodes which in turn run a classic consensus protocol to confirm transactions in the corresponding epoch. 
 Another well known proposed solution in the same category is the Lightning Network [7] (LN), where transactions are processed off-chain over over a network of micropayment channels, and the blockchain is used only for settlement
-of these channels.
+of these channels.  
 **链下扩容.** 另一种完全不同的方法是使块创建频度降低并且让尺寸变小（因此传播延迟可以忽略不计），所以这个慢速链不会记录整个经济活动。
 相反，大多数交易发生在链外，具有更好的可扩展性，链本身用于解决冲突或结算交易。
 
 Our work is orthogonal and complementary to these solutions, and can enhance their operation by orders-of-magnitude. 
-For instance, when the DAG is used to serve channel-settlement transactions of LN, it allows for a much cheaper access (due to larger supply of blocks and capacity) and much faster processing than if the LN were operating over a chain.
-我们的工作与这些解决方案是不相关的和互补的，并且可以按数量级增强起运行。
+For instance, when the DAG is used to serve channel-settlement transactions of LN, it allows for a much cheaper access (due to larger supply of blocks and capacity) and much faster processing than if the LN were operating over a chain.  
+我们的工作与这些解决方案是不相关的和互补的，并且可以按数量级增强起运行。  
 例如，当DAG用于闪电网络的通道结算交易时，它允许更低成本的访问（由于有更大的块数量和容量的供应）以及比闪电网络运行在链上快得多的处理速度。
 
 
