@@ -191,8 +191,11 @@ Bitcoin NG [1]，其中帐本由慢速密钥块（不包含交易）和包含交
 Bitcoin NG中密钥块的唯一目的是确定有资格在该时期创建微块的矿工，并确认交易的速度很快。  
 
 GHOST is still susceptible to some attacks, one of which was described in [3]. 
-The DAG in Iclusive adds throughput but not security to the main chain, hence suffers from the same limitations as the underlying main chain selection rule. 
-Key blocks in Bitcoin NG are still generated slowly, thus confirmation times remain high.
+The DAG in Inclusive adds throughput but not security to the main chain, hence suffers from the same limitations as the underlying main chain selection rule. 
+Key blocks in Bitcoin NG are still generated slowly, thus confirmation times remain high.  
+GHOST仍然容易受到一些攻击，其中之一在[3]中有所描述。
+Inclusive中的DAG增加了主链的吞吐量但没有增加安全性，因此会受到与底层主链选择规则相同的限制。
+Bitcoin NG中密钥的块仍然会缓慢产生，因此确认时间仍然很长。 
 
 Our work is most similar to the SPECTRE protocol [8]. 
 SPECTRE enjoys both high throughput and fast confirmation times. 
@@ -200,28 +203,35 @@ It uses the structure of the DAG as representing an abstract vote regarding the 
 One caveat of SPECTRE is that the output of this pairwise ordering may not be extendable to a full linear ordering, due to possible Condorcet cycles. 
 PHANTOM solves this issue and provides a linear ordering over the blocks of the DAG.
 As such, PHANTOM can support consensus regarding any general computation, also known as Smart Contracts, which SPECTRE cannot. 
-Indeed, in order for a computation or contract to be processed correctly and consistently, the full order of events in the ledger is usually required, and particularly the order of inputs to the contract.
-^1 PHANTOM’s linear ordering does not come without cost—confirmation times are mush slower than those in SPECTRE. 
+Indeed, in order for a computation or contract to be processed correctly and consistently, the full order of events in the ledger is usually required, and particularly the order of inputs to the contract.^1 
+PHANTOM’s linear ordering does not come without cost—confirmation times are mush slower than those in SPECTRE. 
 In Section 7 we describe how the same system can simultaneously enjoy the best of both protocols.  
+我们的工作与SPECTRE协议最相似[8]。
+SPECTRE拥有高吞吐量和快速确认时间。
+它使用DAG的结构来表示关于每对块之间的顺序的抽象投票。
+SPECTRE值得注意的是，由于可能的Condorcet循环(译注：比如说A>B, B>C 但是A<C)，这种成对排序的输出可能无法扩展到全线性排序。
+PHANTOM解决了这个问题，并提供了DAG块的线性排序。
+因此，PHANTOM可以支持关于任何一般计算的共识，也称为智能合约，而SPECTRE不能。
+事实上，为了正确和一致地处理计算或合约，通常需要账本中事件的完整顺序，特别是合约输入的顺序。^1 
+PHANTOM的线性排序不会没有成本 - 确认时间比SPECTRE中的要慢。
+在第7节中，我们描述了同一个系统如何同时享有这两种协议中的优点。
 
-Off-chain scaling.Another totally different approach keeps block creations infrequent and their
-sizes small (so that propagation delay remains negligible), yet this slow chain is not used for
-recording the entire economic activity. Instead, most of the transactions occur outside the chain,
-with better scalability, and the chain itself is used for the purpose of resolving conflicts or
-settling transactions. One example is Hybrid Consensus [6], improving over [4], which uses the
-chain to select a rotating committee of nodes which in turn run a classic consensus protocol to
-confirm transactions in the corresponding epoch. Another well known proposed solution in the
-same category is the Lightning Network [7] (LN), where transactions are processed off-chain
+Off-chain scaling.Another totally different approach keeps block creations infrequent and their sizes small (so that propagation delay remains negligible), yet this slow chain is not used for recording the entire economic activity. 
+Instead, most of the transactions occur outside the chain, with better scalability, and the chain itself is used for the purpose of resolving conflicts or settling transactions. 
+One example is Hybrid Consensus [6], improving over [4], which uses the chain to select a rotating committee of nodes which in turn run a classic consensus protocol to confirm transactions in the corresponding epoch. 
+Another well known proposed solution in the same category is the Lightning Network [7] (LN), where transactions are processed off-chain over over a network of micropayment channels, and the blockchain is used only for settlement
+of these channels.
+**链下扩容.** 另一种完全不同的方法是使块创建频度降低并且让尺寸变小（因此传播延迟可以忽略不计），所以这个慢速链不会记录整个经济活动。
+相反，大多数交易发生在链外，具有更好的可扩展性，链本身用于解决冲突或结算交易。
+
+Our work is orthogonal and complementary to these solutions, and can enhance their operation by orders-of-magnitude. 
+For instance, when the DAG is used to serve channel-settlement transactions of LN, it allows for a much cheaper access (due to larger supply of blocks and capacity) and much faster processing than if the LN were operating over a chain.
+我们的工作与这些解决方案是不相关的和互补的，并且可以按数量级增强起运行。
+例如，当DAG用于闪电网络的通道结算交易时，它允许更低成本的访问（由于有更大的块数量和容量的供应）以及比闪电网络运行在链上快得多的处理速度。
+
 
 (^1) Contracts that do not require such a strict ordering can indeed be served under SPECTRE as well.
-
-
-over over a network of micropayment channels, and the blockchain is used only for settlement
-of these channels.
-Our work is orthogonal and complementary to these solutions, and can enhance their operation
-by orders-of-magnitude. For instance, when the DAG is used to serve channel-settlement
-transactions of LN, it allows for a much cheaper access (due to larger supply of blocks and
-capacity) and much faster processing than if the LN were operating over a chain.
+(^1) 不需要这种严格排序的合约也可以在SPECTRE下提供。
 
 #### 2. THE PHANTOM PROTOCOL
 
