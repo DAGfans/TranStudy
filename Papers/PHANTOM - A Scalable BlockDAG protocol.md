@@ -1,3 +1,6 @@
+> Source：https://eprint.iacr.org/2018/104.pdf
+> TranStudy: https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM%20-%20A%20Scalable%20BlockDAG%20protocol.md
+
 ## Source：https://eprint.iacr.org/2018/104.pdf
 
 # PHANTOM: A Scalable BlockDAG protocol
@@ -115,7 +118,7 @@ DAG协议的核心挑战是如何将嵌入其中的交易排序，以便在发�
 
 > **Maximum** _k_**-cluster SubDAG** (_MCSk_)  
 > **Input:** DAG _G= (C,E)_   
-> **Output:** A subset ![](http://latex.codecogs.com/png.latex?%5Cinline%20%5Cdpi%7B300%7D%20%5Ctiny%20S%5E*%5Csubset%20C)  of maximum size, s.t. ![](http://latex.codecogs.com/png.latex?%5Cinline%20%5Cdpi%7B300%7D%20%5Ctiny%20%5Cleft%20%7C%20anticone%28B%29%5Ccap%20S%5E*%20%5Cright%20%7C%5Cleqslant%20k) for all ![](http://latex.codecogs.com/png.latex?%5Cinline%20%5Cdpi%7B300%7D%20%5Ctiny%20B%5Cin%20S%5E*) .
+> **Output:** A subset S ⊂ C of maximum size, s.t. | anticone (B) ∩ S | ≤ k for all B ∈ S .
 
 Here, anticone(B) is the set of blocks in the DAG which did not reference B(directly or indirectly via their predecessors) and were not referenced by B(directly or indirectly via B’s predecessors). 
 The parameter k is related to an assumption that PHANTOM makes regarding the network’s propagation delay; 
@@ -183,7 +186,7 @@ Previous works in this family of protocols includes GHOST [9], where a main chai
 Inclusive [5], where any chain-selection rule is extended to an ordered DAG and transactions off the main chain are added in a consistent manner; 
 Bitcoin NG [1], where the ledger consists of slow key blocks (containing no transactions) and fast micro blocks that contain transactions. 
 The sole purpose of key blocks in Bitcoin NG is to define the miner that is eligible to create micro blocks in that epoch and confirm thus transactions at a high rate.   
-**链上扩容.** 该类别中的协议可能不同，例如 在创建块的速度方面，在账本中如何组织块（链，树，DAG等），账本中的哪些交易被认为是有效的等等。
+**链上扩容.** 该类协议分为很多种，例如 在创建块的速度方面，在账本中如何组织块（链，树，DAG等），账本中的哪些交易被认为是有效的等等。
 PHANTOM属于这一类。
 在这个协议族中，以前的作品包括GHOST [9]，其根据贪婪算法选择块的主链，而不是通过最长链规则;
 Inclusive [5]，其中任何链选择规则被扩展到一个有序的DAG，并且非主链上的交易以一致的方式被添加;
