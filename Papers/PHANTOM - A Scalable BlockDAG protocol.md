@@ -56,7 +56,7 @@ The body of a block contains new transactions published by users, a proof-of-wor
 The latter rule implies that blocks naturally form in a tree structure. 
 When creating his next block, the miner is instructed to reference the tip of the longest chain within the tree and ignore the rest of blocks (aka orphans).
 Miners share and propagate a block immediately upon receiving or creating it, and reference the latest block in the chain they observe. 
-The security of Bitcoin relies on honest nodes being sufficiently connected so that when one miner extends the chain with a new block, it propagates in time to all honest nodes before the next one is created.
+The security of Bitcoin relies on honest nodes being sufficiently connected so that when one miner extends the chain with a new block, it propagates in time to all honest nodes before the next one is created.  
 比特币协议指示矿工如何创建交易块。
 块体包含用户发布的新交易，工作量证明难题和指向前一个块的指针。
 后一条规则意味着块会自然形成树结构。
@@ -237,71 +237,73 @@ For instance, when the DAG is used to serve channel-settlement transactions of L
 (^1) 不需要这种严格排序的合约也可以在SPECTRE下提供。
 
 #### 2. THE PHANTOM PROTOCOL
+#### 2. PHANTOM 协议
 
-In this section we describe the operation of the PHANTOM protocol. PHANTOM consists of
-the following three-step procedure:
+In this section we describe the operation of the PHANTOM protocol. 
+PHANTOM consists of the following three-step procedure:
+在本节中，我们将介绍PHANTOM协议的操作。
+PHANTOM包含以下三个步骤：
 
-1) Using the structure of the DAG, we recognize in it a cluster of well-connected blocks; with
-high probability, blocks that were mined honestly belong to this cluster and vice versa.
-2) We extend the DAG’s natural partial ordering to a full topological ordering in a way that
-favours blocks inside the selected cluster and penalizes those outside it.
-3) The order over blocks induces an order over transactions; transactions in the same block are
-ordered according to the order of their appearance in it. We iterate over all transactions in
-this order, and accept each one that is consistent (according to the underlying Consistency
-notion) with those approved so far.
-The Consistency notion used in the last step depends on the specific application under
-consideration. For instance, with regards to the Payments application, a transaction is consistent
-with the history only if all of its inputs have been approved and no double spending transaction
-has been approved before. Our work is agnostic to the definition of the Consistency rule. The
-contribution of PHANTOM is its implementation of the first two steps described above, which
-we now turn to describe.
+1) Using the structure of the DAG, we recognize in it a cluster of well-connected blocks; 
+with high probability, blocks that were mined honestly belong to this cluster and vice versa.
+2) We extend the DAG’s natural partial ordering to a full topological ordering in a way that favours blocks inside the selected cluster and penalizes those outside it.
+3) The order over blocks induces an order over transactions; 
+transactions in the same block are ordered according to the order of their appearance in it. 
+We iterate over all transactions in this order, and accept each one that is consistent (according to the underlying Consistency notion) with those approved so far.
+The Consistency notion used in the last step depends on the specific application under consideration. 
+For instance, with regards to the Payments application, a transaction is consistent with the history only if all of its inputs have been approved and no double spending transaction has been approved before. 
+Our work is agnostic to the definition of the Consistency rule. 
+The contribution of PHANTOM is its implementation of the first two steps described above, which we now turn to describe.
+1）使用DAG的结构，我们在其中识别出连接良好的区块集群;
+很有可能，被诚实挖出的块属于这个群集，反之亦然。
+2）我们用某种方式将DAG天然的偏序扩展为全序，该方式奖励群集内的块，并对集群外的块进行惩罚。
+3）块的顺序也会引发交易的顺序(译注：应该是指，如果块A的顺序大于块B，则块A内的所有交易的顺序都大于块B内的交易);
+同一块的交易根据它们在内部出现的顺序排序.
+我们按照此顺序遍历所有交易，并接受每一笔与迄今已确认的交易一致（根据基本的一致性概念）的交易。
+最后一步中使用的一致性概念取决于所考虑的具体应用。
+例如，关于“支付”应用程序，只有在所有输入都被确认并且之前没有确认过双花交易的情况下，交易才符合历史记录。
+我们的工作对一致性规则的定义是不可知的。
+PHANTOM的贡献在于实现了上述的前两个步骤，现在我们来描述它们。
 
-A. Intuition
+A. Intuition  
+A. 直觉
 
-How can we distinguish between honest blocks (i.e., blocks mined by cooperating nodes) and
-dishonest ones? Recall that the DAG mining protocol instructs a miner to acknowledge in its
-new block the entire DAG it observes locally, by referencing the “tips” of the DAG. Thus, if
-blockBwas mined at timetby an honest miner, then any block published before timet−D
-was received by the miner and is therefore inB’s past set (i.e., referenced byB directly or
-recursively via its predecessors; see illustration in Figure 1). Similarly, ifB’s miner is honest
-then it publishedBimmediately, and so any honest block created after timet+Dbelongs to
-B’s future set.
-As a result, the set of honest blocks inB’s anticone – which we denoteanticoneh(B)–
-is typically small, and consists only of blocks created in the interval[t−D,t+D].^2 In other
-words, the probability that an honest blockB will suffer a large honest anticone is small:
-Pr (|anticoneh(B)|> k)∈ O
+How can we distinguish between honest blocks (i.e., blocks mined by cooperating nodes) and dishonest ones? 
+Recall that the DAG mining protocol instructs a miner to acknowledge in its new block the entire DAG it observes locally, by referencing the “tips” of the DAG. 
+Thus, if block B was mined at time t by an honest miner, then any block published before time t−D was received by the miner and is therefore in B’s past set (i.e., referenced by B directly or recursively via its predecessors; see illustration in Figure 1). 
+Similarly, if B’s miner is honest then it published B immediately, and so any honest block created after time t+D belongs to B’s future set.
+As a result, the set of honest blocks in B’s anticone – which we denote anticone h(B)– is typically small, and consists only of blocks created in the interval[t−D,t+D].^2 
+In other words, the probability that an honest block B will suffer a large honest anticone is small:
+Pr (|anticone h(B)|> k)∈ O
+我们如何区分诚实块（即由协作节点挖的块）和不诚实块？
+回想一下，DAG挖矿协议指示矿工通过引用DAG的“末端”，在其新块中确认其本地观察到的整个DAG。
+因此，如果块B在时间t由一个诚实的矿工挖出，那么在时间t-D之前发布的任何块都会被该矿工接收，因此会在B的过去集中（即，由B直接引用或通过其祖先递归地引用;参见 图1中的插图）。
+同样，如果B的矿工是诚实的，并立即发布了B，所以在时间t + D之后创建的任何诚实的块都属于B的未来集。
+因此，B的待序集 - 我们表示为anticone h(B) - 中的诚实块集通常很小，并且只包含在时段[t-D，t + D]中创建的块。^ 2
+换句话说，一个诚实的块B会面临一个大的诚实的待序集的可能性很小：
+Pr (|anticone h (B)| > k) ∈ O(e^−C·k) , for some constant C > 0 (this stems from a bound on the Poisson distribution’s tail). 
+We rely on this property and set PHANTOM’s parameter k such that the latter probability is smaller than δ, for some predefined δ > 0 ; 
+see discussion in Section 4.
+Following this intuition, the set of honest blocks (save perhaps a fraction δ thereof) is guaranteed to form a k-cluster.
+Pr（| anticone h（B）|> k）∈O（e-C·k），对于某个常数C> 0（这源于泊松分布尾部的边界）。
+我们依赖于这个性质，并且设定PHANTOM的参数k，使得后者的概率小于δ，对于某个预定义的δ> 0;
+请参阅第4节中的讨论。
+遵循这种直觉，诚实的块集（保存可能的分数δ）保证形成k-群。
 
-#### (
-
-```
-e−C·k
-```
-#### )
-
-```
-, for some constantC > 0 (this stems from a bound
-```
-(^2) Note that, in contrast toanticoneh(B), an attacker can easily increase the size ofanticone(B), for any block
-B, by creating many blocks that do not referenceBand that are kept secret so thatBcannot reference them.
-
-
-on the Poisson distribution’s tail). We rely on this property and set PHANTOM’s parameterk
-such that the latter probability is smaller thanδ, for some predefinedδ > 0 ; see discussion in
-Section 4.
-Following this intuition, the set of honest blocks (save perhaps a fractionδ thereof) is
-guaranteed to form ak-cluster.
+(^2) Note that, in contrast to anticone h(B), an attacker can easily increase the size of anticone(B), for any block
+B, by creating many blocks that do not referenceBand that are kept secret so that B cannot reference them.
 
 Definition 1.Given a DAGG= (C,E), a subsetS⊆ Cis called ak-cluster, if∀B ∈S:
 |anticone(B)∩S|≤k.
 
-Note that the attacker can easily createk-clusters as well, e.g., by structuring his blocks in a
+Note that the attacker can easily create k-clusters as well, e.g., by structuring his blocks in a
 single chain. Fortunately, we can leverage the fact that the group of honest miners possesses a
-majority of the computational power, and look at thelargestk-cluster. We argue that the latter
+majority of the computational power, and look at the largest k-cluster. We argue that the latter
 represents, in most likelihood, blocks that were mined properly by cooperating nodes. Refer to
 Figure 2 for an illustration of the largest 3 -cluster in a given blockDAG. Identifying this set in
 general DAGs turns out to be computationally infeasible, and so in practice our protocol uses a
 greedy algorithm which is good enough for our purposes.
-We term this selection of ak-cluster acolouring of the DAG, and use the colours blue and
+We term this selection of ak-cluster a colouring of the DAG, and use the colours blue and
 red as a convention for blocks inside and outside the chosen cluster, respectively.
 
 B. Step #1: recognizing honest blocks
