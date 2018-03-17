@@ -424,6 +424,8 @@ Output:BLUEk(G)– the dense-set ofG
 10: addBtoBLUEk(G)
 11: returnBLUEk(G)
 
+译者注：arg max即“argument of the maximum“的缩写，直译就是”最大值的自变量“，意思是使arg max后面所跟的公式达到最大值的自变量的取值。在上面算法中就是指拥有最多蓝色祖先区块的G的末端区块。
+
 Algorithm 2Ordering of the DAG
 Input:G– a block DAG,k– the propagation parameter
 Output:ord(G)– an ordered list containing all ofG’s blocks
