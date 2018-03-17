@@ -130,7 +130,7 @@ this is explained in detail in Section 4, following the formal framework specifi
 In practice, the Maximum k-cluster SubDAG is NP hard (see problem [GT26] in [2]).
 PHANTOM works therefore with a variant of this problem, using a greedy algorithm approach.
 The algorithm will be given in Sections 2, and some interesting variants in Section 6.  
-在实践中，最大k-群SubDAG是NP问题（参见[2]中的问题[GT26]）。
+在实践中，最大k-集群SubDAG是NP问题（参见[2]中的问题[GT26]）。
 因此，PHANTOM使用贪婪算法的方法来解决这个问题的一个变种。
 该算法将在第2节中给出，以及第6节中的一些有趣变体。
 
@@ -161,10 +161,10 @@ For instance, block E has 6 blue blocks in its anticone (B,C,D,F,G,I);
 these blocks didn’t reference E, presumably because E was withheld from their miners. 
 Similarly, block K admits 6 blue blocks in its anticone (B,C,G,F,I,J); 
 presumably, its malicious miner received already some blocks from(B,C,D,G), but violated the mining protocol by not referencing them.  
-**图2：** 给定DAG中最大的 _3-群_ 的示例：A，B，C，D，F，G，I，J（蓝色）。
+**图2：** 给定DAG中最大的 _3-集群_ 的示例：A，B，C，D，F，G，I，J（蓝色）。
 很容易验证这些蓝色块中每个蓝色块在其待序集中最多有3个蓝色块，并且（稍微不容易）该集合是具有该属性的最大集合。
 设置PHANTOM的互连参数k = 3意味着最多4个块被假定为在每个延迟单元内创建，因此典型的待序集尺寸不应该超过3。
-最大的 _3-群_ 以外的块E，H，K（红色）属于攻击者（很大可能）。
+最大的 _3-集群_ 以外的块E，H，K（红色）属于攻击者（很大可能）。
 例如，区块E的待序集有6个蓝色块（B，C，D，F，G，I）。
 这些区块没有引用E，大概是因为E被矿工扣留。
 类似地，区块K接受在其待序集（B，C，G，F，I，J）中有6个蓝色方块;
@@ -255,8 +255,8 @@ For instance, with regards to the Payments application, a transaction is consist
 Our work is agnostic to the definition of the Consistency rule. 
 The contribution of PHANTOM is its implementation of the first two steps described above, which we now turn to describe.
 1）使用DAG的结构，我们在其中识别出连接良好的区块集群;
-很有可能，被诚实挖出的块属于这个群集，反之亦然。
-2）我们用某种方式将DAG天然的偏序扩展为全序，该方式奖励群集内的块，并对集群外的块进行惩罚。
+很有可能，被诚实挖出的块属于这个集群，反之亦然。
+2）我们用某种方式将DAG天然的偏序扩展为全序，该方式奖励集群内的块，并对集群外的块进行惩罚。
 3）块的顺序也会引发交易的顺序(译注：应该是指，如果块A的顺序大于块B，则块A内的所有交易的顺序都大于块B内的交易);
 同一块的交易根据它们在内部出现的顺序排序.
 我们按照此顺序遍历所有交易，并接受每一笔与迄今已确认的交易一致（根据基本的一致性概念）的交易。
@@ -266,7 +266,7 @@ The contribution of PHANTOM is its implementation of the first two steps describ
 PHANTOM的贡献在于实现了上述的前两个步骤，现在我们来描述它们。
 
 A. Intuition  
-A. 直觉
+A. 洞察
 
 How can we distinguish between honest blocks (i.e., blocks mined by cooperating nodes) and dishonest ones? 
 Recall that the DAG mining protocol instructs a miner to acknowledge in its new block the entire DAG it observes locally, by referencing the “tips” of the DAG. 
@@ -274,37 +274,40 @@ Thus, if block B was mined at time t by an honest miner, then any block publishe
 Similarly, if B’s miner is honest then it published B immediately, and so any honest block created after time t+D belongs to B’s future set.
 As a result, the set of honest blocks in B’s anticone – which we denote anticone h(B)– is typically small, and consists only of blocks created in the interval[t−D,t+D].^2 
 In other words, the probability that an honest block B will suffer a large honest anticone is small:
-Pr (|anticone h(B)|> k)∈ O
+Pr (|anticone h(B)|> k)∈ O  
 我们如何区分诚实块（即由协作节点挖的块）和不诚实块？
 回想一下，DAG挖矿协议指示矿工通过引用DAG的“末端”，在其新块中确认其本地观察到的整个DAG。
-因此，如果块B在时间t由一个诚实的矿工挖出，那么在时间t-D之前发布的任何块都会被该矿工接收，因此会在B的过去集中（即，由B直接引用或通过其祖先递归地引用;参见 图1中的插图）。
+因此，如果块B在时间t由一个诚实的矿工挖出，那么在时间t-D之前发布的任何块都会被该矿工接收，因此会在B的过去集中（即，由B直接引用或通过其祖先递归地引用;参见 图1中的图解）。
 同样，如果B的矿工是诚实的，并立即发布了B，所以在时间t + D之后创建的任何诚实的块都属于B的未来集。
-因此，B的待序集 - 我们表示为anticone h(B) - 中的诚实块集通常很小，并且只包含在时段[t-D，t + D]中创建的块。^ 2
-换句话说，一个诚实的块B会面临一个大的诚实的待序集的可能性很小：
+因此，B的待序集中的诚实块集- 我们表示为anticone h(B) - 通常很小，并且只包含在时段[t-D，t + D]中创建的块。^ 2
+换句话说，一个诚实的块B会面临一个大的诚实的待序集的可能性很小：  
 Pr (|anticone h (B)| > k) ∈ O(e^−C·k) , for some constant C > 0 (this stems from a bound on the Poisson distribution’s tail). 
 We rely on this property and set PHANTOM’s parameter k such that the latter probability is smaller than δ, for some predefined δ > 0 ; 
 see discussion in Section 4.
-Following this intuition, the set of honest blocks (save perhaps a fraction δ thereof) is guaranteed to form a k-cluster.
-Pr（| anticone h（B）|> k）∈O（e-C·k），对于某个常数C> 0（这源于泊松分布尾部的边界）。
-我们依赖于这个性质，并且设定PHANTOM的参数k，使得后者的概率小于δ，对于某个预定义的δ> 0;
+Following this intuition, the set of honest blocks (save perhaps a fraction δ thereof) is guaranteed to form a k-cluster.  
+对于某个常数C> 0, Pr（| anticone h（B）|> k）∈O（e-C·k）（这源于泊松分布尾部的边界）。  
+我们根据这个性质，并且设定PHANTOM的参数k，使得后者的概率小于某个预定义的大于0的δ;
 请参阅第4节中的讨论。
-遵循这种直觉，诚实的块集（保存可能的分数δ）保证形成k-群。
+遵循这种洞察，诚实的块集（可能因此要保存一个分数δ）能保证形成k-集群。
 
-(^2) Note that, in contrast to anticone h(B), an attacker can easily increase the size of anticone(B), for any block
-B, by creating many blocks that do not referenceBand that are kept secret so that B cannot reference them.
+(^2) Note that, in contrast to anticone h(B), an attacker can easily increase the size of anticone(B), for any block B, by creating many blocks that do not reference B and that are kept secret so that B cannot reference them.
+(^2) 注意，与 anticone h（B）相比，对于任何块B,攻击者可以通过创建许多不引用B并且保密的块来很容易地增加 anticone（B）的大小以至于B不能引用它们。
 
-Definition 1.Given a DAGG= (C,E), a subsetS⊆ Cis called ak-cluster, if∀B ∈S:
-|anticone(B)∩S|≤k.
+**Definition 1.** Given a DAG G= (C,E), a subset S⊆ C is called a k-cluster, if ∀B ∈S: |anticone(B)∩S|≤k.
+**定义1** 给定一个DAG G =（C，E），如果 ∀B ∈S: |anticone(B)∩S|≤k，则子集S⊆C被称为k-集群。
 
-Note that the attacker can easily create k-clusters as well, e.g., by structuring his blocks in a
-single chain. Fortunately, we can leverage the fact that the group of honest miners possesses a
-majority of the computational power, and look at the largest k-cluster. We argue that the latter
-represents, in most likelihood, blocks that were mined properly by cooperating nodes. Refer to
-Figure 2 for an illustration of the largest 3 -cluster in a given blockDAG. Identifying this set in
-general DAGs turns out to be computationally infeasible, and so in practice our protocol uses a
-greedy algorithm which is good enough for our purposes.
-We term this selection of ak-cluster a colouring of the DAG, and use the colours blue and
-red as a convention for blocks inside and outside the chosen cluster, respectively.
+Note that the attacker can easily create k-clusters as well, e.g., by structuring his blocks in a single chain. 
+Fortunately, we can leverage the fact that the group of honest miners possesses a majority of the computational power, and look at the largest k-cluster. 
+We argue that the latter represents, in most likelihood, blocks that were mined properly by cooperating nodes. 
+Refer to Figure 2 for an illustration of the largest 3 -cluster in a given blockDAG. 
+Identifying this set in general DAGs turns out to be computationally infeasible, and so in practice our protocol uses a greedy algorithm which is good enough for our purposes.
+We term this selection of a k-cluster a colouring of the DAG, and use the colours blue and red as a convention for blocks inside and outside the chosen cluster, respectively.  
+请注意，攻击者也可以很容易地创建k-集群，例如，通过在单个链中构建他的块。
+幸运的是，我们可以利用这样一个事实，即诚实的矿工群体拥有大部分计算能力，并且只会考虑最大的k-集群。
+我们认为后者很可能代表合作节点正确挖出的区块。
+请参考图2，查看给定blockDAG中最大的3-集群的图示。
+在一般情况下确定这个集合DAG在计算上是不可行的，所以在实践中我们的协议使用了一个对我们的目标来说足够实用的贪婪算法。
+我们称这种K-集群的选择为DAG的着色，并按照惯例将蓝色和红色分别表示所选集群内部和外部块。
 
 B. Step #1: recognizing honest blocks
 
