@@ -1,8 +1,6 @@
 > Source：https://eprint.iacr.org/2018/104.pdf
 > TranStudy: https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM%20-%20A%20Scalable%20BlockDAG%20protocol.md
 
-## Source：https://eprint.iacr.org/2018/104.pdf
-
 # PHANTOM: A Scalable BlockDAG protocol
 # PHANTOM: 可扩展的 BlockDAG 协议
 
@@ -219,19 +217,19 @@ PHANTOM解决了这个问题，并提供了DAG块的线性排序。
 PHANTOM的线性排序不会没有成本 - 确认时间比SPECTRE中的要慢。
 在第7节中，我们描述了同一个系统如何同时享有这两种协议中的优点。
 
-Off-chain scaling.Another totally different approach keeps block creations infrequent and their sizes small (so that propagation delay remains negligible), yet this slow chain is not used for recording the entire economic activity. 
+**Off-chain scaling.** Another totally different approach keeps block creations infrequent and their sizes small (so that propagation delay remains negligible), yet this slow chain is not used for recording the entire economic activity. 
 Instead, most of the transactions occur outside the chain, with better scalability, and the chain itself is used for the purpose of resolving conflicts or settling transactions. 
 One example is Hybrid Consensus [6], improving over [4], which uses the chain to select a rotating committee of nodes which in turn run a classic consensus protocol to confirm transactions in the corresponding epoch. 
-Another well known proposed solution in the same category is the Lightning Network [7] (LN), where transactions are processed off-chain over over a network of micropayment channels, and the blockchain is used only for settlement
-of these channels.  
+Another well known proposed solution in the same category is the Lightning Network [7] (LN), where transactions are processed off-chain over over a network of micro payment channels, and the blockchain is used only for settlement of these channels.  
 **链下扩容.** 另一种完全不同的方法是使块创建频度降低并且让尺寸变小(因此传播延迟可以忽略不计)，所以这个慢速链不会记录整个经济活动。
 相反，大多数交易发生在链外，具有更好的可扩展性，链本身用于解决冲突或结算交易。
+一个例子是混合共识[6]，对[4]的改进，它使用链选择一个循环的节点委员会，然后运行经典的共识协议来确认相应时期的交易。
+另一个众所周知的同类解决方案是闪电网络 [7]（LN），其中交易是通过微支付通道网络进行离线处理的，区块链仅用于结算这些通道。
 
 Our work is orthogonal and complementary to these solutions, and can enhance their operation by orders-of-magnitude. 
 For instance, when the DAG is used to serve channel-settlement transactions of LN, it allows for a much cheaper access (due to larger supply of blocks and capacity) and much faster processing than if the LN were operating over a chain.  
 我们的工作与这些解决方案是不相关的和互补的，并且可以按数量级增强起运行。  
 例如，当DAG用于闪电网络的通道结算交易时，它允许更低成本的访问(由于有更大的块数量和容量的供应)以及比闪电网络运行在链上快得多的处理速度。
-
 
 (^1) Contracts that do not require such a strict ordering can indeed be served under SPECTRE as well.  
 (^1) 不需要这种严格排序的合约也可以在SPECTRE下提供。
