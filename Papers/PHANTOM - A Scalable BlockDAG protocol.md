@@ -73,6 +73,7 @@ anticone(H) = {B,F,I,L}– the order between these blocks and H is ambiguous.
 Deciding the order between H and blocks in anticone(H) is the main challenge of a DAG protocol.
 tips(G) = {J,L,M}– leaf-blocks, namely, blocks with in-degree 0; 
 these will be referenced in the header of the next block  
+
 **图 1:** 块DAG G的一个例子。  
 每个块都会引用矿工在创建时知道的所有块。  
 DAG术语，以块H为例子，如下所示：  
@@ -83,8 +84,11 @@ anticone(H) = {B,F,I,L} - 这些块与H之间的顺序是不明确的。(译注�
 tips(G) = {J,L,M - 叶块，即入度为0的块;
 这些将在下一个块的头部中引用
 
+译注：anticone直译过来是“反锥体“。实际上anticone(H)就是既不是H的父辈，也不是H的后背，也不是H本身的块组成的集合。当图很庞大的时候，H的父辈集和后辈集的形状分别就像一个以H为顶端的锥体（cone）。作者可能是基于这一点将父辈、后辈及H以外的区块集命名为反锥体（anticone）。
+
 In order to guarantee this property, the creation of blocks is regulated by the protocol to occur once every 10 minutes. 
 As a result, Bitcoin suffers from a highly restrictive throughput in the order of 3-7 transactions per second (tps).  
+
 为了保证这一特性，协议规定块的创建每10分钟进行一次。
 因此，比特币的吞吐量高度受限, 大约每秒3-7次交易(tps)。
 
