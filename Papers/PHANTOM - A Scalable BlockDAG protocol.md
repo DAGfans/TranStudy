@@ -116,9 +116,9 @@ DAG协议的核心挑战是如何将嵌入其中的交易排序，以便在发�
 根据这个观察以及诚实节点占据大部分散列率(译注：可以理解为算力)的假设，我们认为具有良好互连性的最大的区块集合有很高的概率由诚实节点挖出。 
 因此，给定一个blockDAG，我们想要解决下面的优化问题：
 
-> **Maximum** _k_**-cluster SubDAG** (_MCSk_)  
-> **Input:** DAG _G= (C,E) _   
-> **Output:** A subset S ⊂ C of maximum size, s.t. | anticone (B) ∩ S | ≤ k for all B ∈ S .
+> **Maximum** _k_**-cluster SubDAG** (_MCS<sub>k</sub>_)  
+> **Input:** DAG _G= (C,E)_   
+> **Output:** A subset _S<sup>\*</sup> ⊂ C_ of maximum size, s.t. _|anticone(B)∩S<sup>*</sup>|≤k_ for all _B∈S<sup>\*</sup>_ .
 
 Here, anticone(B) is the set of blocks in the DAG which did not reference B(directly or indirectly via their predecessors) and were not referenced by B(directly or indirectly via B’s predecessors). 
 The parameter k is related to an assumption that PHANTOM makes regarding the network’s propagation delay; 
@@ -280,7 +280,7 @@ Similarly, if B’s miner is honest then it published B immediately, and so any 
 
 As a result, the set of honest blocks in B’s anticone – which we denote anticone h(B)– is typically small, and consists only of blocks created in the interval[t−D,t+D].^2 
 In other words, the probability that an honest block B will suffer a large honest anticone is small:
-Pr(|anticone h (B)| > k) ∈ O(e^−C·k) , for some constant C > 0 (this stems from a bound on the Poisson distribution’s tail). 
+_Pr(|anticone<sub>h</sub>(B)|>k)∈O(e<sup>−C·k</sup>)_ , for some constant C > 0 (this stems from a bound on the Poisson distribution’s tail). 
 We rely on this property and set PHANTOM’s parameter k such that the latter probability is smaller than δ , for some predeﬁned δ > 0; 
 see discussion in Section 4.  
 因此，B的待序集中的诚实块集- 我们表示为anticone h(B) - 通常很小，并且只包含在时段[t-D，t + D]中创建的块。^ 2
@@ -315,10 +315,10 @@ We term this selection of a k-cluster a colouring of the DAG, and use the colour
 ##### B. 步骤 #1：识别诚实的块
 
 Algorithm 1 below selects a k-cluster in a greedy fashion. 
-We denote by BLUE_k(G) the set of blocks that it returns. 
+We denote by BLUE<sub>k</sub>(G) the set of blocks that it returns. 
 The algorithm operates as follows:  
 下面的算法1以贪婪的方式选择k-集群。
-我们用BLUE_k(G)表示它返回的一组块。
+我们用BLUE<sub>k</sub>(G)表示它返回的一组块。
 该算法操作如下：
 
 > 1) Given a DAG G, the algorithm recursively computes on the past set of each tip in G.^3 
@@ -332,70 +332,70 @@ This outputs a k-cluster for each tip.^4 (lines 4-5)
 > 3) 最后，它试图扩展这个集合，并添加任何相对于该集合来说其待序集足够小的块。 (第8-10行)
 
 (^3) A tip is a leaf-block, that is, a block not referenced by other blocks. See Figure 1.
-(^4) Observe that, for any block B, the DAG past(B) is fixed once and for all at B’s creation, and in particular the set BLUE_k(past(B)) cannot be later modified. 
-Thus, in an actual implementation of Algorithm 1, the sets BLUE_k(B) will have been computed already (by previous calls) and stored, and there will be no need to recompute them.  
+(^4) Observe that, for any block B, the DAG past(B) is fixed once and for all at B’s creation, and in particular the set BLUE<sub>k</sub>(past(B)) cannot be later modified. 
+Thus, in an actual implementation of Algorithm 1, the sets BLUE<sub>k</sub>(B) will have been computed already (by previous calls) and stored, and there will be no need to recompute them.  
 (^3) 末端是一个叶块，也就是一个没有被其他块引用的块。 参见图1
-(^4) 可见，对于任何块B，DAG的past(B)在B的创建时被永久地固定了，特别是集合BLUE_k(past(B))不能被过后修改。
-因此，在算法1的实际实现中，集合BLUE_k(B)已经(通过之前的调用)被计算并被存储，并且将不需要重新计算它们。
+(^4) 可见，对于任何块B，DAG的past(B)在B的创建时被永久地固定了，特别是集合BLUE<sub>k</sub>(past(B))不能被过后修改。
+因此，在算法1的实际实现中，集合BLUE<sub>k</sub>(B)已经(通过之前的调用)被计算并被存储，并且将不需要重新计算它们。
 
-Intuitively, we first let the DAG inherit the colouring of its highest scoring tip, B max, where the score of a block is defined as the number of blue blocks in its past: score(B) :=|BLUE_k(past(B))|. 
-Then, we proceed to colour blocks in anticone(B max) in a way that preserves the k-cluster property. 
-This inheritance implies that the greedy algorithm operates as a chain-selection rule—B max is the chain tip, the highest scoring tip in past(B max) is its predecessor in the chain, and so on. 
-We denote this chain by Chn(G) = (genesis = Chn_0(G),Chn_1(G),...,Chn_h(G)). 
+Intuitively, we first let the DAG inherit the colouring of its highest scoring tip, B<sub>max</sub>, where the score of a block is defined as the number of blue blocks in its past: score(B) :=|BLUE<sub>k</sub>(past(B))|. 
+Then, we proceed to colour blocks in anticone(B<sub>max</sub>) in a way that preserves the k-cluster property. 
+This inheritance implies that the greedy algorithm operates as a chain-selection rule—B<sub>max</sub> is the chain tip, the highest scoring tip in past(B<sub>max</sub>) is its predecessor in the chain, and so on. 
+We denote this chain by Chn(G) = (genesis = Chn<sub>0</sub>(G),Chn<sub>1</sub>(G),...,Chn<sub>h</sub>(G)). 
 The reasoning behind this procedure is very similar to that given in Section 1 in relation to the Maximum k-cluster SubDAG problem. 
 They only differ in that, instead of searching for the maximal k-cluster, we are hoping to maximize it via the tip with maximal cluster and then adding blocks from its anticone. 
 Thus, the reader should think of our algorithm (informally) as approximating the optimal solution to the Maximum k-cluster SubDAG problem.  
-直觉上，我们首先让DAG继承其得分最高的末端(B max)的着色，其中一个块的得分被定义为过去的蓝色块的数量：score(B) :=|BLUE_k(past(B))|。
-然后，我们继续以保留k-集群属性的方式给anticone（B max）着色。
-这种继承意味着贪婪算法作为一个链选择规则运行--B max是链末端，past(B max)中得分最高的是它的上一级，以此类推。
-我们用Chn（G）=（genesis = Chn_0（G），Chn_1（G），...，Chn_h（G））表示这条链。
+直觉上，我们首先让DAG继承其得分最高的末端(B<sub>max</sub>)的着色，其中一个块的得分被定义为过去的蓝色块的数量：score(B) :=|BLUE<sub>k</sub>(past(B))|。
+然后，我们继续以保留k-集群属性的方式给anticone（B<sub>max</sub>）着色。
+这种继承意味着贪婪算法作为一个链选择规则运行--B<sub>max</sub>是链末端，past(B<sub>max</sub>)中得分最高的是它的上一级，以此类推。
+我们用Chn（G）=（genesis = Chn<sub>0</sub>（G），Chn<sub>1</sub>（G），...，Chn<sub>h</sub>（G））表示这条链。
 这个过程背后的推理与第1节给出的最大k-集群SubDAG问题非常相似。
 它们的区别仅在于，不是搜索最大k-集群，而是希望通过最大集群的末端使其最大化，然后从其待序集中添加块。
 因此，读者应该将我们的算法（非正式地）想象为近似最大k-集群SubDAG问题的最佳解决方案。
 
 ![fig 3](https://user-images.githubusercontent.com/22833166/37557316-b6d343a4-2a3d-11e8-8ac2-e66eab0aab45.jpg)
 
-**Fig. 3:** An example of a blockDAG G and the operation of the greedy algorithm to construct its blue set BLUE_k(G) set, under the parameter k= 3. 
+**Fig. 3:** An example of a blockDAG G and the operation of the greedy algorithm to construct its blue set BLUE<sub>k</sub>(G) set, under the parameter k= 3. 
 The small circle near each block X represents its score, namely, the number of blue blocks in the DAG past(X). 
 The algorithm selects the chain greedily, starting from the highest scoring tip M, then selecting its predecessor K(the highest scoring tip in past(M)),
 then H,D(breaking the C,D,E tie arbitrarily), and finally Genesis. 
 For methodological reasons, we add to this chain a hypothetical “virtual” block V – a block whose past equals the entire current DAG.
 Blocks in the chain(genesis,D,H,K,M,V) are marked with a light-blue shade. 
-Using this chain, we construct the DAG’s set of blue blocks,BLUE_k(G). 
+Using this chain, we construct the DAG’s set of blue blocks,BLUE<sub>k</sub>(G). 
 The set is constructed recursively, starting with an empty one, as follows: In step 1 we visit D and add genesis to the blue set (it is the only block in past(D)). 
-Next, in step 2, we visit H and add to BLUE_k(G) blocks that are blue in past(H), namely, C,D,E. 
+Next, in step 2, we visit H and add to BLUE<sub>k</sub>(G) blocks that are blue in past(H), namely, C,D,E. 
 In step 3 we visit K and add H,I; 
 note that block B is in past(K) but was not added to the blue set, since it has 4 blue blocks in its anticone. 
 In step 4 we visit M and add K to the blue set; 
 again, note that F∈past(M) could not be added to the blue set due its large blue anticone. 
-Finally, in step 5, we visit the block virtual(G) =V, and add M and L to BLUE_k(G), leaving J away due its large blue anticone.  
-**图3:** blockDAG G的一个例子，展示贪婪算法在参数k = 3下构造其蓝色集BLUE_k（G）的操作。
+Finally, in step 5, we visit the block virtual(G) =V, and add M and L to BLUE<sub>k</sub>(G), leaving J away due its large blue anticone.  
+**图3:** blockDAG G的一个例子，展示贪婪算法在参数k = 3下构造其蓝色集BLUE<sub>k</sub>（G）的操作。
 每个块X附近的小圆圈表示其得分，即DAG的past(X)中的蓝色块的数量。
 该算法贪婪地选择链，从最高得分尖端M开始，然后选择其上级K（past(M)中的最高得分的末端）
 然后H，D（从得分相同的C，D，E中随意选择），最后是创世块。
 出于方法论的原因，我们在这条链上添加了一个假设的“虚拟”块V--一个过去与当前DAG相同的块。
 链条中的块（创世块，D，H，K，M，V）标有浅蓝色阴影。
-使用这个链，我们构建了DAG的蓝色块集合, BLUE_k（G）。
+使用这个链，我们构建了DAG的蓝色块集合, BLUE<sub>k</sub>（G）。
 该集合是递归构造的，从空的开始，如下所示：在第1步中，我们访问D并将创世块添加到蓝色集合（它是past(D)中唯一的块）。
-接下来，在步骤2中，我们访问H并添加past(H)中蓝色的块到BLUE_k(G)块集中，即C，D，E。
+接下来，在步骤2中，我们访问H并添加past(H)中蓝色的块到BLUE<sub>k</sub>(G)块集中，即C，D，E。
 在步骤3中，我们访问K并添加H，I;
 注意块B已经在past(K)中，但还没有添加到蓝色集合中，因为它的待序集中有4个蓝色块。
 在步骤4中，我们访问M并将K添加到蓝色集合;
 再一次请注意，F∈past(M)由于其大蓝色待序集而无法添加到蓝色集合中。
-最后，在步骤5中，我们访问块虚拟（G）= V，并将M和L添加到BLUE_k（G）中，J由于其大的蓝色待序集而被抛弃。
+最后，在步骤5中，我们访问块虚拟（G）= V，并将M和L添加到BLUE<sub>k</sub>（G）中，J由于其大的蓝色待序集而被抛弃。
 
 We demonstrate the operation of this algorithm in Figure 3. 
 Another example appears in Figure 4.
 Note that the recursion halts because for any block B∈G:|past(B)|<|G|.
-Let us specify the order in which blocks in anticone(B max) should be visited, in line 8 of the algorithm. 
-We suggest inserting all blocks in anticone(B max) into a lexicographical topological priority queue, which we denote topo_queue. 
+Let us specify the order in which blocks in anticone(B<sub>max</sub>) should be visited, in line 8 of the algorithm. 
+We suggest inserting all blocks in anticone(B<sub>max</sub>) into a lexicographical topological priority queue, which we denote topo_queue. 
 The priority of a block is represented by the size of its past set;^5 
 in case of ties, the block with lowest hash ID is chosen.  
 我们在图3中演示该算法的操作。
 另一个例子出现在图4中。
 请注意，递归会因为任何块B∈G:|past(B)|<|G|而停止。
-让我们在算法的第8行中指定应该被访问的anticone(B max)中块的顺序。
-我们建议将anticone(B max)中所有的块插入到一个词典拓扑优先级队列中，我们将其表示为topo_queue。
+让我们在算法的第8行中指定应该被访问的anticone(B<sub>max</sub>)中块的顺序。
+我们建议将anticone(B<sub>max</sub>)中所有的块插入到一个词典拓扑优先级队列中，我们将其表示为topo_queue。
 块的优先级由其过去集的大小表示; ^5
 在优先级相同的情况下，选择ID的散列值最小的块。
 
@@ -416,11 +416,11 @@ To summarize the function that the blue set satisfies, we state the following:
 **Proposition 2.** Let _G=G^pub__∞_ be the eventual DAG containing all blocks in history, and let B be an arbitrary block in G.
 **命题2.** 假定 _G = G^pub__∞_ 是包含历史中所有块的最终DAG，B为G中的任意块。
 
-> - If B was created by an honest miner, the probability that B will not belong to BLUE_k(G) decreases exponentially with k.
-> - If B was created by a malicious miner, and was withheld for a time interval of length T, the probability that B will belong to BLUE_k(G) decreases exponentially with T.
+> - If B was created by an honest miner, the probability that B will not belong to BLUE<sub>k</sub>(G) decreases exponentially with k.
+> - If B was created by a malicious miner, and was withheld for a time interval of length T, the probability that B will belong to BLUE<sub>k</sub>(G) decreases exponentially with T.
 
-> - 如果B由诚实的矿工创建，则B不会属于BLUE_k（G）的概率随k的增大而指数式减小。
-> - 如果B由恶意矿工创建，并且在长度为T的时间间隔内被扣留，那么B会属于BLUE_k(G)的概率将随着T的增大而指数式减小。
+> - 如果B由诚实的矿工创建，则B不会属于BLUE<sub>k</sub>（G）的概率随k的增大而指数式减小。
+> - 如果B由恶意矿工创建，并且在长度为T的时间间隔内被扣留，那么B会属于BLUE<sub>k</sub>(G)的概率将随着T的增大而指数式减小。
 
 The proof of this proposition follows from the proof of Claim 3 in Section 5.
 这个命题的证明来自第5节中的断言3的证明。
@@ -467,51 +467,52 @@ In this way, blocks that were withheld by an attacker will not precede blocks th
 通过这种方式，攻击者扣留的区块将不会在正确挖出并按时发布的区块（大致由蓝色区块表示）之前。
 
 
-```
-Algorithm 1 Selection of a blue set
-Input:G– a block DAG,k– the propagation parameter
-Output:BLUE_k(G)– the dense-set of G
-1:function CALC-BLUE(G,k)
-2: if B==genesis then
-3: return{genesis}
-4: for B∈tips(G) do
-5: BLUE_k(B)←CALC-BLUE(past(B),k)
-6: B max←arg max{|BLUE_k(B)|:B∈tips(G)}(and break ties arbitrarily)
-7: BLUE_k(G)←BLUE_k(B max)∪{B max}
-8: for B∈anticone(B max) do in some topological ordering
-9: if|anticone(B)∩BLUE_k(G)|≤k then
-10: add B to BLUE_k(G)
-11: return BLUE_k(G)
-```
+> **Algorithm 1** Selection of a blue set
+
+**Input:** G – a block DAG, k – the propagation parameter   
+**Output:**  BLUE k (G) – the dense-set of G
+1. **function** CALC-B L UE(G, k )
+2. >   **if** B == genesis **then**
+3. >>    **return** {genesis}
+4. >   **for** B ∈ tips(G) **do**
+5. >>  BLUE<sub>k</sub>(B) ←CALC-BLUE(past (B) , k)
+6. >   B<sub>max</sub> ← arg max {|BLUE k (B)| : B ∈ tips(G)} (and break ties arbitrarily)
+7. >> BLUE<sub>k</sub>(G) ← BLUE k (B<sub>max</sub>) ∪ {B<sub>max</sub>}
+8. >> **for** B ∈ anticone (B max ) **do** in some topological ordering
+9. >>> **if** |anticone (B) ∩ BLUE k (G)| ≤ k **then**
+10. >>>> add B to BLUE k (G)
+11. >> **return** BLUE k (G)
 
 译者注：arg max即“argument of the maximum“的缩写，直译就是”最大值的自变量“，意思是使arg max后面所跟的公式达到最大值的自变量的取值。在上面算法中就是指拥有最多蓝色祖先区块的G的末端区块。
 
-```
-Algorithm 2 Ordering of the DAG
-Input:G– a block DAG,k– the propagation parameter
-Output:ord(G)– an ordered list containing all of G’s blocks
-1:function ORDER(G,k)
-2: initialize empty queue topo_queue
-3: initialize empty ordered listL
-4: BLUE_k(G)←CALC-BLUE(G,k)
-5: topo_queue.push(genesis)
-6: while topo_queue <> ∅ do
-7: B←topo_queue.pop()
-8: L.add(B)(B is added to the end of the list)
-9: for all C∈children B∩BLUE_k(G) do
-10: for all D∈past(C)∩anticone(b)\L do
-11: topo_queue.push(D)
-12: topo_queue.push(C)
-13: ord(G)←L
-14: return ord(G)
-```
+> **Algorithm 2** Ordering of the DAG
+
+<hr>
+
+**Input:** G – a block DAG, k – the propagation parameter   
+**Output:**  ord(G) – an ordered list containing all of G’s blocks
+
+1. **function** ORDER(G, k )
+2. >   initialize empty queue topo_queue
+3. >    initialize empty ordered list L
+4. >   BLUE<sub>k</sub>(G) ←CALC-BLUE(G, k)
+5. >  topo_queue.push (genesis)
+6. >   **while** topo_queue =6 ∅ **do**  
+7. >> B ← topo_queue.pop()
+8. > L.add(B) (B is added to the end of the list)
+9. > **for all** C ∈ childrenB ∩ BLUE<sub>k</sub>(G) **do**
+10. >>> **for all** D ∈ past (C) ∩ anticone (b) \ L **do**
+11. >>>> topo_queue.push(D)  
+12. >>> topo_queue.push(C)
+13. > ord(G) ← L
+14. > **return** ord(G) 
 
 ##### D. Implications to transaction security
 ##### D. 对交易安全的影响
 
 We now demonstrate how the above procedures of PHANTOM enable safe acceptance of transactions. 
 Consider a transaction tx∈B, where B is a block in the blue set of G. 
-In order to render tx invalid, a conflicting transaction tx̄  must precede it in the order, and must therefore be embedded in a block C∈anticone(B) that precedes B.^6 
+In order to render tx invalid, a conflicting transaction <ruby>tx<rt>__</rt></ruby> must precede it in the order, and must therefore be embedded in a block C∈anticone(B) that precedes B.^6 
 The ordering procedure implies that, for C to precedes B, it must either be a blue block or in the past set of a blue block. 
 In both cases,C could not have been withheld for too long, by the second guarantee of Proposition 2.
 Thus, the recipient of tx can wait for the blue set around B to become sufficiently robust to reorgs, and then approve tx. 
@@ -873,7 +874,7 @@ Our proof relies on the following lemma, which states that if some blockBhas the
 that its anticone contains no blue blocks, then all blue blocks in its past precede all blocks
 outside its past. We call this the Hourglass property:
 
-Lemma 7. If for someB̂∈G,BLUE_k(G)∩anticone
+Lemma 7. If for someB̂∈G,BLUE<sub>k</sub>(G)∩anticone
 
 #### (
 
@@ -892,7 +893,7 @@ Lemma 7. If for someB̂∈G,BLUE_k(G)∩anticone
 
 #### ∩
 
-BLUE_k(G) and∀C /∈past
+BLUE<sub>k</sub>(G) and∀C /∈past
 
 #### (
 
@@ -906,7 +907,7 @@ BLUE_k(G) and∀C /∈past
 In Figure 4 we provide an example of an Hourglass block. The proof of this lemma is
 straightforward from the operation of Algorithm 2:
 
-Proof of Lemma 7.First note that if BLUE_k(G)∩anticone
+Proof of Lemma 7.First note that if BLUE<sub>k</sub>(G)∩anticone
 
 #### (
 
@@ -915,7 +916,7 @@ Proof of Lemma 7.First note that if BLUE_k(G)∩anticone
 #### )
 
 ```
-=∅thenB̂∈BLUE_k(G).
+=∅thenB̂∈BLUE<sub>k</sub>(G).
 ```
 Indeed, Algorithm 1 defines a chain,Chn(G) (see Subsection 2.2). This chain necessarily
 
@@ -937,7 +938,7 @@ intersects some block inanticone
 
 . And the intersection block must become blue
 
-itself, by lines (6-7). Thus,BLUE_k(G)∩anticone
+itself, by lines (6-7). Thus,BLUE<sub>k</sub>(G)∩anticone
 
 #### (
 
@@ -948,7 +949,7 @@ itself, by lines (6-7). Thus,BLUE_k(G)∩anticone
 ```
 =∅implies that B̂∈Chn(G) and in
 ```
-particularB̂∈BLUE_k(G).
+particularB̂∈BLUE<sub>k</sub>(G).
 Now, Algorithm 2 pushes a block into the queue only after it has pushed already all blocks
 in its past (lines 11 and 12). Therefore,topoqueuepops out blocks according to a topological
 
@@ -1024,7 +1025,7 @@ past
 
 Proof.In the proof of the previous lemma we have shown that B̂∈Chn(G). By the recursive
 operation of Algorithm 1 (lines 6-7), this implies thatGinherits the colouring ofB̂on its past:
-BLUE_k(G)∩past
+BLUE<sub>k</sub>(G)∩past
 
 #### (
 
@@ -1033,7 +1034,7 @@ BLUE_k(G)∩past
 #### )
 
 ```
-=BLUE_k
+=BLUE<sub>k</sub>
 ```
 #### (
 
@@ -1237,7 +1238,7 @@ Proof.LetE(t 0 ) denote the event defined by the following conditions:
 ```
 1) Some blockB̂was created at some timeu > t 0 by an honest node (i.e.,B̂∈Gpubu ) and
 apart fromB̂no other block was created in the time interval[u−D,u+D].^13
-2) For someT 1 , theklatest blocks inBLUE_k
+2) For someT 1 , theklatest blocks inBLUE<sub>k</sub>
 ```
 #### (
 
@@ -1296,7 +1297,7 @@ anticone
 #### )
 
 ```
-:B /∈BLUE_k
+:B /∈BLUE<sub>k</sub>
 ```
 #### (
 
@@ -1306,7 +1307,7 @@ Gpubs
 #### )
 
 ```
-∨B /̂∈BLUE_k
+∨B /̂∈BLUE<sub>k</sub>
 ```
 #### (
 
@@ -1325,7 +1326,7 @@ Proof of Claim 1.LetB ∈ anticone
 
 #### )
 
-. if B /̂ ∈ BLUE_k
+. if B /̂ ∈ BLUE<sub>k</sub>
 
 #### (
 
@@ -1337,7 +1338,7 @@ Gpubs
 ```
 we’re done. Assume
 ```
-therefore that B̂∈BLUE_k
+therefore that B̂∈BLUE<sub>k</sub>
 
 #### (
 
@@ -1464,7 +1465,7 @@ C,Goracleu
 ```
 #### )
 
-. Thus, if B̂ ∈ BLUE_k
+. Thus, if B̂ ∈ BLUE<sub>k</sub>
 
 #### (
 
@@ -1508,7 +1509,7 @@ past
 
 #### )
 
-and is therefore not inBLUE_k
+and is therefore not inBLUE<sub>k</sub>
 
 #### (
 
@@ -1517,7 +1518,7 @@ Gpubs
 ```
 #### )
 
-. In particular,B /∈BLUE_k
+. In particular,B /∈BLUE<sub>k</sub>
 
 #### (
 
@@ -1570,7 +1571,7 @@ Xr:=Xr^1 −Xr^2. (5)
 ```
 Let us focus first on the evolution of the processXrbetween time 0 and timeu−T 1. We refer to
 the leadXu−T 1 that the attacker obtained at the end of this stage as “the premining gap”; see [8].
-LetB 1 rbe the argmax ofXr^1 , and letCr^1 be the latest block in Gpubr ∩BLUE_k(past(Br 1 )),
+LetB 1 rbe the argmax ofXr^1 , and letCr^1 be the latest block in Gpubr ∩BLUE<sub>k</sub>(past(Br 1 )),
 namely, the latest honest block which is blue in the attacker chain. Recall that for now we are
 assuming that all attacker blocks that were premined were kept secret until after timeu−Dmax.
 Observe that at mostkblocks that were created by the attacker beforetime
@@ -1583,7 +1584,7 @@ Cr^1
 #### )
 
 can be in
-BLUE_k(past(Br 1 )) and can contribute to the score of the attacker’s chain. Thus, between
+BLUE<sub>k</sub>(past(Br 1 )) and can contribute to the score of the attacker’s chain. Thus, between
 time
 
 #### (
@@ -1686,7 +1687,7 @@ Part IV:Let us turn to look at the evolution of(Xr) r≥u+Dmaxat the second stag
 thatXu+Dmax< 0.
 
 ```
-In Claim 1 we saw that for anyrsuch that B̂∈BLUE_k
+In Claim 1 we saw that for anyrsuch that B̂∈BLUE<sub>k</sub>
 ```
 #### (
 
@@ -1700,7 +1701,7 @@ Gpubr
 ```
 are red in Gpubr. This implies that, as long asB̂is blue in the public DAG, only attacker blocks
 
-contribute to the score of the attacker’s chain:B̂∈BLUE_k
+contribute to the score of the attacker’s chain:B̂∈BLUE<sub>k</sub>
 
 #### (
 
@@ -1720,7 +1721,7 @@ Gpubr
 
 #### :
 
-BLUE_k(past(B))\future
+BLUE<sub>k</sub>(past(B))\future
 
 #### (
 
@@ -1742,7 +1743,7 @@ u+Dmaxbelong tofuture
 ```
 ). Consequently, the attacker’s best chain grows at a rate of
 ```
-α·λat most, as this interval ([u+Dmax,∞)) as well, as long asB̂ ∈ BLUE_k
+α·λat most, as this interval ([u+Dmax,∞)) as well, as long asB̂ ∈ BLUE<sub>k</sub>
 
 #### (
 
@@ -1764,7 +1765,7 @@ are red in Gpubr. This is because we argued that at mostkblocks that were create
 (
 Cr^1
 )
-can be blue inBLUE_k(past(Br 1 )), and this is regardless ofC^1 r’s status within Gpubr (we merely used the fact that
+can be blue inBLUE<sub>k</sub>(past(Br 1 )), and this is regardless ofC^1 r’s status within Gpubr (we merely used the fact that
 Cr^1 was created by an honest node, we didn’t use the assumption thatC^1 ris blue in the honest chain).
 (^17) In fact, this probability is decreasing logarithmically askincreases.
 
@@ -1799,10 +1800,10 @@ past
 
 #### )
 
-. IfC∈BLUE_k(past(BB)) thenCcontributed to the score of the honest chain
+. IfC∈BLUE<sub>k</sub>(past(BB)) thenCcontributed to the score of the honest chain
 
 which passes throughB̂and maybe to the attacker chain as well, so its existence does not change
-the above analysis. Similarly, ifC /∈BLUE_k(past(BB)), the fact that it was published has
+the above analysis. Similarly, ifC /∈BLUE<sub>k</sub>(past(BB)), the fact that it was published has
 no consequence whatsoever on the score of the honest chain, and so we can ignore it and apply
 the same analysis as if it weren’t published.
 
@@ -1905,20 +1906,20 @@ where B is the selected tip:
 Algorithm 3Selection of a blue set
 
 Input:G– a block DAG,k– the propagation parameter
-Output:BLUE_k(G)– the dense-set of G
+Output:BLUE<sub>k</sub>(G)– the dense-set of G
 1:function CALC-BLUE(G,k)
 2: if B==genesis then
 3: return{genesis}
 4: for B∈tips(G) do
-5: BLUE_k(B)←CALC-BLUE(past(B),k)
-6: SB←BLUE_k(B)∪{B}
+5: BLUE<sub>k</sub>(B)←CALC-BLUE(past(B),k)
+6: SB←BLUE<sub>k</sub>(B)∪{B}
 7: for C∈anticone(B) in some arbitrary orderdo
 8: if|anticone(C)∩SB|≤k then
 9: addC toSB
 10: returnarg max{|SB|:B∈tips(G)}(and break ties arbitrarily)
 
 ```
-8:if|anticone(C)∩(BLUE_k(B)∪{B})|≤k then
+8:if|anticone(C)∩(BLUE<sub>k</sub>(B)∪{B})|≤k then
 9: addC toSB
 ```
 Compare this variant to Satoshi’s longest-chain rule, which can be describe as follows: each
@@ -1950,13 +1951,13 @@ and under certain circumstances. Recall that the functionRisk(B,t) measures the 
 Algorithm 4Selection of a blue set
 
 Input:G= (V,E)– a block DAG,k– the propagation parameter
-Output:BLUE_k(G)– the dense-set of G
+Output:BLUE<sub>k</sub>(G)– the dense-set of G
 1:function CALC-BLUE(G,k)
-2: BLUE_k(G)←V
-3: while∃B∈BLUE_k(G) with|anticone(B)∩BLUE_k(G)|> kdo
-4: C←argB max{|anticone(B)∩BLUE_k(G)|}(with arbitrary tie-breaking)
-5: removeCfromBLUE_k(G)
-6: return BLUE_k(G)
+2: BLUE<sub>k</sub>(G)←V
+3: while∃B∈BLUE<sub>k</sub>(G) with|anticone(B)∩BLUE<sub>k</sub>(G)|> kdo
+4: C←argB<sub>max</sub>{|anticone(B)∩BLUE<sub>k</sub>(G)|}(with arbitrary tie-breaking)
+5: removeCfromBLUE<sub>k</sub>(G)
+6: return BLUE<sub>k</sub>(G)
 
 that a certain block that did not precedes Bat timetwill later come to precede it. Recall further
 that throughput this work we used arbitrary topological orderings (over blue blocks). In light if
@@ -1964,8 +1965,8 @@ this, it would be interesting to seek for an ordering rule (over blue blocks) th
 faster. We suspect this is not a trivial task, and leave its full investigation to future work.
 The primary factor to the fact that PHANTOM cannot guarantee fast confirmation times is
 that membership in the blue set takes time to finalize. The waiting time for such finalization can
-be further increased if an attacker manages to balance the decision betweenB∈BLUE_k(G)
-andB /∈BLUE_k(G). Observe however that if a certain transaction tx∈Badmits no conflicts
+be further increased if an attacker manages to balance the decision betweenB∈BLUE<sub>k</sub>(G)
+andB /∈BLUE<sub>k</sub>(G). Observe however that if a certain transaction tx∈Badmits no conflicts
 inanticone(B), thentxcan be accepted even before the decision regardingB is finalized.
 
 A. Combining SPECTRE and PHANTOM
@@ -1991,7 +1992,7 @@ Consider the following procedure: Given a blockDAGG,
 might potentially harm the usability of SPECTRE to the Smart Contracts application.
 
 
-2) run SPECTRE on the subDAGBLUE_k(G); this determines the pairwise ordering between
+2) run SPECTRE on the subDAGBLUE<sub>k</sub>(G); this determines the pairwise ordering between
 any twoblueblocksBandC
 3) for any blue blockBand red block C, ifC∈past(B) then determine thatCprecedes
 B, otherwise determine that BprecedesC
