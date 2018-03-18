@@ -84,7 +84,7 @@ anticone(H) = {B,F,I,L} - 这些块与H之间的顺序是不明确的。(译注�
 tips(G) = {J,L,M - 叶块，即入度为0的块;
 这些将在下一个块的头部中引用
 
-译注：anticone直译过来是“反锥体“。实际上anticone(H)就是既不是H的父辈，也不是H的后背，也不是H本身的块组成的集合。当图很庞大的时候，H的父辈集和后辈集的形状分别就像一个以H为顶端的锥体（cone）。作者可能是基于这一点将父辈、后辈及H以外的区块集命名为反锥体（anticone）。
+译注：anticone直译过来是“反锥体“。实际上anticone(H)就是既不是H的父辈，也不是H的后辈，并且也不是H本身的块组成的集合。当图很庞大的时候，H的父辈集和后辈集的形状分别就像一个以H为顶端的锥体（cone）。作者可能是基于这一点将父辈、后辈及H以外的区块集命名为反锥体（anticone）。
 
 In order to guarantee this property, the creation of blocks is regulated by the protocol to occur once every 10 minutes. 
 As a result, Bitcoin suffers from a highly restrictive throughput in the order of 3-7 transactions per second (tps).  
