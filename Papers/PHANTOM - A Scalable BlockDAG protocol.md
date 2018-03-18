@@ -79,12 +79,12 @@ these will be referenced in the header of the next block
 DAG术语，以块H为例子，如下所示：  
 past(H) = {Genesis,C,D,E} - H直接或间接引用，并且很可能在H之前创建的块;  
 future(H) ={J,K,M} - 直接或间接引用H，并且很可能在H之后创建的块;  
-anticone(H) = {B,F,I,L} - 这些块与H之间的顺序是不明确的。(译注：后称待序集)
+anticone(H) = {B,F,I,L} - 这些块与H之间的顺序是不明确的。
 决定H和anticone(H)中块之间的顺序是一个DAG协议的主要挑战。  
 tips(G) = {J,L,M - 叶块，即入度为0的块;
 这些将在下一个块的头部中引用
 
-译注：anticone直译过来是“反锥体“。实际上anticone(H)就是既不是H的父辈，也不是H的后辈，并且也不是H本身的块组成的集合。当图很庞大的时候，H的父辈集和后辈集的形状分别就像一个以H为顶端的锥体（cone）。作者可能是基于这一点将父辈、后辈及H以外的区块集命名为反锥体（anticone）。
+译注：cone在英文里的意思是锥体，因此anticone直译过来就是“反锥体“。实际上anticone(H)就是既不是H的父辈，也不是H的后辈，并且也不是H本身的块组成的集合。当图很庞大的时候，H的父辈集和后辈集的形状分别就像一个以H为顶端的锥体（cone）。作者可能是基于这一点将父辈、后辈及H以外的区块集命名为反锥体（anticone）。
 
 In order to guarantee this property, the creation of blocks is regulated by the protocol to occur once every 10 minutes. 
 As a result, Bitcoin suffers from a highly restrictive throughput in the order of 3-7 transactions per second (tps).  
@@ -164,12 +164,12 @@ these blocks didn’t reference E, presumably because E was withheld from their 
 Similarly, block K admits 6 blue blocks in its anticone (B,C,G,F,I,J); 
 presumably, its malicious miner received already some blocks from(B,C,D,G), but violated the mining protocol by not referencing them.  
 **图2：** 给定DAG中最大的 _3-集群_ 的示例：A，B，C，D，F，G，I，J(蓝色)。
-很容易验证这些蓝色块中每个蓝色块在其待序集中最多有3个蓝色块，并且(稍微不容易)该集合是具有该属性的最大集合。
-设置PHANTOM的互连参数k = 3意味着最多4个块被假定为在每个延迟单元内创建，因此典型的待序集尺寸不应该超过3。
+很容易验证这些蓝色块中每个蓝色块在其反锥体中最多有3个蓝色块，并且(稍微不容易)该集合是具有该属性的最大集合。
+设置PHANTOM的互连参数k = 3意味着最多4个块被假定为在每个延迟单元内创建，因此典型的反锥体尺寸不应该超过3。
 最大的 _3-集群_ 以外的块E，H，K(红色)属于攻击者(很大可能)。
-例如，区块E的待序集有6个蓝色块(B，C，D，F，G，I)。
+例如，区块E的反锥体有6个蓝色块(B，C，D，F，G，I)。
 这些区块没有引用E，大概是因为E被矿工扣留。
-类似地，区块K接受在其待序集(B，C，G，F，I，J)中有6个蓝色方块;
+类似地，区块K接受在其反锥体(B，C，G，F，I，J)中有6个蓝色方块;
 据推测，其恶意矿工已经收到了来自(B，C，D，G)的一些块，但没有引用它们而违反了挖矿协议。
 
 ##### C. Related work  
@@ -285,8 +285,8 @@ In other words, the probability that an honest block B will suffer a large hones
 _Pr(|anticone<sub>h</sub>(B)|>k)∈O(e<sup>−C·k</sup>)_ , for some constant C > 0 (this stems from a bound on the Poisson distribution’s tail). 
 We rely on this property and set PHANTOM’s parameter k such that the latter probability is smaller than δ , for some predeﬁned δ > 0; 
 see discussion in Section 4.  
-因此，B的待序集中的诚实块集- 我们表示为anticone h(B) - 通常很小，并且只包含在时段[t-D，t + D]中创建的块。^ 2
-换句话说，一个诚实的块B会面临一个大的诚实的待序集的可能性很小：  
+因此，B的反锥体中的诚实块集- 我们表示为anticone h(B) - 通常很小，并且只包含在时段[t-D，t + D]中创建的块。^ 2
+换句话说，一个诚实的块B会面临一个大的诚实的反锥体的可能性很小：  
 对于某个常数C> 0, Pr(|anticone h (B)| > k) ∈ O(e^−C·k)(这源于泊松分布尾部的边界)。  
 我们根据这个性质，并且设定PHANTOM的参数k，使得后者的概率小于某个预定义的大于0的δ;
 请参阅第4节中的讨论。
@@ -331,7 +331,7 @@ This outputs a k-cluster for each tip.^4 (lines 4-5)
 > 1) 给定一个DAG G，该算法递归计算G 中每个末端的过去集合^3
 这将为每个末端输出一个k-集群。^4(第4-5行)
 > 2) 然后，它进行一个贪婪的选择，并从输出的集群中选出最大的一个。 (第6-7行)
-> 3) 最后，它试图扩展这个集合，并添加任何相对于该集合来说其待序集足够小的块。 (第8-10行)
+> 3) 最后，它试图扩展这个集合，并添加任何相对于该集合来说其反锥体足够小的块。 (第8-10行)
 
 (^3) A tip is a leaf-block, that is, a block not referenced by other blocks. See Figure 1.
 (^4) Observe that, for any block B, the DAG past(B) is fixed once and for all at B’s creation, and in particular the set BLUE<sub>k</sub>(past(B)) cannot be later modified. 
@@ -352,7 +352,7 @@ Thus, the reader should think of our algorithm (informally) as approximating the
 这种继承意味着贪婪算法作为一个链选择规则运行--B<sub>max</sub>是链末端，past(B<sub>max</sub>)中得分最高的是它的上一级，以此类推。
 我们用Chn（G）=（genesis = Chn<sub>0</sub>（G），Chn<sub>1</sub>（G），...，Chn<sub>h</sub>（G））表示这条链。
 这个过程背后的推理与第1节给出的最大k-集群SubDAG问题非常相似。
-它们的区别仅在于，不是搜索最大k-集群，而是希望通过最大集群的末端使其最大化，然后从其待序集中添加块。
+它们的区别仅在于，不是搜索最大k-集群，而是希望通过最大集群的末端使其最大化，然后从其反锥体中添加块。
 因此，读者应该将我们的算法（非正式地）想象为近似最大k-集群SubDAG问题的最佳解决方案。
 
 ![fig 3](https://user-images.githubusercontent.com/22833166/37557316-b6d343a4-2a3d-11e8-8ac2-e66eab0aab45.jpg)
@@ -381,10 +381,10 @@ Finally, in step 5, we visit the block virtual(G) =V, and add M and L to BLUE<su
 该集合是递归构造的，从空的开始，如下所示：在第1步中，我们访问D并将创世块添加到蓝色集合（它是past(D)中唯一的块）。
 接下来，在步骤2中，我们访问H并添加past(H)中蓝色的块到BLUE<sub>k</sub>(G)块集中，即C，D，E。
 在步骤3中，我们访问K并添加H，I;
-注意块B已经在past(K)中，但还没有添加到蓝色集合中，因为它的待序集中有4个蓝色块。
+注意块B已经在past(K)中，但还没有添加到蓝色集合中，因为它的反锥体中有4个蓝色块。
 在步骤4中，我们访问M并将K添加到蓝色集合;
-再一次请注意，F∈past(M)由于其大蓝色待序集而无法添加到蓝色集合中。
-最后，在步骤5中，我们访问块虚拟（G）= V，并将M和L添加到BLUE<sub>k</sub>（G）中，J由于其大的蓝色待序集而被抛弃。
+再一次请注意，F∈past(M)由于其大蓝色反锥体而无法添加到蓝色集合中。
+最后，在步骤5中，我们访问块虚拟（G）= V，并将M和L添加到BLUE<sub>k</sub>（G）中，J由于其大的蓝色反锥体而被抛弃。
 
 We demonstrate the operation of this algorithm in Figure 3. 
 Another example appears in Figure 4.
