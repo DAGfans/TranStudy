@@ -1,4 +1,4 @@
-> Source：https://eprint.iacr.org/2018/104.pdf
+> Source：https://eprint.iacr.org/2018/104.pdf  
 > TranStudy: https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM%20-%20A%20Scalable%20BlockDAG%20protocol.md
 
 # PHANTOM: A Scalable BlockDAG protocol
@@ -180,7 +180,7 @@ These proposals fall into two categories, on-chain scaling and off-chain scaling
 Roughly speaking, the former includes protocols where all valid transactions are those that appear – as in Bitcoin – inside blocks that are organized in some data structure (aka “the ledger”).  
 近年来提出了许多改善比特币可扩展性的建议。
 这些建议分为两类，即链上扩容和链下扩容。
-粗略地说，前者包括的协议要求所有有效交易出现在以某种数据结构(又称账本)组织的区块内部(如比特币)
+粗略地说，前者包括的协议要求所有有效的交易都被组织在被称为账本的数据结构中，如比特币，交易被组织在区块中。
 
 **On-chain scaling.** The protocols in this category may differ e.g. in how fast blocks are created, how blocks are organized in the ledger (a chain, a tree, a DAG, etc.), which transactions in the ledger are considered valid, and more. 
 PHANTOM belongs to this line of works. 
@@ -2030,12 +2030,4 @@ ePrint Archive, Report 2016/545, 2016.
 Enhancing bitcoin security and performance with strong consistency via collective signing. In25th USENIX
 Security Symposium (USENIX Security 16), pages 279–296. USENIX Association, 2016.
 [5] Yoad Lewenberg, Yonatan Sompolinsky, and Aviv Zohar. Inclusive block chain protocols. InInternational
-Conference on Financial Cryptography and Data Security, pages 528–547. Springer, 2015.
-[6] Rafael Pass and Elaine Shi. Hybrid consensus: Efficient consensus in the permissionless model, 2016.
-[7] Joseph Poon and Thaddeus Dryja. The bitcoin lightning network: Scalable off-chain instant payments.Technical
-Report (draft), 2015.
-[8] Yonatan Sompolinsky, Yoad Lewenberg, and Aviv Zohar. Spectre: A fast and scalable cryptocurrency protocol.
-IACR Cryptology ePrint Archive, 2016:1159, 2016.
-[9] Yonatan Sompolinsky and Aviv Zohar. Secure high-rate transaction processing in bitcoin. InInternational
-Conference on Financial Cryptography and Data Security, pages 507–527. Springer, 2015.
-[10] David Williams.Probability with martingales. Cambridge university press, 1991.
+Con
