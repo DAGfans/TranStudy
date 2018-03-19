@@ -192,15 +192,15 @@ The sole purpose of key blocks in Bitcoin NG is to define the miner that is elig
 PHANTOM属于这一类。
 在这个协议族中，以前的作品包括GHOST [9]，其根据贪婪算法选择块的主链，而不是通过最长链规则;
 Inclusive [5]，其中任何链选择规则被扩展到一个有序的DAG，并且非主链上的交易以一致的方式被添加;
-Bitcoin NG [1]，其中帐本由慢速密钥块(不包含交易)和包含交易的快速微块组成。
-Bitcoin NG中密钥块的唯一目的是确定有资格在该时期创建微块的矿工，并确认交易的速度很快。  
+Bitcoin NG [1]，其中帐本由慢速关键块(不包含交易)和包含交易的快速微块组成。
+Bitcoin NG中关键块的唯一目的是确定有资格在该时期创建微块的矿工，并确认交易的速度很快。  
 
 GHOST is still susceptible to some attacks, one of which was described in [3]. 
 The DAG in Inclusive adds throughput but not security to the main chain, hence suffers from the same limitations as the underlying main chain selection rule. 
 Key blocks in Bitcoin NG are still generated slowly, thus confirmation times remain high.  
 GHOST仍然容易受到一些攻击，其中之一在[3]中有所描述。
 Inclusive中的DAG增加了主链的吞吐量但没有增加安全性，因此会受到与底层主链选择规则相同的限制。
-Bitcoin NG中密钥的块仍然会缓慢产生，因此确认时间仍然很长。 
+Bitcoin NG中关键的块仍然会缓慢产生，因此确认时间仍然很长。 
 
 Our work is most similar to the SPECTRE protocol [8]. 
 SPECTRE enjoys both high throughput and fast confirmation times. 
