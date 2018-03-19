@@ -1,4 +1,4 @@
-> Source：https://eprint.iacr.org/2018/104.pdf
+> Source：https://eprint.iacr.org/2018/104.pdf  
 > TranStudy: https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM%20-%20A%20Scalable%20BlockDAG%20protocol.md
 
 # PHANTOM: A Scalable BlockDAG protocol
@@ -281,7 +281,7 @@ In other words, the probability that an honest block B will suffer a large hones
 _Pr(|anticone<sub>h</sub>(B)|>k)∈O(e<sup>−C·k</sup>)_ , for some constant C > 0 (this stems from a bound on the Poisson distribution’s tail). 
 We rely on this property and set PHANTOM’s parameter k such that the latter probability is smaller than δ , for some predeﬁned δ > 0; 
 see discussion in Section 4.  
-因此，B的待序集中的诚实块集- 我们表示为anticone h(B) - 通常很小，并且只包含在时段[t-D，t + D]中创建的块。^ 2
+因此，B的待序集中的诚实块集- 我们表示为anticone h(B) - 通常很小，并且只包含在时段[t-D，t + D]中创建的块。^2
 换句话说，一个诚实的块B会面临一个大的诚实的待序集的可能性很小：  
 对于某个常数C> 0, Pr(|anticone h (B)| > k) ∈ O(e^−C·k)(这源于泊松分布尾部的边界)。  
 我们根据这个性质，并且设定PHANTOM的参数k，使得后者的概率小于某个预定义的大于0的δ;
@@ -411,8 +411,8 @@ We revisit this issue in Section 7.
 To summarize the function that the blue set satisfies, we state the following:
 为了总结蓝色集满足的功能，我们陈述如下：
 
-**Proposition 2.** Let _G=G^pub__∞_ be the eventual DAG containing all blocks in history, and let B be an arbitrary block in G.
-**命题2.** 假定 _G = G^pub__∞_ 是包含历史中所有块的最终DAG，B为G中的任意块。
+**Proposition 2.** Let _G=G<sub>pub</sub><sup>∞</sup>_ be the eventual DAG containing all blocks in history, and let B be an arbitrary block in G.
+**命题2.** 假定 _G = G<sub>pub</sub><sup>∞</sup>_ 是包含历史中所有块的最终DAG，B为G中的任意块。
 
 > - If B was created by an honest miner, the probability that B will not belong to BLUE<sub>k</sub>(G) decreases exponentially with k.
 > - If B was created by a malicious miner, and was withheld for a time interval of length T, the probability that B will belong to BLUE<sub>k</sub>(G) decreases exponentially with T.
@@ -438,8 +438,8 @@ when visiting block B, first check if there are blocks in past(B) that haven’t
 我们提出以下步骤：根据某些拓扑顺序遍历蓝色集合，并迭代地将块添加到ord k中当前的最后位置;
 当访问块B时，首先检查past(B)中是否有块尚未添加，将这些块添加到顺序中（再次根据某种拓扑顺序），然​​后将B添加到顺序中。
 
-For example, a possible output of ord^3 on the blockDAG illustrated in Figure 2 is: (A,D,C,G,B,F,I,E,J,H,K).
-例如，图2中所示的blockDAG上的ord ^3的可能输出是：（A，D，C，G，B，F，I，E，J，H，K）。
+For example, a possible output of ord<sup>3</sup> on the blockDAG illustrated in Figure 2 is: (A,D,C,G,B,F,I,E,J,H,K).
+例如，图2中所示的blockDAG上的ord<sup>3</sup>的可能输出是：（A，D，C，G，B，F，I，E，J，H，K）。
 
 This procedure is formalized in Algorithm 2 below. 
 The algorithm begins by initializing an empty priority queue and an empty ordered list. 
