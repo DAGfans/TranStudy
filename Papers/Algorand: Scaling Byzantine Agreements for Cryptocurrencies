@@ -1,0 +1,3482 @@
+# Algorand: Scaling Byzantine Agreements
+
+# for Cryptocurrencies
+
+## Yossi Gilad, Rotem Hemo, Silvio Micali, Georgios Vlachos, Nickolai Zeldovich
+
+## MIT CSAIL
+
+## ABSTRACT
+
+Algorand is a new cryptocurrency that confirms transactions
+with latency on the order of a minute while scaling to many
+users. Algorand ensures that users never have divergent
+views of confirmed transactions, even if some of the users
+are malicious and the network is temporarily partitioned.
+In contrast, existing cryptocurrencies allow for temporary
+forks and therefore require a long time, on the order of an
+hour, to confirm transactions with high confidence.
+Algorand uses a new Byzantine Agreement (BA) protocol
+to reach consensus among users on the next set of trans-
+actions. To scale the consensus to many users, Algorand
+uses a novel mechanism based on Verifiable Random Func-
+tions that allows users to privately check whether they are
+selected to participate in the BA to agree on the next set
+of transactions, and to include a proof of their selection in
+their network messages. In Algorand’s BA protocol, users
+do not keep any private state except for their private keys,
+which allows Algorand to replace participants immediately
+after they send a message. This mitigates targeted attacks
+on chosen participants after their identity is revealed.
+We implement Algorand and evaluate its performance on
+1,000 EC2 virtual machines, simulating up to 500,000 users.
+Experimental results show that Algorand confirms transac-
+tions in under a minute, achieves 125×Bitcoin’s throughput,
+and incurs almost no penalty for scaling to more users.
+
+## 1 INTRODUCTION
+
+Cryptographic currencies such as Bitcoin can enable new
+applications, such as smart contracts [ 24 , 49 ] and fair pro-
+tocols [ 2 ], can simplify currency conversions [ 12 ], and can
+avoid trusted centralized authorities that regulate transac-
+tions. However, current proposals suffer from a trade-off
+between latency and confidence in a transaction. For exam-
+ple, achieving a high confidence that a transaction has been
+confirmed in Bitcoin requires about an hour long wait [ 7 ].
+On the other hand, applications that require low latency
+cannot be certain that their transaction will be confirmed,
+and must trust the payer to not double-spend [45].
+Double-spending is the core problem faced by any cryp-
+tocurrency, where an adversary holding $1 gives his $1 to two
+different users. Cryptocurrencies prevent double-spending
+by reaching consensus on an ordered log (“blockchain”) of
+transactions. Reaching consensus is difficult because of the
+
+```
+open setting: since anyone can participate, an adversary can
+create an arbitrary number of pseudonyms (“Sybils”) [ 21 ],
+making it infeasible to rely on traditional consensus proto-
+cols [15] that require a fraction of honest users.
+Bitcoin [ 41 ] and other cryptocurrencies [ 23 , 53 ] address
+this problem using proof-of-work (PoW), where users must
+repeatedly compute hashes to grow the blockchain, and
+the longest chain is considered authoritative. PoW ensures
+that an adversary does not gain any advantage by creating
+pseudonyms. However, PoW allows the possibility offorks,
+where two different blockchains have the same length, and
+neither one supersedes the other. Mitigating forks requires
+two unfortunate sacrifices: the time to grow the chain by one
+block must be reasonably high (e.g., 10 minutes in Bitcoin),
+and applications must wait for several blocks in order to
+ensure their transaction remains on the authoritative chain
+(6 blocks are recommended in Bitcoin [ 7 ]). The result is that
+it takes about an hour to confirm a transaction in Bitcoin.
+This paper presents Algorand, a new cryptocurrency de-
+signed to confirm transactions on the order of one minute.
+The core of Algorand uses a Byzantine agreement protocol
+calledBA⋆that scales to many users, which allows Algo-
+rand to reach consensus on a new block with low latency and
+without the possibility of forks. A key technique that makes
+BA⋆suitable for Algorand is the use of verifiable random
+functions (VRFs) [ 38 ] to randomly select users in a private
+and non-interactive way.BA⋆was previously presented at a
+workshop at a high level [ 37 ], and a technical report by Chen
+and Micali [16] described an earlier version of Algorand.
+Algorand faces three challenges. First, Algorand must
+avoid Sybil attacks, where an adversary creates many
+pseudonyms to influence the Byzantine agreement protocol.
+Second,BA⋆must scale to millions of users, which is far
+higher than the scale at which state-of-the-art Byzantine
+agreement protocols operate. Finally, Algorand must be re-
+silient to denial-of-service attacks, and continue to operate
+even if an adversary disconnects some of the users [29, 51].
+Algorand addresses these challenges using several tech-
+niques, as follows.
+Weighted users.To prevent Sybil attacks, Algorand as-
+signs a weight to each user.BA⋆is designed to guarantee
+consensus as long as a weighted fraction (a constant greater
+than 2/3) of the users are honest. In Algorand, we weigh
+users based on the money in their account. Thus, as long as
+```
+
+more than some fraction (over 2/3) of the money is owned by
+honest users, Algorand can avoid forks and double-spending.
+Consensus by committee.BA⋆achieves scalability by
+choosing a committee—a small set of representatives ran-
+domly selected from the total set of users—to run each step
+of its protocol. All other users observe the protocol mes-
+sages, which allows them to learn the agreed-upon block.
+BA⋆chooses committee members randomly among all users
+based on the users’ weights. This allows Algorand to ensure
+that a sufficient fraction of committee members are honest.
+However, relying on a committee creates the possibility of
+targeted attacks against the chosen committee members.
+Cryptographic sortition.To prevent an adversary from
+targeting committee members,BA⋆selects committee mem-
+bers in a private and non-interactive way. This means that
+every user in the system can independently determine if they
+are chosen to be on the committee, by computing a func-
+tion (a VRF [ 38 ]) of their private key and public information
+from the blockchain. If the function indicates that the user
+is chosen, it returns a short string that proves this user’s
+committee membership to other users, which the user can
+include in his network messages. Since membership selec-
+tion is non-interactive, an adversary does not know which
+user to target until that user starts participating inBA⋆.
+Participant replacement.Finally, an adversary may tar-
+get a committee member once that member sends a message
+inBA⋆.BA⋆mitigates this attack by requiring committee
+members to speak just once. Thus, once a committee member
+sends his message (exposing his identity to an adversary),
+the committee member becomes irrelevant toBA⋆. BA⋆
+achieves this property by avoiding any private state (except
+for the user’s private key), which makes all users equally
+capable of participating, and by electing new committee
+members for each step of the Byzantine agreement protocol.
+We implement a prototype of Algorand andBA⋆, and use
+it to empirically evaluate Algorand’s performance. Experi-
+mental results running on 1,000 Amazon EC2 VMs demon-
+strate that Algorand can confirm a 1 MByte block of transac-
+tions in∼22 seconds with 50,000 users, that Algorand’s la-
+tency remains nearly constant when scaling to half a million
+users, that Algorand achieves 125×the transaction through-
+put of Bitcoin, and that Algorand achieves acceptable latency
+even in the presence of actively malicious users.
+
+## 2 RELATED WORK
+
+Proof-of-work.Bitcoin [ 41 ], the predominant cryptocur-
+rency, uses proof-of-work to ensure that everyone agrees
+on the set of approved transactions; this approach is of-
+ten called “Nakamoto consensus.” Bitcoin must balance the
+length of time to compute a new block with the possibil-
+ity of wasted work [ 41 ], and sets parameters to generate a
+new block every 10 minutes on average. Nonetheless, due
+to the possibility of forks, it is widely suggested that users
+wait for the blockchain to grow by at least six blocks be-
+fore considering their transaction to be confirmed [7]. This
+
+```
+means transactions in Bitcoin take on the order of an hour
+to be confirmed. Many follow-on cryptocurrencies adopt
+Bitcoin’s proof-of-work approach and inherit its limitations.
+The possibility of forks also makes it difficult for new users
+to bootstrap securely: an adversary that isolates the user’s
+network can convince the user to use a particular fork of the
+blockchain [28].
+By relying on Byzantine agreement, Algorand eliminates
+the possibility of forks, and avoids the need to reason about
+mining strategies [ 8 , 25 , 46 ]. As a result, transactions are
+confirmed on the order of a minute. To make the Byzan-
+tine agreement robust to Sybil attacks, Algorand associates
+weights with users according to the money they hold. Other
+techniques have been proposed in the past to resist Sybil
+attacks in Byzantine-agreement-based cryptocurrencies, in-
+cluding having participants submit security deposits and
+punishing those who deviate from the protocol [13].
+```
+```
+Byzantine consensus. Byzantine agreement protocols
+have been used to replicate a service across a small group
+of servers, such as in PBFT [ 15 ]. Follow-on work has shown
+how to make Byzantine fault tolerance perform well and
+scale to dozens of servers [ 1 , 17 , 33 ]. One downside of Byzan-
+tine fault tolerance protocols used in this setting is that they
+require a fixed set of servers to be determined ahead of time;
+allowing anyone to join the set of servers would open up the
+protocols to Sybil attacks. These protocols also do not scale
+to the large number of users targeted by Algorand.BA⋆is a
+Byzantine consensus protocol that does not rely on a fixed
+set of servers, which avoids the possibility of targeted attacks
+on well-known servers. By weighing users according to their
+currency balance,BA⋆allows users to join the cryptocur-
+rency without risking Sybil attacks, as long as the fraction of
+the money held by honest users is at least a constant greater
+than 2/3.BA⋆’s design also allows it to scale to many users
+(e.g., 500,000 shown in our evaluation) using VRFs to fairly
+select a random committee.
+Most Byzantine consensus protocols require more than
+2 / 3 of servers to be honest, and Algorand’sBA⋆inherits
+this limitation (in the form of 2 / 3 of the money being held
+by honest users). BFT2F [ 35 ] shows that it is possible to
+achieve “fork∗-consensus” with just over half of the servers
+being honest, but fork∗-consensus would allow an adver-
+sary to double-spend on the two forked blockchains, which
+Algorand avoids.
+Honey Badger [ 39 ] demonstrated how Byzantine fault tol-
+erance can be used to build a cryptocurrency. Specifically,
+Honey Badger designates a set of servers to be in charge
+of reaching consensus on the set of approved transactions.
+This allows Honey Badger to reach consensus within 5 min-
+utes and achieve a throughput of 200 KBytes/sec of data
+appended to the ledger using 10 MByte blocks and 104 par-
+ticipating servers. One downside of this design is that the
+cryptocurrency is no longer decentralized; there are a fixed
+set of servers chosen when the system is first configured.
+Fixed servers are also problematic in terms of targeted at-
+```
+
+tacks that either compromise the servers or disconnect them
+from the network. Algorand achieves better performance
+(confirming transactions in about a minute, reaching similar
+throughput) without having to choose a fixed set of servers
+ahead of time.
+Bitcoin-NG [ 26 ] suggests using the Nakamoto consensus
+to elect a leader, and then have that leader publish blocks
+of transactions, resulting in an order of magnitude of im-
+provement in latency of confirming transactions over Bitcoin.
+Hybrid consensus [ 30 , 32 , 42 ] refines the approach of using
+the Nakamoto consensus to periodically select a group of
+participants (e.g., every day), and runs a Byzantine agree-
+ment between selected participants to confirm transactions
+until new servers are selected. This allows improving perfor-
+mance over standard Nakamoto consensus (e.g., Bitcoin); for
+example, ByzCoin [ 32 ] provides a latency of about 35 sec-
+onds and a throughput of 230 KBytes/sec of data appended to
+the ledger with an 8 MByte block size and 1000 participants
+in the Byzantine agreement. Although Hybrid consensus
+makes the set of Byzantine servers dynamic, it opens up the
+possibility of forks, due to the use of proof-of-work consen-
+sus to agree on the set of servers; this problem cannot arise
+in Algorand.
+Pass and Shi’s paper [ 42 ] acknowledges that the Hybrid
+consensus design is secure only with respect to a “mildly
+adaptive” adversary that cannot compromise the selected
+servers within a day (the participant selection interval), and
+explicitly calls out the open problem of handling fully adap-
+tive adversaries. Algorand’sBA⋆explicitly addresses this
+open problem by immediately replacing any chosen com-
+mittee members. As a result, Algorand is not susceptible to
+either targeted compromises or targeted DoS attacks.
+Stellar [ 36 ] takes an alternative approach to using Byzan-
+tine consensus in a cryptocurrency, where each user can trust
+quorums of other users, forming a trust hierarchy. Consis-
+tency is ensured as long as all transactions share at least one
+transitively trusted quorum of users, and sufficiently many
+of these users are honest. Algorand avoids this assumption,
+which means that users do not have to make complex trust
+decisions when configuring their client software.
+
+Proof of stake.Algorand assigns weights to users propor-
+tionally to the monetary value they have in the system, in-
+spired by proof-of-stake approaches, suggested as an alter-
+native or enhancement to proof-of-work [ 3 , 10 ]. There is a
+key difference, however, between Algorand using monetary
+value as weights and many proof-of-stake cryptocurrencies.
+In many proof-of-stake cryptocurrencies, a malicious leader
+(who assembles a new block)can create a forkin the network,
+but if caught (e.g., since two versions of the new block are
+signed with his key), the leader loses his money. The weights
+in Algorand, however, are only to ensure that the attacker
+cannot amplify his power by using pseudonyms; as long as
+the attacker controls less than 1/3 of the monetary value,
+Algorand can guarantee that the probability for forks is neg-
+ligible. Algorand may be extended to “detect and punish”
+
+```
+malicious users, but this is not required to prevent forks or
+double spending.
+Proof-of-stake avoids the computational overhead of
+proof-of-work and therefore allows reducing transaction con-
+firmation time. However, realizing proof-of-stake in practice
+is challenging [ 4 ]. Since no work is involved in generating
+blocks, a malicious leader can announce one block, and then
+present some other block to isolated users. Attackers may
+also split their credits among several “users”, who might
+get selected as leaders, to minimize the penalty when a bad
+leader is caught. Therefore some proof-of-stake cryptocur-
+rencies require a master key to periodically sign the correct
+branch of the ledger in order to mitigate forks [ 31 ]. This
+raises significant trust concerns regarding the currency, and
+has also caused accidental forks in the past [ 43 ]. Algorand
+answers this challenge by avoiding forks, even if the leader
+turns out to be malicious.
+Ouroboros [ 30 ] is a recent proposal for realizing proof-of-
+stake. For security, Ouroboros assumes that honest users can
+communicate within some bounded delay (i.e., a strongly
+synchronous network). Furthermore, it selects some users
+to participate in a joint-coin-flipping protocol and assumes
+that most of them are incorruptible by the adversary for
+a significant epoch (such as a day). In contrast Algorand
+assumes that the adversary may temporarily fully control the
+network and immediately corrupt users in targeted attacks.
+```
+```
+Trees and DAGs instead of chains.GHOST [ 47 ], SPEC-
+TRE [ 48 ], and Meshcash [ 5 ] are recent proposals for increas-
+ing Bitcoin’s throughput by replacing the underlying chain-
+structured ledger with a tree or directed acyclic graph (DAG)
+structures, and resolving conflicts in the forks of these data
+structures. These protocols rely on the Nakamoto consensus
+using proof-of-work. By carefully designing the selection
+rule between branches of the trees/DAGs, they are able to
+substantially increase the throughput. In contrast, Algorand
+is focused on eliminating forks; in future work, it may be
+interesting to explore whether tree or DAG structures can
+similarly increase Algorand’s throughput.
+```
+## 3 GOALS AND ASSUMPTIONS
+
+```
+Algorand allows users to agree on an ordered log of transac-
+tions, and achieves two goals with respect to the log:
+Safety goal.With overwhelming probability, all users
+agree on the same transactions. More precisely, if one honest
+user accepts transactionA(i.e., it appears in the log), then
+any future transactions accepted by other honest users will
+appear in a log that already containsA. This holds even for
+isolated users that are disconnected from the network—e.g.,
+by Eclipse attacks [28].
+Liveness goal.In addition to safety, Algorand also makes
+progress (i.e., allows new transactions to be added to the log)
+under additional assumptions about network reachability
+that we describe below. Algorand aims to reach consensus
+on a new set of transactions within roughly one minute.
+```
+
+Assumptions.Algorand makes standard cryptographic
+assumptions such as public-key signatures and hash func-
+tions. Algorand assumes that honest users run bug-free
+software. As mentioned earlier, Algorand assumes that the
+fraction of money held by honest users is above some thresh-
+oldh(a constant greater than 2 / 3 ), but that an adversary can
+participate in Algorand and own some money. We believe
+that this assumption is reasonable, since it means that in
+order to successfully attack Algorand, the attacker must in-
+vest substantial financial resources in it. Algorand assumes
+that an adversary can corrupt targeted users, but that an
+adversary cannot corrupt a large number of users that hold a
+significant fraction of the money (i.e., the amount of money
+held by honest, non-compromised users must remain over
+the threshold).
+To achieve liveness, Algorand makes a “strong synchrony”
+assumption that most honest users (e.g., 95%) can send mes-
+sages that will be received by most other honest users (e.g.,
+95%) within a known time bound. This assumption allows
+the adversary to control the network of a few honest users,
+but does not allow the adversary to manipulate the network
+at a large scale, and does not allow network partitions.
+Algorand achieves safety with a “weak synchrony” as-
+sumption: the network can be asynchronous (i.e., entirely
+controlled by the adversary) for a long but bounded period
+of time (e.g., at most 1 day or 1 week). After an asynchrony
+period, the network must be strongly synchronous for a rea-
+sonably long period again (e.g., a few hours or a day) for
+Algorand to ensure safety. More formally, the weak syn-
+chrony assumption is that in every period of lengthb(think
+ofbas a day or a week), there must be a strongly synchronous
+period of lengths<b(ansof a few hours suffices).
+Finally, Algorand assumes loosely synchronized clocks
+across all users (e.g., using NTP) in order to recover liveness
+after weak synchrony. Specifically, the clocks must be close
+enough in order for most honest users to kick off the recovery
+protocol at approximately the same time. If the clocks are
+out of sync, the recovery protocol does not succeed.
+
+## 4 OVERVIEW
+
+Algorand requires each user to have a public key. Algorand
+maintains a log of transactions, called a blockchain. Each
+transaction is a payment signed by one user’s public key
+transferring money to another user’s public key. Algorand
+grows the blockchain in asynchronousrounds, similar to
+Bitcoin. In every round, a new block, containing a set of
+transactions and a pointer to the previous block, is appended
+to the blockchain. In the rest of this paper, we refer to Algo-
+rand software running on a user’s computer as that user.
+Algorand users communicate through a gossip protocol.
+The gossip protocol is used by users to submit new transac-
+tions. Each user collects a block of pending transactions that
+they hear about, in case they are chosen to propose the next
+block, as shown in Figure 1. Algorand usesBA⋆to reach
+consensus on one of these pending blocks.
+
+```
+Figure 1: An overview of transaction flow in Algorand.
+```
+```
+BA⋆executes insteps, communicates over the same gos-
+sip protocol, and produces a new agreed-upon block.BA⋆
+can produce two kinds of consensus:finalconsensus and
+tentativeconsensus. If one user reaches final consensus,
+this means that any other user that reaches final or tenta-
+tive consensus in the same round must agree on the same
+block value (regardless of whether the strong synchrony
+assumption held). This ensures Algorand’s safety, since this
+means that all future transactions will be chained to this
+final block (and, transitively, to its predecessors). Thus, Al-
+gorand confirms a transaction when the transaction’s block
+(or any successor block) reaches final consensus. On the
+other hand, tentative consensus means that other users may
+have reached tentative consensus on a different block (as
+long as no user reached final consensus). A user will con-
+firm a transaction from a tentative block only if and when a
+successor block reaches final consensus.
+BA⋆produces tentative consensus in two cases. First,
+if the network is strongly synchronous, an adversary may,
+with small probability, be able to causeBA⋆to reach tenta-
+tive consensus on a block. In this case,BA⋆will not reach
+consensus on two different blocks, but is simply unable to
+confirm that the network was strongly synchronous. Algo-
+rand will eventually (in a few rounds) reach final consensus
+on a successor block, with overwhelming probability, and
+thus confirm these earlier transactions.
+The second case is that the network was only weakly
+synchronous (i.e., it was entirely controlled by the adversary,
+with an upper bound on how long the adversary can keep
+control). In this case,BA⋆can reach tentative consensus
+on two different blocks, forming multiple forks. This can in
+turn preventBA⋆from reaching consensus again, because
+the users are split into different groups that disagree about
+previous blocks. To recover liveness, Algorand periodically
+invokesBA⋆to reach consensus onwhich forkshould be used
+going forward. Once the network regains strong synchrony,
+this will allow Algorand to choose one of the forks, and then
+reach final consensus on a subsequent block on that fork.
+We now describe how Algorand’s components fit together.
+Gossip protocol.Algorand implements a gossip network
+(similar to Bitcoin) where each user selects a small random
+```
+
+set of peers to gossip messages to. To ensure messages cannot
+be forged, every message is signed by the private key of its
+original sender; other users check that the signature is valid
+before relaying it. To avoid forwarding loops, users do not
+relay the same message twice. Algorand implements gossip
+over TCP and weighs peer selection based on how much
+money they have, so as to mitigate pollution attacks.
+
+Block proposal (§6).All Algorand users executecrypto-
+graphic sortitionto determine if they are selected to propose
+a block in a given round. We describe sortition in §5, but at
+a high level, sortition ensures that a small fraction of users
+are selected at random, weighed by their account balance,
+and provides each selected user with apriority, which can be
+compared between users, and aproofof the chosen user’s
+priority. Since sortition is random, there may be multiple
+users selected to propose a block, and the priority deter-
+mines which block everyone should adopt. Selected users
+distribute their block of pending transactions through the
+gossip protocol, together with their priority and proof. To
+ensure that users converge on one block with high probabil-
+ity, block proposals are prioritized based on the proposing
+user’s priority, and users wait for a certain amount of time
+to receive the block.
+
+Agreement usingBA⋆(§7). Block proposal does not guar-
+antee that all users received the same block, and Algorand
+does not rely on the block proposal protocol for safety. To
+reach consensus on a single block, Algorand usesBA⋆. Each
+user initializesBA⋆with the highest-priority block that they
+received.BA⋆executes in repeated steps, illustrated in Fig-
+ure 2. Each step begins with sortition (§5), where all users
+check whether they have been selected as committee mem-
+bers in that step. Committee members then broadcast a
+message which includes their proof of selection. These steps
+repeat until, in some step ofBA⋆, enough users in the com-
+mittee reach consensus. (Steps are not synchronized across
+users; each user checks for selection as soon as he observes
+the previous step had ended.) As discussed earlier, an impor-
+tant feature ofBA⋆is that committee members do not keep
+private state except their private keys, and so can be replaced
+after every step, to mitigate targeted attacks on them.
+
+Efficiency.When the network is strongly synchronous,
+BA⋆guarantees that if all honest users start with the same
+initial block (i.e., the highest priority block proposer was hon-
+est), thenBA⋆establishes final consensus over that block
+and terminates precisely in 4 interactive steps between users.
+Under the same network conditions, and in the worst case of
+a particularly lucky adversary, all honest users reach consen-
+sus on the next block within expected 13 steps, as analyzed
+in Appendix C.
+
+## 5 CRYPTOGRAPHIC SORTITION
+
+Cryptographic sortition is an algorithm for choosing a ran-
+dom subset of users according to per-user weights; that
+is, given a set of weightswiand the weight of all users
+
+```
+Figure 2: An overview of one step ofBA⋆. To simplify
+the figure, each user is shown twice: once at the top of the
+diagram and once at the bottom. Each arrow color indicates
+a message from a particular user.
+```
+```
+W=
+```
+#### Í
+
+```
+iwi, the probability that useriis selected is propor-
+tional towi/W. The randomness in the sortition algorithm
+comes from a publicly known randomseed; we describe
+later how this seed is chosen. To allow a user to prove that
+they were chosen, sortition requires each userito have a
+public/private key pair,(pki,ski).
+Sortition is implemented using verifiable random func-
+tions (VRFs) [ 38 ]. Informally, on any input stringx,VRFsk(x)
+returns two values: a hash and a proof. The hash is ahashlen-
+bit-long value that is uniquely determined byskandx, but
+is indistinguishable from random to anyone that does not
+knowsk. The proofπenables anyone that knowspkto check
+that the hash indeed corresponds tox, without having to
+knowsk. For security, we require that the VRF provides
+these properties even ifpkandskare chosen by an attacker.
+```
+### 5.1 Selection procedure
+
+```
+Using VRFs, Algorand implements cryptographic sortition
+as shown in Algorithm 1. Sortition requires aroleparameter
+that distinguishes the different roles that a user may be se-
+lected for; for example, the user may be selected to propose
+a block in some round, or they may be selected to be the
+member of the committee at a certain step ofBA⋆. Algorand
+specifies a thresholdτthat determines the expected number
+of users selected for that role.
+```
+```
+procedureSortition(sk,seed,τ,role,w,W):
+⟨hash,π⟩←VRFsk(seed||role)
+p←Wτ
+j← 0
+while 2 hashhashlen<
+```
+```
+hÍ
+j
+k= 0 B(k;w,p),
+```
+```
+Íj+ 1
+k= 0 B(k;w,p)
+```
+#### 
+
+```
+do
+j++
+return⟨hash,π,j⟩
+Algorithm 1:The cryptographic sortition algorithm.
+```
+```
+It is important that sortition selects users in proportion to
+their weight; otherwise, sortition would not defend against
+Sybil attacks. One subtle implication is that users may be
+chosen more than once by sortition (e.g., because they have
+```
+
+a high weight). Sortition addresses this by returning thej
+parameter, which indicates how many times the user was
+chosen. Being chosenjtimes means that the user gets to
+participate asjdifferent “sub-users.”
+To select users in proportion to their money, we consider
+each unit of Algorand as a different “sub-user.” If useri
+ownswi(integral) units of Algorand, then simulated user
+(i,j)withj∈{ 1 ,...,wi}represents thejt hunit of currency
+iowns, and is selected with probabilityp=Wτ, whereWis
+the total amount of currency units in Algorand.
+As shown in Algorithm 1, a user performs sortition by
+computing⟨hash,π⟩ ←V RFsk(seed||role), whereskis the
+user’s secret key. The pseudo-randomhashdetermines
+how many sub-users are selected, as follows. The prob-
+ability that exactlykout of thew (the user’s weight)
+sub-users are selected follows the binomial distribution,
+B(k;w,p)=
+
+```
+w
+k
+```
+#### 
+
+```
+pk( 1 −p)w−k, where
+```
+Íw
+k= 0 B(k;w,p)=^1. Since
+B(k 1 ;n 1 ,p)+B(k 2 ;n 2 ,p)=B(k 1 +k 2 ;n 1 +n 2 ,p), splitting a
+user’s weight (currency) among Sybils does not affect the
+number of selected sub-users under his/her control.
+To determine how many of a user’s w sub-users
+are selected, the sortition algorithm divides the inter-
+valh [ 0 , 1 ) into consecutive intervals of the form Ij =
+Íj
+k= 0 B(k;w,p),
+
+```
+Íj+ 1
+k= 0 B(k;w,p)
+```
+#### 
+
+```
+for j∈ { 0 , 1 ,...,w}. If
+```
+hash/ 2 hashlen(wherehashlenis the bit-length ofhash) falls in
+the intervalIj, then the user has exactlyjselected sub-users.
+The number of selected sub-users is publicly verifiable using
+the proofπ(from the VRF output).
+
+Sortition provides two important properties. First, given a
+random seed, the VRF outputs a pseudo-random hash value,
+which is essentially uniformly distributed between 0 and
+2 hashlen− 1. As a result, users are selected at random based
+on their weights. Second, an adversary that does not know
+skicannot guess how many times useriis chosen, or ifiwas
+chosen at all (more precisely, the adversary cannot guess any
+better than just by randomly guessing based on the weights).
+
+The pseudocode for verifying a sortition proof, shown in
+Algorithm 2, follows the same structure to check if that user
+was selected (the weight of the user’s public key is obtained
+from the ledger). The function returns the number of selected
+sub-users (or zero if the user was not selected at all).
+
+```
+procedureVerifySort(pk,hash,π,seed,τ,role,w,W):
+if¬VerifyVRFpk(hash,π,seed||role)then return0;
+p←Wτ
+j← 0
+while 2 hashhashlen<
+```
+```
+hÍ
+j
+k= 0 B(k;w,p),
+```
+```
+Íj+ 1
+k= 0 B(k;w,p)
+```
+#### 
+
+```
+do
+j++
+returnj
+Algorithm 2:Pseudocode for verifying sortition of a user
+with public keypk.
+```
+### 5.2 Choosing the seed
+
+```
+Sortition requires a seed that is chosen at random and pub-
+licly known. For Algorand, each round requires a seed that
+is publicly known by everyone for that round, but cannot be
+controlled by the adversary; otherwise, an adversary may
+be able to choose a seed that favors selection of corrupted
+users.
+In each round of Algorand a new seed is published. The
+seed published at Algorand’s roundris determined using
+VRFs with the seed of the previous roundr− 1. More specifi-
+cally, during the block proposal stage of roundr− 1 , every
+useruselected for block proposal also computes a proposed
+seed for roundras⟨seedr,π⟩←VRFsku(seedr− 1 ||r). Algo-
+rand requires thatskube chosen byuwell in advance of the
+seed for that round being determined (§5.3). This ensures that
+even ifuis malicious, the resultingseedris pseudo-random.
+This seed (and the corresponding VRF proofπ) is included
+in every proposed block, so that once Algorand reaches agree-
+ment on the block for roundr− 1 , everyone knowsseedrat
+the start of roundr. If the block does not contain a valid seed
+(e.g., because the block was proposed by a malicious user
+and included invalid transactions), users treat the entire pro-
+posed block as if it were empty, and use a cryptographic hash
+functionH(which we assume is a random oracle) to com-
+pute the associated seed for roundrasseedr=H(seedr− 1 ||r).
+The value ofseed 0 , which bootstraps seed selection, can be
+chosen at random at the start of Algorand by the initial partic-
+ipants (after their public keys are declared) using distributed
+random number generation [14].
+To limit the adversary’s ability to manipulate sortition,
+and thus manipulate the selection of users for different com-
+mittees, the selection seed (passed to Algorithm 1 and Algo-
+rithm 2) is refreshed once everyRrounds. Namely, at roundr
+Algorand calls the sortition functions withseedr− 1 −(rmodR).
+```
+### 5.3 Choosingskuwell in advance of the seed
+
+```
+Computingseedrrequires that every user’s secret keysku
+is chosen well in advance of the selection seed used in
+that round, i.e.,seedr− 1 −(rmodR). When the network is not
+strongly synchronous, the attacker has complete control over
+the links, and can therefore drop block proposals and force
+users to agree on empty blocks, such that future selection
+seeds can be computed. To mitigate such attacks Algorand
+relies on the weak synchrony assumption (in every period
+of lengthb, there must be a strongly synchronous period of
+lengths<b). Whenever Algorand performs cryptographic
+sortition for roundr, it checks the timestamp included in
+the agreed-upon block for roundr− 1 −(rmodR), and uses
+the keys (and associated weights) from the last block that
+was createdb-time before blockr− 1 −(rmodR). The lower
+boundson the length of a strongly synchronous period
+should allow for sufficiently many blocks to be created in
+order to ensure with overwhelming probability that at least
+one block was honest. This ensures that, as long assis suit-
+ably large, an adversaryuchoosing a keyskucannot predict
+the seed for roundr.
+```
+
+This look-back periodbhas the following trade-off: a large
+bmitigates the risk that attackers are able break the weak
+synchronicity assumption, yet it increases the chance that
+users have transferred their currency to someone else and
+therefore have nothing to lose if the system’s security breaks.
+This is colloquially known as the “nothing at stake” problem;
+one possible way to avoid this trade-off, which we do not
+explore in Algorand, is to take the minimum of a user’s
+current balance and the user’s balance from the look-back
+block as the user’s weight.
+Appendix A formally analyzes the number of blocks that
+Algorand needs to be created in the periodswhen the net-
+work is strongly connected. We show that to ensure a small
+probability of failureF, the number of blocks is logarith-
+mic inF^1 , which allows us to obtain high security with a
+reasonably low number of required blocks.
+
+## 6 BLOCK PROPOSAL
+
+```
+To ensure that some block is proposed in each round, Al-
+gorand sets the sortition threshold for the block-proposal
+role,τproposer, to be greater than 1 (although Algorand will
+reach consensus on at most one of these proposed blocks).
+Appendix B proves that choosingτproposer= 26 ensures that
+a reasonable number of proposers (at least one, and no more
+than 70, as a plausible upper bound) are chosen with very
+high probability (e.g., 1 − 10 −^11 ).
+```
+```
+Minimizing unnecessary block transmissions.One
+risk of choosing several proposers is that each will gossip
+their own proposed block. For a large block (say, 1 MByte),
+this can incur a significant communication cost. To reduce
+this cost, the sortition hash is used to prioritize block propos-
+als: For each selected sub-user 1 ,...,jof useri, the priority
+for the block proposal is obtained by hashing the (verifiably
+random)hashoutput of VRF concatenated with the sub-user
+index. The highest priority of all the block proposer’s se-
+lected sub-users is the priority of the block.
+Algorand users discard messages about blocks that do not
+have the highest priority seen by that user so far. Algorand
+also gossips two kinds of messages: one contains just the
+priorities and proofs of the chosen block proposers (from
+sortition), and the other contains the entire block, which also
+includes the proposer’s sortition hash, and proof. The first
+kind of message is small (about 200 Bytes), and propagates
+quickly through the gossip network. These messages enable
+most users to learn who is the highest priority proposer, and
+thus quickly discard other proposed blocks.
+```
+```
+Waiting for block proposals.Each user must wait a cer-
+tain amount of time to receive block proposals via the gossip
+protocol. Choosing this time interval does not impact Algo-
+rand’s safety guarantees but is important for performance.
+Waiting a short amount of time will mean no received pro-
+posals. If the user receives no block proposals, he or she
+initializesBA⋆with the empty block, and if many users do
+so, Algorand will reach consensus on an empty block. On the
+```
+```
+other hand, waiting too long will receive all block proposals
+but also unnecessarily increase the confirmation latency.
+To determine the appropriate amount of time to wait for
+block proposals, we consider the plausible scenarios that a
+user might find themselves in. When a user starts waiting for
+block proposals for roundr, they may be one of the first users
+to reach consensus in roundr− 1. Since that user completed
+roundr− 1 , sufficiently many users sent a message for the
+last step ofBA⋆in that round, and therefore, most of the
+network is at most one step behind this user. Thus, the user
+must somehow wait for others to finish the last step ofBA⋆
+from roundr− 1. At this point, some proposer in roundr
+that happens to have the highest priority will gossip their
+priority and proof message, and the user must somehow wait
+to receive that message. Then, the user can simply wait until
+they receive the block corresponding to the highest priority
+proof (with a timeoutλblock, on the order of a minute, after
+which the user will fall back to the empty block).
+It is impossible for a user to wait exactly the correct
+amount for the first two steps of the above scenario. Thus,
+Algorand estimates these quantities (λstepvar, the variance
+in how long it takes different users to finish the last step
+ofBA⋆, andλpriority, the time taken to gossip the priority
+and proof message), and waits forλstepvar+λprioritytime
+to identify the highest priority. §10 experimentally shows
+that these parameters are, conservatively, 5 seconds each.
+As mentioned above, Algorand would remain safe even if
+these estimates were inaccurate.
+```
+```
+Malicious proposers.Even if some block proposers are
+malicious, the worst-case scenario is that they trick different
+Algorand users into initializingBA⋆with different blocks.
+This could in turn cause Algorand to reach consensus on
+an empty block, and possibly take additional steps in doing
+so. However, it turns out that even this scenario is relatively
+unlikely. In particular, if the adversary isnotthe highest pri-
+ority proposer in a round, then the highest priority proposer
+will gossip a consistent version of their block to all users.
+If the adversary is the highest priority proposer in a round,
+they can propose the empty block, and thus prevent any real
+transactions from being confirmed. However, this happens
+with probability of at most 1 −h, by Algorand’s assumption
+that at leasth> 2 / 3 of the weighted user are honest.
+```
+## 7 BA⋆
+
+```
+The execution ofBA⋆consists of two phases. In the first
+phase,BA⋆reduces the problem of agreeing on a block to
+agreement on one of two options. In the second phase,BA⋆
+reaches agreement on one of these options: either agreeing
+on a proposed block, or agreeing on an empty block.
+Each phase consists of several interactivesteps; the first
+phase always takes two steps, and the second phase takes
+two steps if the highest-priority block proposer was honest
+(sent the same block to all users), and as we show in our
+analysis an expected 11 steps in the worst case of a malicious
+```
+
+highest-priority proposer colluding with a large fraction of
+committee participants at every step.
+In each step, every committee member casts a vote for
+some value, and all users count the votes. Users that receive
+more than a threshold of votes for some value will vote
+for that value in the next step (if selected as a committee
+member). If the users do not receive enough votes for any
+value, they time out, and their choice of vote for the next
+step is determined by the step number.
+In the common case, when the network is strongly syn-
+chronous and the highest-priority block proposer was hon-
+est,BA⋆reachesfinalconsensus by using its final step to
+confirm that there cannot be any other agreed-upon block
+in the same round. Otherwise,BA⋆may declaretentative
+consensus if it cannot confirm the absence of other blocks
+due to possible network asynchrony.
+A key aspect ofBA⋆’s design is that it keeps no secrets,
+except for user private keys. This allows any user observing
+the messages to “passively participate” in the protocol: verify
+signatures, count votes, and reach the agreement decision.
+
+### 7.1 Main procedure ofBA⋆
+
+The top-level procedure implementingBA⋆, as invoked by
+Algorand, is shown in Algorithm 3. The procedure takes a
+contextctx, which captures the current state of the ledger, a
+roundnumber, and a new proposedblock, from the highest-
+priority block proposer (§6). Algorand is responsible for
+ensuring that the block is valid (by checking the proposed
+block’s contents and using an empty block if it is invalid,
+as described in §8). The context consists of the seed for
+sortition, the user weights, and the last agreed-upon block.
+For efficiency,BA⋆votes for hashes of blocks, instead of
+entire block contents. At the end of theBA⋆algorithm, we
+use the BlockOfHash() function to indicate that, ifBA⋆has
+not yet received the pre-image of the agreed-upon hash, it
+must obtain it from other users (and, since the block was
+agreed upon, many of the honest users must have received
+it during block proposal).
+TheBA⋆algorithm also determines whether it established
+final or tentative consensus. We will discuss this check in
+detail when we discuss Algorithm 8.
+
+```
+procedureBA⋆(ctx,round,block):
+hblock←Reduction(ctx,round,H(block))
+hblock⋆←BinaryBA⋆(ctx,round,hblock)
+// Check if we reached “final” or “tentative” consensus
+r←CountVotes(ctx,round,final,Tfinal,τfinal,λstep)
+ifhblock⋆=rthen
+return⟨final,BlockOfHash(hblock⋆)⟩
+else
+return⟨tentative,BlockOfHash(hblock⋆)⟩
+Algorithm 3:RunningBA⋆for the nextround, with a
+proposedblock. H is a cryptographic hash function.
+```
+```
+procedureCommitteeVote(ctx,round,step,τ,value):
+// check if user is in committee using Sortition (Alg. 1)
+role←⟨“committee”,round,step⟩
+⟨sorthash,π,j⟩←Sortition(user.sk,ctx.seed,τ,role,
+ctx.weight[user.pk],ctx.W)
+// only committee members originate a message
+ifj> 0 then
+Gossip(⟨user.pk,Signeduser.sk(round,step,
+sorthash,π,H(ctx.last_block),value)⟩)
+Algorithm 4:Voting forvalueby committee members.
+user.skanduser.pkare the user’s private and public keys.
+```
+### 7.2 Voting
+
+```
+Sending votes (Algorithm 4).Algorithm 4 shows the
+pseudocode for CommitteeVote(), which checks if the user
+is selected for the committee in a givenroundandstepof
+BA⋆. The CommitteeVote() procedure invokes Sortition()
+from Algorithm 1 to check if the user is chosen to partici-
+pate in the committee. If the user is chosen for this step, the
+user gossips a signed message containing the value passed to
+CommitteeVote(), which is typically the hash of some block.
+To bind the vote to the context, the signed message includes
+the hash of the previous block.
+Counting votes (Algorithm 5 and Algorithm 6).The
+CountVotes() procedure (Algorithm 5) reads messages that
+belong to the current round and step from theincomingMsgs
+buffer. (For simplicity, our pseudocode assumes that a back-
+ground procedure takes incoming votes and stores them into
+that buffer, indexed by the messages’ round and step.) It pro-
+cesses the votes by calling the ProcessMsg() procedure for
+every message (Algorithm 6), which ensures that the vote is
+valid. Note that no private state is required to process these
+messages.
+ProcessMsg() returns not just the value contained in the
+message, but also the number of votes associated with that
+value. If the message was not from a chosen committee
+member, ProcessMsg() returns zero votes. If the committee
+member was chosen several times (see §5), the number of
+votes returned by ProcessMsg() reflects that as well. Pro-
+cessMsg() also returns the sortition hash, which we will use
+later in Algorithm 9.
+As soon as one value has more thanT·τ votes,
+CountVotes() returns that value. τis the expected num-
+ber of users that Sortition() selects for the committee, and is
+the same for each step (τstep) with the exception of the final
+step (τfinal).Tis a fraction of that expected committee size
+(T>^23 ) that definesBA⋆’s voting threshold; this is also the
+same for every step except the final step, and we analyze it in
+§7.5. If not enough messages were received within the allo-
+catedλtime window, then CountVotes() producestimeout.
+The threshold ensures that if one honest user’s CountVotes()
+returns a particular value, then all other honest users will
+return either the same value ortimeout, even under the
+weak synchrony assumption (see Lemma 1 in Appendix C.2).
+```
+
+```
+procedureCountVotes(ctx,round,step,T,τ,λ):
+start←Time()
+counts←{} // hash table, new keys mapped to 0
+voters←{}
+msgs←incomingMsgs[round,step].iterator()
+whileTruedo
+m←msgs.next()
+ifm=⊥then
+ifTime() > start +λthen returntimeout;
+else
+⟨votes,value,sorthash⟩←ProcessMsg(ctx,τ,m)
+ifpk∈votersorvotes= 0 then continue;
+voters∪={pk}
+counts[value]+=votes
+// if we got enough votes, then output this value
+ifcounts[value]>T·τthen
+returnvalue
+```
+```
+Algorithm 5:Counting votes forroundandstep.
+```
+```
+procedureProcessMsg(ctx,τ,m):
+⟨pk,signed_m⟩←m
+ifVerifySignature(pk,signed_m),OKthen
+return⟨ 0 ,⊥,⊥⟩
+⟨round,step,sorthash,π,hprev,value⟩←signed_m
+// discard messages that do not extend this chain
+ifhprev,H(ctx.last_block)then return⟨ 0 ,⊥,⊥⟩;
+votes←VerifySort(pk,sorthash,π,ctx.seed,τ,
+⟨“committee”,round,step⟩,ctx.weight[pk],ctx.W)
+return⟨votes,value,sorthash⟩
+Algorithm 6:Validating incoming vote messagem.
+```
+### 7.3 Reduction
+
+The Reduction() procedure, shown in Algorithm 7, converts
+the problem of reaching consensus on an arbitrary value
+(the hash of a block) to reaching consensus on one of two
+values: either a specific proposed block hash, or the hash
+of an empty block. Our reduction is inspired by Turpin and
+Coan’s two-step technique [ 50 ]. This reduction is important
+to ensure liveness.
+
+In the first step of the reduction, each committee member
+votes for the hash of the block passed to Reduction() by
+BA⋆(). In the second step, committee members vote for
+the hash that received at leastT·τvotes in the first step,
+or the hash of the default empty block if no hash received
+enough votes. Reduction() ensures that there is at most one
+non-empty block that can be returned by Reduction() for all
+honest users.
+
+In the common case when the network is strongly syn-
+chronous and the highest-priority block proposer was hon-
+est, most (e.g., 95%) of the users will call Reduction() with
+the samehblockparameter, and Reduction() will return that
+samehblockresult to most users as well.
+
+```
+procedureReduction(ctx,round,hblock):
+// step 1: gossip the block hash
+CommitteeVote(ctx,round,reduction_one,
+τstep,hblock)
+// other users might still be waiting for block proposals,
+// so set timeout forλblock+λstep
+hblock 1 ←CountVotes(ctx,round,reduction_one,
+Tstep,τstep,λblock+λstep)
+// step 2: re-gossip the popular block hash
+empty_hash←H(Empty(round,H(ctx.last_block)))
+ifhblock 1 =timeoutthen
+CommitteeVote(ctx,round,reduction_two,
+τstep,empty_hash)
+else
+CommitteeVote(ctx,round,reduction_two,
+τstep,hblock 1 )
+hblock 2 ←CountVotes(ctx,round,reduction_two,
+Tstep,τstep,λstep)
+ifhblock 2 =timeoutthen returnempty_hash;
+else returnhblock 2 ;
+Algorithm 7:The two-step reduction.
+```
+```
+On the other hand, if the highest-priority block proposer
+was dishonest, different users may start Reduction() with
+differenthblockparameters. In this case, no singlehblock
+value may be popular enough to cross the threshold of votes.
+As a result, Reduction() will returnempty_hash.
+```
+### 7.4 Binary agreement
+
+```
+Algorithm 8 shows BinaryBA⋆(), which reaches consensus
+on one of two values: either the hash passed to BinaryBA⋆()
+or the hash of the empty block. BinaryBA⋆() relies on Re-
+duction() to ensure that at most one non-empty block hash
+is passed to BinaryBA⋆() by all honest users.
+```
+```
+Safety with strong synchrony.In each step of
+BinaryBA⋆(), a user who has seen more thanT·τ
+votes for some value will vote for that same value in the
+next step (if selected). However, if no value receives enough
+votes, BinaryBA⋆() chooses the next vote in a way that
+ensures consensus in a strongly synchronous network.
+Specifically, userAmay receive votes from an adversary
+that push the votes observed byApast the threshold, but
+the adversary might not send the same votes to other users
+(or might not send them in time). As a result,Areturns
+consensus on a block, but other users timed out in that step.
+It is crucial that BinaryBA⋆() chooses the votes for the next
+step in a way that will match the block already returned by
+A. Algorithm 8 follows this rule: everyreturnstatement
+is coupled with a check fortimeoutthat sets the next-step
+vote to the same value that could have been returned.
+It is also crucial that BinaryBA⋆() is able to collect enough
+votes in the next step to carry forward the value thatA
+already reached consensus on. If there are many users like
+Athat have already returned consensus, BinaryBA⋆() may
+```
+
+```
+procedureBinaryBA⋆(ctx,round,block_hash):
+step← 1
+r←block_hash
+empty_hash←H(Empty(round,H(ctx.last_block)))
+whilestep<MaxStepsdo
+CommitteeVote(ctx,round,step,τstep, r)
+r←CountVotes(ctx,round,step,Tstep,τstep,λstep)
+ifr=timeoutthen
+r←block_hash
+else ifr,empty_hashthen
+forstep<s′≤step+ 3 do
+CommitteeVote(ctx,round,s′,τstep,r)
+ifstep = 1then
+CommitteeVote(ctx,round,final,τfinal,r)
+returnr
+step++
+```
+```
+CommitteeVote(ctx,round,step,τstep, r)
+r←CountVotes(ctx,round,step,Tstep,τstep,λstep)
+ifr=timeoutthen
+r←empty_hash
+else ifr=empty_hashthen
+forstep<s′≤step+ 3 do
+CommitteeVote(ctx,round,s′,τstep,r)
+returnr
+step++
+```
+```
+CommitteeVote(ctx,round,step,τstep, r)
+r←CountVotes(ctx,round,step,Tstep,τstep,λstep)
+ifr=timeoutthen
+ifCommonCoin(ctx,round,step,τstep)= 0 then
+r←block_hash
+else
+r←empty_hash
+step++
+// No consensus afterMaxSteps; assume network
+// problem, and rely on §8.2 to recover liveness.
+HangForever()
+Algorithm 8:BinaryBA⋆executes until consensus is
+reached on eitherblock_hashorempty_hash.
+```
+not have enough users to push CountVotes() in the next step
+past the threshold. To avoid this problem, whenever a user
+returns consensus, that user votes in the next three steps
+with the value they reached consensus on.
+In the common case, when the network is strongly syn-
+chronous and the block proposer was honest, BinaryBA⋆()
+will start with the sameblock_hashfor most users, and will
+reach consensus in the first step, since most committee mem-
+bers vote for the sameblock_hashvalue.
+
+Safety with weak synchrony. If the network is not
+strongly synchronous (e.g., there is a partition), BinaryBA⋆()
+may return consensus on two different blocks. For example,
+suppose that, in the first step of BinaryBA⋆(), all users vote
+forblock_hash, but only one honest user,A, receives those
+
+```
+votes. In this case,Awill return consensus onblock_hash,
+but all other users will move on to the next step. Now, the
+other users vote forblock_hashagain, because CountVotes()
+returnedtimeout. However, let’s assume the network drops
+all of these votes. Finally, the users vote forempty_hash
+in the third step, the network becomes well behaved, and
+all votes are delivered. As a result, the users will keep vot-
+ing forempty_hashuntil the next iteration of the loop, at
+which point they reach consensus onempty_hash. This is
+undesirable because BinaryBA⋆() returned consensus on two
+different hashes to different honest users.
+BA⋆() addresses this problem by introducing the notion
+offinalandtentativeconsensus. Final consensus means that
+BA⋆() will not reach consensus on any other block for that
+round. Tentative consensus means thatBA⋆() was unable to
+guarantee safety, either because of network asynchrony or
+due to a malicious block proposer.
+BA⋆() designates consensus on valueV as “final” if
+BinaryBA⋆() reached consensus onVin the very first step,
+and if enough users observed this consensus being reached.
+Specifically, BinaryBA⋆() sends out a vote for the special
+finalstep to indicate that a user reached consensus on some
+value in the very first step, andBA⋆() collects these votes
+to determine whether final consensus was achieved. In a
+strongly synchronous network with an honest block pro-
+poser, BinaryBA⋆() will reach consensus in the first step,
+most committee members will vote for the consensus block
+in the specialfinalstep in BinaryBA⋆(), and will receive
+more than a threshold of such votes inBA⋆(), thus declaring
+the block as final. Thefinalstep is analogous to the final
+confirmation step implemented in many Byzantine-resilient
+protocols [15, 34].
+Intuitively, this guarantees safety because a large thresh-
+old of users have already declared consensus forV, and will
+not vote for any other value in the same round. In our ex-
+ample above, where userAreached consensus on a different
+block than all other users, neither block would be designated
+as final, because only one user (namely,A) observed consen-
+sus at the first step, and there would never be enough votes
+to mark that block as final. Appendix C.1 formalizes and
+proves this safety property.
+One subtle issue arises due to the fact thatBA⋆relies on
+a committee to declare final consensus, instead of relying on
+all participants. As a result, even if one user observes final
+consensus, an adversary that controls the network may be
+able to prevent a small fraction of other users from reaching
+any kind of consensus (final or tentative) for an arbitrary
+number of steps. Each of these steps give the adversary
+an additional small probability of reaching consensus on a
+different value (e.g., the empty block). To bound the total
+probability of an adversary doing so,BA⋆limits the total
+number of allowed steps; Appendix C.1 relies on this. If the
+protocol runs for more thanMaxStepssteps,BA⋆halts with-
+out consensus and relies on the recovery protocol described
+in §8.2 to recover liveness.
+```
+
+```
+procedureCommonCoin(ctx,round,step,τ):
+minhash← 2 hashlen
+form∈incomingMsgs[round,step]do
+⟨votes,value,sorthash⟩←ProcessMsg(ctx,τ,m)
+for 1 ≤j<votesdo
+h←H(sorthash||j)
+ifh< minhashthenminhash←h;
+```
+```
+returnminhashmod 2
+Algorithm 9:Computing a coin common to all users.
+```
+Getting unstuck. One remaining issue is that consensus
+could get stuck if the honest users are split into two groups,
+A and B, and the users in the two groups vote for different
+values (say, we are in step 1,Avotes forempty_hash, and
+Bvotes forblock_hash). Neither group is large enough to
+gather enough votes on their own, but together with the
+adversary’s votes, group A is large enough. In this situation,
+the adversary can determine what every user will vote for in
+the next step. To make some user vote forempty_hashin the
+next step, the adversary sends that user the adversary’s own
+votes forempty_hashjust before the timeout expires, which,
+together withA’s votes, crosses the threshold. To make the
+user vote forblock_hash, the adversary does not send any
+votes to that user; as a result, that user’s CountVotes() will
+returntimeout, and the user will chooseblock_hashfor the
+next step’s vote, according to the BinaryBA⋆() algorithm.
+This way, the adversary can split the users into two groups
+in the next step as well, and continue this attack indefinitely.
+The attack described above requires the adversary to
+know how a user will vote after receivingtimeoutfrom
+CountVotes(). The third step of BinaryBA⋆() is designed
+to avoid this attack by pushing towards accepting either
+block_hashorempty_hashbased on a random “common coin,”
+meaning a binary value that is predominantly the same for
+all users. Although this may sound circular, the users need
+not reach formal consensus on this common coin. As long as
+enough users observe the same coin bit, and the bit was not
+known to the attacker in advance of the step, BinaryBA⋆()
+will reach consensus in the next iteration of the loop with
+probability 1 / 2 (i.e., the probability that the attacker guessed
+wrong). By repeating these steps, the probability of consen-
+sus quickly approaches 1.
+To implement this coin we take advantage of the VRF-
+based committee member hashes attached to all of the mes-
+sages. Every user sets the common coin to be the least-
+significant bit of the lowest hash it observed in this step,
+as shown in Algorithm 9. If a user gets multiple votes (i.e.,
+several of their sub-users were selected), then Common-
+Coin() considers multiple hashes from that user, by hashing
+that user’s sortition hash with the sub-user index. Notice
+that hashes are random (since they are produced by hashing
+the pseudo-random VRF output), so their least-significant
+bits are also random. The common coin is used only when
+CountVotes() times out, giving sufficient time for all votes to
+propagate through the network. If the committee member
+
+```
+76 78 80 82 84 86 88 90
+% of Honest Users
+```
+```
+0
+```
+```
+500
+```
+```
+1000
+```
+```
+1500
+```
+```
+2000
+```
+```
+2500
+```
+```
+3000
+```
+```
+3500
+```
+```
+4000
+```
+```
+4500
+```
+```
+Committee Size
+```
+```
+5·10^-
+```
+```
+Figure 3: The committee size,τ, sufficient to limit the proba-
+bility of violating safety to 5 × 10 −^9. The x-axis specifiesh, the
+weighted fraction of honest users.⋆marks the parameters
+selected in our implementation.
+```
+```
+with the lowest hash is honest, then all users that received
+his message observe the same coin.
+If a malicious committee-member happens to hold the
+lowest hash, then he might send it to only some users. This
+may result in users observing different coin values, and thus
+will not help in reaching consensus. However, since sor-
+tition hashes are pseudo-random, the probability that an
+honest user has the lowest hash ish(the fraction of money
+held by honest users), and thus there is at least anh>^23
+probability that the lowest sortition hash holder will be hon-
+est, which leads to consensus with probability^12 ·h>^13 at
+each loop iteration. This allows Appendix C.3 to show that,
+with strong synchrony,BA⋆does not exceedMaxStepswith
+overwhelming probability.
+```
+### 7.5 Committee size
+
+```
+The fractionh>^23 of weighted honest users in Algorand
+must translate into a “sufficiently honest” committee for
+BA⋆.BA⋆has two parameters at its disposal:τ, which con-
+trols theexpectedcommittee size, andT, which controls the
+number of votes needed to reach consensus (T·τ). We would
+likeTto be as small as possible for liveness, but the smaller
+Tis, the largerτneeds to be, to ensure that an adversary
+does not obtain enough votes by chance. Since a larger com-
+mittee translates into a higher bandwidth cost, we choose
+two different parameter sets:Tfinalandτfinalfor thefinal
+step, which ensures an overwhelming probability of safety
+regardless of strong synchrony, andTstepandτstepfor all
+other steps, which achieve a reasonable trade-off between
+liveness, safety, and performance.
+To make the constraints onτstepandTstepprecise, let us
+denote the number of honest committee members byдand
+the malicious ones byb; in expectation,b+д=τstep, butb+д
+can vary since it is chosen by sortition. To ensure liveness, as
+we prove in Appendix C.2,BA⋆requires^12 д+b≤Tstep·τstep
+andд>Tstep·τstep.
+Due to the probabilistic nature of how committee members
+are chosen, there is always some small chance that theband
+```
+
+дfor some step fail to satisfy the above constraints, and
+BA⋆’s goal is to make this probability negligible. Figure 3
+plots the expected committee sizeτstepthat is needed to
+satisfy both constraints, as a function ofh, for a probability of
+violation of 5 × 10 −^9 ; Appendix B describes this computation
+in more detail. The figure shows a trade-off: the weaker the
+assumption on the fraction of money held by honest users
+(h), the larger the committee size needs to be. The results
+show that, ashapproaches^23 , the committee size grows
+quickly. However, ath=80%,τstep= 2 , 000 can ensure that
+these constraints hold with probability 1 − 5 × 10 −^9 (using
+Tstep= 0.685).
+The constraints onτfinalandTfinalare dictated by the
+proof of safety under weak synchrony; Appendix C.1 shows
+thatτfinal= 10 , 000 suffices withTfinal= 0. 74.
+With these parameters,BA⋆ensures safety even if the
+lowest-priority block proposer is malicious (proposes dif-
+ferent blocks). Appendix C provides proofs ofBA⋆’s safety
+under weak synchrony (§C.1), liveness under strong syn-
+chrony (§C.2), and efficiency (§C.3).
+
+## 8 ALGORAND
+
+```
+Building Algorand on top of the primitives we have described
+so far requires Algorand to address a number of higher-level
+issues, which this section discusses.
+```
+### 8.1 Block format
+
+```
+Algorand’s blocks consist of a list of transactions, along
+with metadata needed byBA⋆. Specifically, the metadata
+consists of the round number, the proposer’s VRF-based
+seed (§6), a hash of the previous block in the ledger, and a
+timestamp indicating when the block was proposed. The
+list of transactions in a block logically translates to a set
+of weights for each user’s public key (based on the balance
+of currency for that key), along with the total weight of all
+outstanding currency.
+Once a user receives a block from the highest-priority pro-
+poser, the user validates the block contents before passing it
+on toBA⋆. In particular, the user checks that all transactions
+are valid; that the seed is valid; that the previous block hash
+is correct; that the block round number is correct; and that
+the timestamp is greater than that of the previous block and
+also approximately current (say, within an hour). If any of
+them are incorrect, the user passes an empty block toBA⋆.
+```
+### 8.2 Safety and liveness
+
+```
+To a large extent, Algorand relies onBA⋆to reach consensus
+on blocks in the ledger. Algorand confirms transactions only
+when they appear in a final block, or in the predecessor of a
+final block. Final blocks guarantee that no other block could
+have reached consensus in the same round. This means
+that all final blocks are totally ordered with respect to one
+another, since (1) blocks form a linear chain, and (2) there can
+be exactly one final block at any given position in the chain.
+In other words, given two final blocks, one of them (the one
+with the smaller round numberr 1 ) must be a predecessor of
+```
+```
+the other (the one with the higher round numberr 2 ), since
+there must besomepredecessor of ther 2 block in roundr 1 ,
+and the safety condition guarantees that ther 1 block is the
+only possible such block.
+The remaining issue is that, if the network is not strongly
+synchronous,BA⋆may create forks (i.e., different users reach
+consensus on different blocks). This does not violate safety,
+becauseBA⋆will returntentativeconsensus in this situation.
+However, forks do impact liveness: users on different forks
+will have differentctx.last_blockvalues, which means they
+will not count each others’ votes. As a result, at least one of
+the forks (and possibly all of the forks) will not have enough
+participants to cross the vote threshold, andBA⋆will not be
+able to reach consensus on any more blocks on that fork.
+To resolve these forks, Algorand periodically proposes a
+fork that all users should agree on, and usesBA⋆to reach
+consensus on whether all users should, indeed, switch to
+this fork. To determine the set of possible forks, Algorand
+users passively monitor allBA⋆votes (i.e., even votes whose
+prev_hashvalue does not match the current user’s chain),
+and keep track of all forks. Users then use loosely synchro-
+nized clocks to stop regular block processing and kick off the
+recovery protocol at every time interval (e.g., every hour),
+which will propose one of these forks as the fork that every-
+one should agree on.
+The recovery protocol starts by having users propose a
+fork using the block proposal mechanism (§6). Specifically,
+if a user is chosen to be a “fork proposer,” that user proposes
+an empty block whose predecessor hash is the longest fork
+(by the number of blocks) observed by the user so far. Each
+user waits for the highest-priority fork proposal, much as
+in the block proposal mechanism. Each user validates the
+proposed block, by ensuring that the block’s parent pointer
+is a chain that is as long as the longest chain seen by that
+user. Choosing the longest fork ensures that this fork will
+include all final blocks. Finally, the user invokesBA⋆to
+reach consensus on this block, passing the round number
+found in the proposed block.
+In order forBA⋆to reach consensus on one of the forks,
+all Algorand users must use the same seed and user weights.
+This means that Algorand must use user weights and seeds
+from before any possible forks occurred. To do this, Algorand
+relies on the weak synchrony assumption—namely, that in
+every period of lengthb(think ofbas 1 day), there must
+be a strongly synchronous period of lengths<b(think of
+sas a few hours). Under this assumption, using the block
+timestamps, Algorand quantizes time intob-long periods
+(think days), and finds the most recent block from the next-
+to-last completeb-long period. Algorand then uses the seed
+from this block, and uses user weights from the last block
+that was agreed upon at leastb-long time before it (§5.3).
+Algorand takes the seed from the block from thenext-
+to-lastb-long period because the most recentb-long period
+may still have an unresolved fork. Such a fork would prevent
+users from agreeing on the seed and weights used in the
+```
+
+recovery. However, as long as Algorand can recover within
+thes-long strongly synchronous period in the most recent
+b-long period, all users will agree on the same block from
+the next-to-last period (as long as their clocks are roughly
+synchronized).
+To ensure that Algorand recovers from a fork (i.e., most
+honest users switch to the same fork) within thes-long syn-
+chronous period, Algorand users repeatedly attempt to reach
+consensus on a fork (applying a hash function to the seed
+each time to produce a different set of proposers and com-
+mittee members), until they achieve consensus. Since, by
+assumption, Algorand is operating in a strongly synchronous
+period, it is not important whetherBA⋆returns “final” or
+“tentative” consensus in this case. When Algorand is recov-
+ering outside of a strongly synchronous period, we cannot
+ensure recovery withinstime.
+
+### 8.3 Bootstrapping
+
+```
+Bootstrapping the system.To deploy Algorand, a com-
+mon genesis block must be provided to all users, along with
+the initial cryptographic sortition seed. The value ofseed 0
+specified in the genesis block is decided using distributed
+random number generation [ 14 ], after the public keys and
+weights for the initial set of participants are publicly known.
+```
+```
+Bootstrapping new users.Users that join the system need
+to learn the current state of the system, which is defined to
+be the result of a chain ofBA⋆consensus outcomes. To
+help users catch up, Algorand generates acertificatefor ev-
+ery block that was agreed upon byBA⋆(including empty
+blocks). The certificate is an aggregate of the votes from the
+last step of BinaryBA⋆() (not including thefinalstep) that
+would be sufficient to allow any user to reach the same con-
+clusion by processing these votes (i.e., there must be at least
+⌊Tstep·τstep⌋+ 1 votes). Importantly, the users must check
+the sortition hashes and proofs just like in Algorithm 6, and
+that all messages in the certificate are for the same Algorand
+round andBA⋆step.
+Certificates allow new users to validate prior blocks. Users
+validate blocks in order, starting from the genesis block. This
+ensures that the user knows the correct weights for verifying
+sortition proofs in any given round. Users can also request
+a certificate proving the safety of a block; this is simply the
+collection of votes for thefinalstep. Since final blocks are
+totally ordered, users need to check the safety of only the
+most recent block.
+One potential risk created by the use of certificates is that
+an adversary can provide a certificate that appears to show
+thatBA⋆completed after some large number of steps. This
+gives the adversary a chance to find aBA⋆step number
+(up toMaxSteps) in which the adversary controls more
+than a threshold of the selected committee members (and
+to then create a signed certificate using their private keys).
+We set the committee size to be sufficiently large to ensure
+the attacker has negligible probability of finding such a step
+```
+```
+number. Forτstep> 1 , 000 , the probability of this attack is
+less than 2 −^166 at every step, making this attack infeasible.
+Storage.The block history and matching certificates allow
+new users to catch-up, and are not required for users who
+are already up-to-date with the current ledger. Therefore Al-
+gorand distributes certificate and block storage across users.
+For N shards, users store blocks/certificates whose round
+number equals their public key modulo N.
+```
+### 8.4 Communication
+
+```
+Gossiping blocks and relaying messages.Algorand’s
+block proposal protocol (§6) assumed that chosen users can
+gossip new blocks before an adversary can learn the user’s
+identity and mount a targeted DoS attack against them. In
+practice, Algorand’s blocks are larger than the maximum
+packet size, so it is inevitable that some packets from a cho-
+sen block proposer will be sent before others. A particularly
+fast adversary could take advantage of this to immediately
+DoS any user that starts sending multiple packets, on the
+presumption that the user is a block proposer.
+Formally, this means that Algorand’s liveness guarantees
+are slightly different in practice: instead of providing liveness
+in the face of immediate targeted DoS attacks, Algorand
+ensures liveness as long as an adversary cannot mount a
+targeted DoS attack within the time it takes for the victim
+to send a block over a TCP connection (a few seconds). We
+believe this does not matter significantly; an adversary with
+such a quick reaction time likely also has broad control over
+the network, and thus can prevent Algorand nodes from
+communicating at all. Another approach may be to rely
+on Tor [ 19 ] to make it difficult for an adversary to quickly
+disconnect a user.
+To avoid an adversary from sending garbage messages and
+overwhelming Algorand’s gossip network, Algorand nodes
+must validate messages before relaying them. Specifically,
+Algorand nodes should validate each message using Algo-
+rithm 6, and avoid relaying more than one message signed
+by a given public key per⟨round, step⟩.
+Scalability.The communication costs for each user depend
+on the expected size of the committee and the number of
+block proposers, which Algorand sets throughτproposer,τstep,
+andτfinal(independent of the number of users). As more
+users join, it takes a message longer to disseminate in the
+gossip network. Algorand’s gossip network forms a random
+network graph (each user connects to random peers). Our
+theoretical analysis suggests that almost all users will be
+part of one connected component in the graph, and that dis-
+semination time grows with the diameter of that component,
+which is logarithmic in the number of users [ 44 ]. Experi-
+ments confirm that Algorand’s performance is only slightly
+affected by more users (§10).
+Since our random graph uses a fixed number of peers,
+one potential concern is that it may contain disconnected
+components [ 22 ]. However, only a small fraction of users
+might end up in a disconnected component, which does
+```
+
+```
+Parameter Meaning Value
+h assumed fraction of honest weighted users 80%
+R seed refresh interval (# of rounds) 1,000 (§5.2)
+τproposer expected # of block proposers 26 (§B.1)
+τstep expected # of committee members 2,000 (§B.2)
+Tstep threshold ofτstepforBA⋆ 68.5% (§B.2)
+τfinal expected # of final committee members 10,000 (§C.1)
+Tfinal threshold ofτfinalforBA⋆ 74% (§C.1)
+MaxSteps maximum number of steps in BinaryBA⋆ 150 (§C.1)
+λpriority time to gossip sortition proofs 5 seconds
+λblock timeout for receiving a block 1 minute
+λstep timeout forBA⋆step 20 seconds
+λstepvar estimate ofBA⋆completion time variance 5 seconds
+```
+```
+Figure 4: Implementation parameters.
+```
+not pose a problem forBA⋆. Moreover, Algorand replaces
+gossip peers each round, which helps users recover from
+being possibly disconnected in a previous round.
+
+## 9 IMPLEMENTATION
+
+We implemented a prototype of Algorand in C++, consist-
+ing of approximately 5,000 lines of code. We use the Boost
+ASIO library for networking. Signatures and VRFs are im-
+plemented over Curve 25519 [ 6 ], and we use SHA-256 for
+a hash function. We use the VRF outlined in Goldberg et
+al [27: §4].
+In our implementation each user connects to 4 random
+peers, accepts incoming connections from other peers, and
+gossips messages to all of them. This gives us 8 peers on
+average. We currently provide each user with an “address
+book” file listing the IP address and port number for every
+user’s public key. In a real-world deployment we imagine
+users could gossip this information, signed by their keys, or
+distribute it via a public bulletin board. This naïve design of
+the gossip protocol in our prototype implementation is po-
+tentially susceptible to Sybil attacks, since it does not prevent
+an adversary from joining the gossip network with a large
+number of identities. We leave the problem of implementing
+a Sybil-resistant gossip network to future work.
+
+One difference between our implementation and the pseu-
+docode shown in §7 lies in the BinaryBA⋆() function. The
+pseudocode in Algorithm 8 votes in the next 3 steps after
+reaching consensus. For efficiency, our implementation in-
+stead looks back to the previous 3 steps before possibly re-
+turning consensus in a future step. This logic produces equiv-
+alent results but is more difficult to express in pseudocode.
+Figure 4 shows the parameters in our prototype of Algo-
+rand; we experimentally validate the timeout parameters in
+§10.h=80%means that an adversary would need to control
+20% of Algorand’s currency in order to create a fork. By
+analogy, in the US, the top 0.1% of people own about 20% of
+the wealth [ 40 ], so the richest 300,000 people would have to
+collude to create a fork.
+λpriorityshould be large enough to allow block proposers
+to gossip their priorities and proofs. Measurements of mes-
+sage propagation in Bitcoin’s network [ 18 ] suggest that gos-
+
+```
+siping 1 KB to 90% of the Bitcoin peer-to-peer network takes
+about 1 second. We conservatively setλpriorityto 5 seconds.
+λblockensures that Algorand can make progress even if
+the block proposer does not send the block. Our experiments
+(§10) show that about 10 seconds suffices to gossip a 1 MB
+block. We conservatively setλblockto be a minute.
+λstepshould be high enough to allow users to receive
+messages from committee members, but low enough to allow
+Algorand to make progress (move to the next step) if it does
+not hear from sufficiently many committee members. We
+conservatively setλstepto 20 seconds. We setλstepvar, the
+estimated variance inBA⋆completion times, to 10 seconds.
+```
+## 10 EVALUATION
+
+```
+Our evaluation quantitatively answers the following:
+```
+- What is the latency that Algorand can achieve for con-
+    firming transactions, and how does it scale as the number
+    of users grows? (§10.1)
+- What throughput can Algorand achieve in terms of trans-
+    actions per second? (§10.2)
+- What are Algorand’s CPU, bandwidth, and storage costs?
+    (§10.3)
+- How does Algorand perform when users misbehave?
+    (§10.4)
+- Does Algorand choose reasonable timeout parameters?
+    (§10.5)
+To answer these questions, we deploy our prototype of
+Algorand on Amazon’s EC2 using 1,000 m4.2xlarge virtual
+machines (VMs), each of which has 8 cores and up to 1 Gbps
+network throughput. To measure the performance of Algo-
+rand with a large number of users, we run multiple Algorand
+users (each user is a process) on the same VM. By default, we
+run 50 users per VM, and users propose a 1 MByte block. To
+simulate commodity network links, we cap the bandwidth
+for each Algorand process to 20 Mbps. To model network la-
+tency we use inter-city latency and jitter measurements [ 52 ]
+and assign each machine to one of 20 major cities around the
+world; latency within the same city is modeled as negligible.
+We assign an equal share of money to each user; the equal
+distribution of money maximizes the number of messages
+that users need to process. Graphs in the rest of this section
+plot the time it takes for Algorand to complete an entire
+round, and include the minimum, median, maximum, 25th,
+and 75th percentile times across all users.
+
+### 10.1 Latency
+
+```
+Figure 5 shows results with the number of users varying from
+5,000 to 50,000 (by varying the number of active VMs from
+100 to 1,000). The results show that Algorand can confirm
+transactions in well under a minute, and the latency is near-
+constant as the number of users grows. (Sinceτfinal= 10 , 000 ,
+the time it takes to complete thefinalstep increases until
+there are 10,000 users in the system; before this point, users
+```
+
+```
+5K7K10K 15K 25K 50K
+Number of Users
+```
+```
+0
+```
+```
+5
+```
+```
+10
+```
+```
+15
+```
+```
+20
+```
+```
+25
+```
+```
+Time (s)
+```
+```
+Round Completion
+```
+Figure 5: Latency for one round of Algorand, with 5,000 to
+50,000 users.
+
+```
+50K75K100K150K 250K 500K
+Number of Users
+```
+```
+0
+```
+```
+20
+```
+```
+40
+```
+```
+60
+```
+```
+80
+```
+```
+100
+```
+```
+120
+```
+```
+Time (s)
+```
+```
+Round Completion
+```
+Figure 6: Latency for one round of Algorand in a configura-
+tion with 500 users per VM, using 100 to 1,000 VMs.
+
+are selected more than once and send fewer votes with higher
+weights.)
+To determine if Algorand continues to scale to even more
+users, we run an experiment with 500 Algorand user pro-
+cesses per VM. This configuration runs into two bottlenecks:
+CPU time and bandwidth. Most of the CPU time is spent
+verifying signatures and VRFs. To alleviate this bottleneck
+in our experimental setup, for this experiment we replace
+verifications with sleeps of the same duration. We are un-
+able to alleviate the bandwidth bottleneck, since each VM’s
+network interface is maxed out; instead, we increaseλstep
+to 1 minute.
+Figure 6 shows the results of this experiment, scaling the
+number of users from 50,000 to 500,000 (by varying the num-
+ber of VMs from 100 to 1,000). The latency in this experiment
+is about 4×higher than in Figure 5, even for the same num-
+ber of users, owing to the bandwidth bottleneck. However,
+the scaling performance remains roughly flat all the way to
+500,000 users, suggesting that Algorand scales well.
+
+### 10.2 Throughput
+
+In the following set of experiments we deploy 50,000 users
+on our 1,000 VMs (50 users per machine). Figure 7 shows
+the results with a varying block size. The figure breaks the
+Algorand round into three parts. Block proposal (§6), at the
+bottom of the graph, is the time it takes a user to obtain the
+
+```
+512KB1MB2MB 4MB 8MB 10MB
+Block Size
+```
+```
+0
+```
+```
+10
+```
+```
+20
+```
+```
+30
+```
+```
+40
+```
+```
+50
+```
+```
+60
+```
+```
+Time (s)
+```
+```
+BA Final Step
+BA w/o Final Step
+Block Proposal
+```
+```
+Figure 7: Latency for one round of Algorand as a function
+of the block size.
+```
+```
+proposed block. The block proposal time for small block
+sizes is dominated by theλpriority+λstepvarwait time. For
+large block sizes, the time to gossip the large block contents
+dominates.BA⋆except for thefinalstep, in the middle of
+the graph, is the time it takes forBA⋆to reach thefinalstep.
+Finally,BA⋆’sfinalstep, at the top of the graph, is the time
+it takesBA⋆to complete thefinalstep. We break out the
+finalstep separately because, for the purposes of through-
+put, it could be pipelined with the next round (although our
+prototype does not do so).
+The results show that Algorand’s agreement time (i.e.,
+BA⋆) is independent of the block size, and stays about the
+same (12 seconds) even for large blocks. The throughput
+can be further increased by pipelining thefinalstep, which
+takes about 6 seconds, with the next round of Algorand. The
+fixed time for runningBA⋆and the linear growth in block
+propagation time (with the size of the block) suggest that
+increasing the block size allows one to amortize the time it
+takes to runBA⋆to commit more data, and therefore reach
+a throughput that maximizes the network capability.
+At its lowest latency, Algorand commits a 2 MByte block
+in about 22 seconds, which means it can commit 327 MBytes
+of transactions per hour. For comparison, Bitcoin commits a
+1 MByte block every 10 minutes, which means it can com-
+mit 6 MBytes of transactions per hour [ 9 ]. As Algorand’s
+block size grows, Algorand achieves higher throughput at
+the cost of some increase to latency. For example, with a
+10 MByte block size, Algorand commits about 750 MBytes of
+transactions per hour, which is 125×Bitcoin’s throughput.
+```
+### 10.3 Costs of running Algorand
+
+```
+Users running Algorand incur CPU, network, and storage
+costs. The CPU cost of running Algorand is modest; when
+running 50 users per VM, CPU usage on the 8-core VM was
+about 40% (most of it for verifying signatures and VRFs),
+meaning each Algorand process uses about 6.5% of a core.
+In terms of bandwidth, each user in our experiment with
+1 MByte blocks and 50,000 users uses about 10 Mbit/sec (em-
+pirically computed as the total amount of data sent, divided
+by the duration of the experiment). We note that the com-
+munication cost per user is independent of the number of
+```
+
+```
+0 5 10 15 20
+% Malicious Users
+```
+```
+0
+```
+```
+5
+```
+```
+10
+```
+```
+15
+```
+```
+20
+```
+```
+25
+```
+```
+Time (s)
+```
+```
+Round Completion
+```
+Figure 8: Latency for one round of Algorand with a varying
+fraction of malicious users, out of a total of 50,000 users.
+
+users running Algorand, since users have an expected fixed
+number of neighbors they gossip messages to, and the num-
+ber of messages in the consensus protocol depends on the
+committee size (rather than the total number of users).
+In terms of storage cost, Algorand stores block certificates
+in order to prove to new users that a block was committed.
+This storage cost is in addition to the blocks themselves. Each
+block certificate is 300 KBytes, independent of the block size;
+for 1 MByte blocks, this would be a∼30% storage overhead.
+Sharding block storage across users (§8.3) reduces storage
+costs proportionally. For example, sharding modulo 10 would
+require each user to store, on average, 130 KB for every 1MB
+block that is appended to the ledger.
+
+### 10.4 Misbehaving users
+
+Algorand’s safety is guaranteed byBA⋆(§7), but proving this
+experimentally would require testing all possible attacker
+strategies, which is infeasible. However, to experimentally
+show that our Algorand prototype handles malicious users,
+we choose one particular attack strategy. We force the block
+proposer with the highest priority to equivocate about the
+proposed block: namely, the proposer sends one version of
+the block to half of its peers, and another version to others
+(note that as an optimization, if a user receives to conflicting
+versions of a block from the highest priority block proposer
+before the block proposal step is complete, he discards both
+proposals and startsBA⋆with the empty block). Malicious
+users that are chosen to be part of theBA⋆committee vote
+for both blocks. Figure 8 shows how Algorand’s performance
+is affected by the weighted fraction of malicious users. The
+results show that, at least empirically for this particular at-
+tack, Algorand is not significantly affected.
+
+### 10.5 Timeout parameters
+
+The above results confirm thatBA⋆steps finish in well un-
+derλstep(20 seconds), that the difference between 25th and
+75th percentiles ofBA⋆completion times is underλstepvar
+(5 seconds), and that blocks are gossiped withinλblock(
+minute). We separately measure the time taken to propa-
+gate a block proposer’s priority and proof; it is consistently
+
+```
+around 1 second, well underλpriority(5 seconds), confirming
+the measurements by Decker and Wattenhofer [18].
+```
+## 11 FUTURE WORK
+
+```
+This paper focused on the consensus mechanism for commit-
+ting transactions, and addressing the associated scalability
+and security challenges. There remain a number of open
+problems in designing permissionless cryptocurrencies:
+Incentives.In order to encourage Algorand users to par-
+ticipate, i.e., be online when selected and pay the network
+cost of operating Algorand, the system may need to include
+incentives, possibly in form of a reward mechanism. Design-
+ing and analyzing an incentive mechanism includes many
+challenges, such as ensuring that users do not have perverse
+incentives (e.g., to withhold votes), and that malicious users
+cannot “game the system” to obtain more rewards than users
+who follow the protocol (e.g., by influencing seed selection).
+Cost of joining.To join Algorand, new users fetch all ex-
+isting blocks with their accompanying certificates, which
+can comprise a large amount of data. Other cryptocurrencies
+face a similar problem, but since the throughput of Algorand
+is relatively high, this may create a scalability challenge.
+Forward security.Attackers may attempt to corrupt users
+over time, since identities of committee members are re-
+vealed after they send a message. If an attacker manages to
+obtain enough user keys, he could construct a fake certificate
+to create a fork. One solution would be for users to forget
+the signing key before sending out a signed message (and
+commit to a series of signing keys ahead of time, perhaps
+using identity-based encryption [11, 20]).
+```
+## 12 CONCLUSION
+
+```
+Algorand is a new cryptocurrency that confirms transactions
+on the order of a minute with a negligible probability of fork-
+ing. Algorand’s design is based on a cryptographic sortition
+mechanism combined with theBA⋆Byzantine agreement
+protocol. Algorand avoids targeted attacks at chosen partic-
+ipants using participant replacement at every step. Exper-
+imental results with a prototype of Algorand demonstrate
+that it achieves sub-minute latency and 125×the throughput
+of Bitcoin, and scales well to 500,000 users.
+```
+## ACKNOWLEDGMENTS
+
+```
+Thanks to Iddo Bentov, Ethan Heilman, Jelle van den Hooff,
+and our shepherd, Robbert van Renesse, for their helpful com-
+ments and suggestions. Gilad, Hemo, and Zeldovich were
+supported by NSF awards CNS-1413920 and CNS-1414119.
+```
+## REFERENCES
+
+```
+[1]M. Abd-El-Malek, G. R. Ganger, G. R. Goodson, M. K.
+Reiter, and J. J. Wylie. Fault-scalable Byzantine fault-
+tolerant services. InProceedings of the 20th ACM Sym-
+posium on Operating Systems Principles (SOSP), pages
+59–74, Brighton, UK, Oct. 2005.
+```
+
+```
+[2]I. Bentov and R. Kumaresan. How to use Bitcoin to
+design fair protocols. InProceedings of the 34th Annual
+International Cryptology Conference (CRYPTO), Santa
+Barbara, CA, Aug. 2014.
+```
+```
+[3]I. Bentov, C. Lee, A. Mizrahi, and M. Rosenfeld. Proof
+of activity: Extending Bitcoin’s proof of work via proof
+of stake. InProceedings of the 2014 Joint Workshop on
+Pricing and Incentives in Networks and Systems, Austin,
+TX, June 2014.
+```
+```
+[4]I. Bentov, A. Gabizon, and A. Mizrahi. Cryptocurren-
+cies without proof of work. InProceedings of the 2016
+Financial Cryptography and Data Security Conference,
+2016.
+```
+```
+[5]I. Bentov, P. Hubáček, T. Moran, and A. Nadler. Tor-
+toise and hares consensus: the Meshcash framework
+for incentive-compatible, scalable cryptocurrencies.
+Cryptology ePrint Archive, Report 2017/300, Apr. 2017.
+http://eprint.iacr.org/.
+```
+```
+[6]D. J. Bernstein. Curve25519: New Diffie-Hellman speed
+records. InProceedings of the 9th International Confer-
+ence on Theory and Practice in Public-Key Cryptogra-
+phy (PKC), pages 207–228, New York, NY, Apr. 2006.
+```
+```
+[7]Bitcoin Wiki. Confirmation.https://en.bitcoin.
+it/wiki/Confirmation, 2017.
+```
+```
+[8]BitcoinWiki. Mining hardware comparison,
+```
+2016. https://en.bitcoin.it/wiki/Mining_
+hardware_comparison.
+
+```
+[9]BitcoinWiki. Bitcoin scalability. https://en.
+bitcoin.it/wiki/Scalability, 2017.
+```
+[10]BitcoinWiki. Proof of stake.https://en.bitcoin.
+it/wiki/Proof_of_Stake, 2017.
+
+[11]D. Boneh and M. K. Franklin. Identity-based encryption
+from the Weil pairing. InProceedings of the 21st Annual
+International Cryptology Conference (CRYPTO), Santa
+Barbara, CA, Aug. 2001.
+
+[12]G. Brockman. Stellar, July 2014. https://stripe.
+com/blog/stellar.
+
+[13]V. Buterin. Minimal slashing conditions. https:
+//medium.com/@VitalikButerin/minimal-
+slashing-conditions-20f0b500fc6c, Mar. 2017.
+
+[14]C. Cachin, K. Kursawe, F. Petzold, and V. Shoup. Secure
+and efficient asynchronous broadcast protocols. In
+Proceedings of the 21st Annual International Cryptology
+Conference (CRYPTO), pages 524–541, Santa Barbara,
+CA, Aug. 2001.
+
+[15]M. Castro and B. Liskov. Practical Byzantine fault tol-
+erance and proactive recovery.ACM Transactions on
+Computer Systems, 20(4), Nov. 2002.
+
+```
+[16]J. Chen and S. Micali. Algorand. Technical report, 2017.
+URLhttp://arxiv.org/abs/1607.01341.
+```
+```
+[17]A. Clement, E. L. Wong, L. Alvisi, M. Dahlin, and
+M. Marchetti. Making Byzantine fault tolerant sys-
+tems tolerate Byzantine faults. InProceedings of the
+6th Symposium on Networked Systems Design and Im-
+plementation (NSDI), pages 153–168, Boston, MA, Apr.
+2009.
+```
+```
+[18]C. Decker and R. Wattenhofer. Information propaga-
+tion in the Bitcoin network. InProceedings of the 13th
+IEEE International Conference on Peer-to-Peer Comput-
+ing, Sept. 2013.
+```
+```
+[19]R. Dingledine, N. Mathewson, and P. Syverson. Tor:
+The second-generation onion router. InProceedings
+of the 13th Usenix Security Symposium, pages 303–320,
+San Diego, CA, Aug. 2004.
+```
+```
+[20]N. Döttling and S. Garg. Identity-based encryption
+from the Diffie-Hellman assumption. InProceedings
+of the 37th Annual International Cryptology Confer-
+ence (CRYPTO), pages 537–569, Santa Barbara, CA, Aug.
+2017.
+```
+```
+[21]J. R. Douceur. The Sybil attack. InProceedings of the 1st
+International Workshop on Peer-to-Peer Systems (IPTPS
+’02), Cambridge, MA, Mar. 2002.
+```
+```
+[22]P. Erdős and A. Rényi. On the evolution of random
+graphs.Publications of the Mathematical Institute of the
+Hungarian Academy of Sciences, 5:17–61, 1960.
+```
+```
+[23]Ethereum Foundation. Ethereum, 2016.https://www.
+ethereum.org/.
+```
+```
+[24]Ethereum Foundation. Create a democracy contract in
+Ethereum, 2016.https://www.ethereum.org/dao.
+```
+```
+[25]I. Eyal and E. G. Sirer. Majority is not enough: Bitcoin
+mining is vulnerable. InProceedings of the 2013 Financial
+Cryptography and Data Security Conference, Mar. 2014.
+```
+```
+[26]I. Eyal, A. E. Gencer, E. G. Sirer, and R. van Renesse.
+Bitcoin-NG: A scalable blockchain protocol. InPro-
+ceedings of the 13th Symposium on Networked Systems
+Design and Implementation (NSDI), pages 45–59, Santa
+Clara, CA, Mar. 2016.
+```
+```
+[27]S. Goldberg, M. Naor, D. Papadopoulos, and L. Reyzin.
+NSEC5 from elliptic curves: Provably preventing
+DNSSEC zone enumeration with shorter responses.
+Cryptology ePrint Archive, Report 2016/083, Mar. 2016.
+http://eprint.iacr.org/.
+```
+```
+[28]E. Heilman, A. Kendler, A. Zohar, and S. Goldberg.
+Eclipse attacks on Bitcoin’s peer-to-peer network. In
+Proceedings of the 24th Usenix Security Symposium,
+pages 129–144, Washington, DC, Aug. 2015.
+```
+
+[29]S. Higgins. Bitcoin mining pools targeted in wave of
+DDoS attacks. Mar. 2015. https://www.coindesk.
+com/bitcoin-mining-pools-ddos-attacks/.
+
+[30]A. Kiayias, I. Konstantinou, A. Russell, B. David, and
+R. Oliynykov. Ouroboros: A provably secure proof-of-
+stake blockchain protocol. Cryptology ePrint Archive,
+Report 2016/889, 2016.http://eprint.iacr.org/.
+
+[31]S. King and S. Nadal. PPCoin: Peer-to-peer crypto-
+currency with proof-of-stake, Aug. 2012. https:
+//peercoin.net/assets/paper/peercoin-
+paper.pdf.
+
+[32]E. Kokoris-Kogias, P. Jovanovic, N. Gailly, I. Khoffi,
+L. Gasser, and B. Ford. Enhancing Bitcoin security
+and performance with strong consistency via collec-
+tive signing. InProceedings of the 25th Usenix Security
+Symposium, pages 279–296, Austin, TX, Aug. 2016.
+
+[33]R. Kotla, L. Alvisi, M. Dahlin, A. Clement, and E. L.
+Wong. Zyzzyva: Speculative Byzantine fault tolerance.
+ACM Transactions on Computer Systems, 27(4):7:1–39,
+2009.
+
+[34]L. Lamport. The part-time parliament.ACM Transac-
+tions on Computer Systems, 16(2):133–169, 1998.
+
+[35]J. Li and D. Mazières. Beyond one-third faulty replicas
+in Byzantine fault tolerant systems. InProceedings of
+the 4th Symposium on Networked Systems Design and
+Implementation (NSDI), Cambridge, MA, Apr. 2007.
+
+[36]D. Mazières. The Stellar consensus protocol:
+A federated model for internet-level consensus.
+https://www.stellar.org/papers/stellar-
+consensus-protocol.pdf, 2014.
+
+[37]S. Micali. Fast and furious Byzantine agreement. In
+Proceedings of the Innovations in Theoretical Computer
+Science (ITCS) Conference, 2017.
+
+[38]S. Micali, M. O. Rabin, and S. P. Vadhan. Verifiable ran-
+dom functions. InProceedings of the 40th Annual IEEE
+Symposium on Foundations of Computer Science (FOCS),
+New York, NY, Oct. 1999.
+
+[39]A. Miller, Y. Xia, K. Croman, E. Shi, and D. Song. The
+Honey Badger of BFT protocols. InProceedings of the
+23rd ACM Conference on Computer and Communications
+Security (CCS), pages 31–42, Vienna, Austria, Oct. 2016.
+
+[40]A. Monaghan. US wealth inequality: top 0.1%
+worth as much as the bottom 90%, Nov. 2014.
+https://www.theguardian.com/business/2014/
+nov/13/us-wealth-inequality-top-01-worth-
+as-much-as-the-bottom-90.
+
+[41]S. Nakamoto. Bitcoin: A peer-to-peer electronic cash
+system.https://bitcoin.org/bitcoin.pdf, 2008.
+
+```
+[42]R. Pass and E. Shi. Hybrid consensus: Efficient consen-
+sus in the permissionless model. Cryptology ePrint
+Archive, Report 2016/917, 2016. http://eprint.
+iacr.org/.
+```
+```
+[43]Peercointalk. Peercoin invalid checkpoint.
+https://www.peercointalk.org/t/invalid-
+checkpoint/3691, 2015.
+```
+```
+[44]O. Riordan and N. Wormald. The diameter of sparse ran-
+dom graphs.Combinatorics, Probability and Computing,
+19(5-6):835–926, Nov. 2010.
+```
+```
+[45]P. Rizzo. BitGo launches “instant” Bitcoin transaction
+tool, Jan. 2016.http://www.coindesk.com/bitgo-
+instant-bitcoin-transaction-tool/.
+```
+```
+[46]J. Rubin. The problem of ASICBOOST, Apr.
+```
+2017. [http://www.mit.edu/~jlrubin/public/](http://www.mit.edu/~jlrubin/public/)
+pdfs/Asicboost.pdf.
+
+```
+[47]Y. Sompolinsky and A. Zohar. Secure high-rate trans-
+action processing in Bitcoin. InProceedings of the 2015
+Financial Cryptography and Data Security Conference,
+2015.
+```
+```
+[48]Y. Sompolinsky, Y. Lewenberg, and A. Zohar. SPECTRE:
+A fast and scalable cryptocurrency protocol. Cryptol-
+ogy ePrint Archive, Report 2016/1159, 2016. http:
+//eprint.iacr.org/.
+```
+```
+[49]N. Szabo. Smart contracts: Formalizing and securing
+relationships on public networks.First Monday, 2(9),
+Sept. 1997. http://firstmonday.org/ojs/index.
+php/fm/article/view/548/469.
+```
+```
+[50]R. Turpin and B. A. Coan. Extending binary Byzan-
+tine agreement to multivalued Byzantine agreement.
+Information Processing Letters, 18(2):73–76, Feb. 1984.
+```
+```
+[51]M. Vasek, M. Thornton, and T. Moore. Empirical analy-
+sis of denial-of-service attacks in the Bitcoin ecosystem.
+InProceedings of the 18th International Financial Cryp-
+tography and Data Security Conference, Barbados, Mar.
+2014.
+```
+```
+[52]WonderNetwork. Global ping statistics: Ping times
+between WonderNetwork servers, Apr. 2017.https:
+//wondernetwork.com/pings.
+```
+```
+[53]Zerocoin Electric Coin Company. ZCash: All coins are
+created equal, 2017.https://z.cash.
+```
+## A NUMBER OF REQUIRED BLOCKS FOR
+
+## UNPREDICTABLE SELECTION SEED
+
+```
+Theorem 1.Under strong synchrony, the probability that
+the attacker can compute the nextkselection seeds decreases
+exponentially withk.
+```
+
+Proof.Lethdenote the fraction of honest users. When the
+block that was agreed upon for roundris proposed by an
+honest useri, thenseedr+ 1 , which sets the priorities among
+block proposers for roundr+ 1 , takes a uniformly random
+value. Therefore, the highest priority for proposing a block at
+roundr+ 1 has probabilityhof belonging to an honest user,
+and so does every priority in the increasing sequence (i.e.,
+the second highest priority also has probabilityh, and so on).
+If the priority belongs to an honest user, then that user will
+propose a non-empty block which will become the unique
+certified block for roundr+ 1. If thechighest priorities
+belong to malicious users instead, then the adversary can
+make any of thosecusers propose the next block (and have
+that block agreed upon by all honest users), or he might
+force the roundr+ 1 block to be the empty block (by sending
+the proof of selection with the highest priority, and then not
+sending the actual block). So the adversary hasc+ 1 choices
+for the value ofseedr+ 1. These options give the adversary the
+power to influence future seeds and ensure a malicious block
+proposer with probability greater than 1 −h. We now prove
+that the adversary has limited power to influence future
+seeds.
+
+For the proof, we build a tree, where each node represents
+a user’s priority value, and contains the next selection seed,
+as set by that user (if the associated priority is the highest
+announced); each node in the tree can belong to an honest
+or a malicious user. The root of this tree belongs to the last
+honest user who proposed a block that was agreed upon. The
+selection seed in the root isseedr, which is the last seed that
+was in a block proposed by an honest user. The children of
+the root represent the users ordered from left to right, in de-
+creasing priority order, determined byseedr, and each child
+node also contains a possible value forseedr+ 1. We define
+the children of each child node using the same procedure we
+used for the root. Each node’s children define an order of the
+users, which is sampled with a pseudo-random permutation
+of all user priorities (set by the selection seed in the father
+node).
+
+We refer to blocks set by honest/malicious users as hon-
+est/malicious blocks (respectively). We wish to bound the
+expected number of blocks between two consecutive honest-
+blocks. For the proof, we give the adversary the power to,
+given a selection seed, know the positions of the users in
+the decreasing order of priorities. If the leftmost child of the
+root represents an honest user, then block at roundr+ 1 will
+be honest, so the number of malicious blocks between the
+two honest blocks is 0. If the leftmost child is malicious, then
+number of malicious blocks before the next honest block is
+at least 1. This happens with probability 1 −h, so the proba-
+bility that at least one non-honest block appears before the
+next honest block is 1 −h. If we letf(k)denote the probabil-
+ity that at leastknon-honest blocks appear before the next
+honest block, thenf( 1 )= 1 −h. We will now inductively
+compute an upper bound onf(k), usingf( 1 )as the base
+case.
+
+```
+Forf(k+ 1 ), if the root has exactlycmalicious children
+left of the first honest child, then the adversary hasc+ 1 op-
+tions forseedr+ 1. The adversary can generatek+ 1 malicious
+blocks iff he can generate at leastkmalicious blocks starting
+from one of thec+ 1 options he has for the block following
+the root. The probability that at least one ofc+ 1 options
+does generateknon-honest blocks is less than(c+ 1 )f(k)by
+union bound. So we get the recursive formula:
+```
+```
+f(k+ 1 )≤
+Õ∞
+```
+```
+c= 1
+```
+```
+Pr[adv. has exactlycleftmost children]·(c+ 1 )f(k)=
+```
+```
+Õ∞
+```
+```
+c= 1
+```
+```
+( 1 −h)ch·(c+ 1 )f(k)=
+```
+```
+( 1 −h)( 1 +h)
+h
+f(k)
+```
+```
+So by induction,
+```
+```
+f(k)≤(
+( 1 −h)( 1 +h)
+h
+```
+```
+)k−^1 f( 1 )=
+```
+#### 
+
+```
+( 1 −h)( 1 +h)
+h
+```
+```
+k− 1
+( 1 −h)
+(1)
+Sinceh≥^23 it holds that,
+```
+```
+f(k)≤
+```
+#### 1
+
+#### 3
+
+```
+·( 0. 84 )k−^1 ≤( 0. 84 )k
+```
+```
+Thus, for failure probabilityfthat the attacker can control
+kblocks in a row, it is sufficient to chosek=log 0. 84 f. For
+f= 10 −^18 , it is sufficient to usek= 238. If we assume a
+somewhat higher honesty rate, e.g.,h=^34 , then it is sufficient
+to usek= 77. □
+```
+## B NUMBER OF SELECTED USERS
+
+```
+We have at leasth·Uhonest sub-users, whereUis the total
+number of minimal Algorand units in the system. We assume
+a large number of currency units in Algorand (namely,U
+can be made arbitrarily large). At each round, the number of
+sub-users selected for a given role varies, but the expected
+number of selected sub-users,τ, is fixed. The probabilitypof
+a sub-user to be selected is given by the formulap=Uτ. What
+is the probability that exactlyKsub-users are sampled?
+There are
+```
+#### U
+
+```
+K
+```
+#### 
+
+```
+subsets ofU, consisting of exactlyK
+sub-users. For each such set, the probability that exactly the
+sub-users of that set are sampled formUispK( 1 −p)U−K.
+So the probability that exactlyK∈{ 0 , 1 ,...}sub-users are
+sampled is:
+
+U
+K
+```
+#### 
+
+```
+pK( 1 −p)U−K
+```
+```
+This is equal to:
+```
+```
+U!
+K!(U−K)!
+```
+#### (
+
+```
+τ
+U
+```
+#### )K( 1 −
+
+```
+τ
+U
+```
+#### )U−K=
+
+#### U···(U−K+ 1 )
+
+#### UK
+
+```
+τK
+K!
+```
+#### ( 1 −
+
+```
+τ
+U
+```
+#### )U−K
+
+```
+For the purposes of Algorand, we can takeUto be arbitrarily
+```
+
+large and fixK, so that effectively,
+
+```
+U···(U−K+ 1 )
+UK
+```
+#### = 1
+
+and
+
+```
+( 1 −
+```
+```
+τ
+U
+```
+#### )U−K=
+
+```
+( 1 −Uτ)U
+( 1 −Uτ)K
+```
+#### =
+
+```
+e−τ
+1
+```
+```
+=e−τ
+```
+So the probability of sampling exactlyKsub-users is:
+
+```
+(τ)K
+K!
+```
+```
+e−τ (2)
+```
+### B.1 Block proposers
+
+We need that at least one proposer is selected every round,
+but not too many users are selected. Let the expected
+number of proposers beτproposer. We can use the formula
+in Equation 2 to obtain the probability of 0 good proposers as:
+
+```
+(τproposer)^0
+0!
+```
+```
+e−τproposer=e−τproposer
+```
+Forτproposer= 26 , the probability that we get at least one
+proposer but no more than 70 is:
+
+```
+Õ^70
+```
+```
+K= 1
+```
+#### 26 K
+
+#### K!
+
+```
+e−^26 > 1 − 10 −^11
+```
+### B.2 Committee members
+
+If#дoodis the number of honest committee members and
+#badis the number of malicious committee members, then
+we want the following conditions to be satisfied for some pre-
+determined thresholdTstep·τstep. We give explicit formulas
+for the probability that each condition is violated.
+
+Condition (1),#дood>Tstep·τstep.This condition is vio-
+lated when the number of honest committee members is
+≤Tstep·τstep. From Equation 2, the probability that we
+
+have exactlyKhonest committee members is(hτstep)
+
+```
+K
+K! e
+```
+```
+−hτstep.
+```
+Thus, the probability that the condition is violated is given
+by the formula:
+
+```
+TstepÕ·τstep
+```
+```
+k= 0
+```
+```
+(hτstep)K
+K!
+e−hτstep
+```
+Condition (2),#^12 дood+#bad≤Tstep·τstep. As above, the
+probability that#bad=Lis
+
+```
+(( 1 −h)τstep)L
+L!
+```
+```
+e−(^1 −h)τstep
+```
+```
+So the probability that both#дood=Kand#bad=Lis:
+```
+```
+(hτstep)K
+K!
+```
+```
+e−hτstep
+```
+```
+(( 1 −h)τstep)L
+L!
+```
+```
+e−(^1 −h)τstep=
+```
+```
+(hτstep)K
+K!
+```
+```
+(( 1 −h)τstep)L
+L!
+```
+```
+e−τstep
+```
+```
+The condition is violated whenK+ 2 L> 2 Tstep·τstep, so
+the probability that condition (2) is violated is given by the
+formula:
+```
+```
+Õ∞
+```
+```
+K+ 2 L> 2 Tstep·τstep
+```
+```
+(hτstep)K
+K!
+```
+```
+(( 1 −h)τstep)L
+L!
+e−τstep=
+```
+```
+Õ∞
+```
+```
+L= 0
+```
+```
+Õ∞
+```
+```
+K=max{Tstep·τstep− 2 L, 0 }
+```
+```
+(hτstep)K
+K!
+```
+```
+(( 1 −h)τstep)L
+L!
+```
+```
+e−τstep
+```
+```
+This sum converges and we upper-bound its value for
+particular choice ofh,Tstep,τstepparameters.
+In particular, the parametersTstepandτstepare selected
+so as to ensure that both conditions hold with probabilityF
+in a randomly generated committee. Here,Fis a parameter
+which marks a negligible probability for failure of either
+condition, which we usually set toF= 10 −^12 orF= 10 −^18.
+Analysis behind Figure 3.For a given fraction of honest
+committee membersh(x-axis of Figure 3), the goal is to
+minimize the expected committee size, while maintaining
+the probability that conditions (1) or (2) fail to be at mostF. If
+some value ofτstepsatisfies both conditions with probability
+1 −Ffor some appropriate value ofTstep, then any larger
+value ofτstepalso does for the sameTstepwith probability
+at least 1 −F. So to find the optimalτstep, we start with an
+arbitrary high value forτstep, say 10,000, and then see if we
+can find aTstep>^23 that satisfies conditions (1) and (2). If such
+threshold exists, then we decreaseτstepand test whether a
+good threshold exists too. We continue this iterative process
+until finding the minimal committee size and corresponding
+thresholdTstepthat ensure both conditions.
+To check if a particular value forτstepworks, we do a
+binary search to find the highestTstep∈(^23 , 1 ]value such that
+condition (1),#дood>Tstep·τstep, fails with probability≤^12 F,
+then check if, for that particular value ofTstep, condition (2)
+also fails with probability≤^12 F. By the union bound, the
+probability that either condition fails isF, so the expected
+committee sizeτstepworks.
+With the above approach, we find an approximation of the
+optimal value forτstepthat is within1%of the true optimal
+value forτstep.
+```
+## C BA⋆ANALYSIS
+
+```
+In this section we analyze the safety, liveness, and efficiency
+ofBA⋆, presented in §7.
+```
+### C.1 Safety with weak synchrony
+
+```
+Theorem 2.Assume the parametersTfinal= 0. 74 ,τfinal=
+10 , 000 andTstep= 0. 685 ,τstep= 2000 (as in Figure 4). Fix
+a roundr= 0 modR(whereRis the selection seed refresh
+interval, see §5.2). The probability that there exists a round
+r≤r′<r+R, such thatBA⋆(Algorithm 3) returns for one
+honest user a final consensus for block A, and for another honest
+user a consensus (final or tentative) for blockB,A, is< 10 −^7.
+```
+
+Corollary 3.Given Theorem 2 and sinceR= 103 (i.e., every
+103 consecutive rounds starting with an integral multiple ofR
+get their committees from the same selection seed), we expect
+BA⋆to return for one honest user a final consensus for block A,
+and for another honest user a consensus (final or tentative) for
+blockB,Afor the same round, only once every 103 · 107 = 1010
+rounds.
+
+Proof.We next prove Theorem 2. In §5.3 and Appendix A we
+showed that the weak synchrony assumption allows Algo-
+rand to select the users’ public keys (and associated weights)
+before the adversary knows the selection seed, ensuring
+random sampling of users forBA⋆committees. We next
+leverage this property to, informally, show that the commit-
+tee members for thefinalstep represent well all the users
+in the system. Therefore, if sufficiently many of them vote
+for a block to be final, then sufficiently many of the users
+have finishedBinaryBA⋆at the first step and will not vote
+in future steps (so no other block can be approved).
+We setτfinal= 10 , 000 and assume that the weighted
+honest fraction of users ish= 0. 8. Thus, the expected
+number of honest members in thefinalstep committee
+is 0. 8 · 10 , 000 = 8000 , while the expected number of mali-
+cious members for that step is 0. 2 · 10 , 000 = 2000. We next
+show that the probability that 7400 step-finalvotes for a
+round-r′blockAare produced, but another blockBis also
+certified for the same round, is negligible.
+Letseedr− 1 −(rmodR)be the seed used for selecting the com-
+mittees for roundr′∈[r,r+R). If the round when that seed
+was published, i.e. roundr− 1 −(rmodR), happens when
+the network is not strongly synchronous, then the adversary
+may manipulate the selection of the seed (seedr− 1 −(rmodR))
+by discarding block proposals from honest users. We first
+show that despite the ability of the attacker to manipulate
+the seed, it is infeasible to compute a seed that: (1) givesi
+malicious committee members in ther′roundfinalstep,
+and (2)jmalicious committee members in some other step
+of roundr′, wherei+ 3 j> 4 , 100.
+The expected numbers foriandjare 0. 2 · 1000 = 2000 and
+0. 2 · 2000 = 400 respectively. So for a fixed round and step,
+we apply the formula in Equation 2, to find the probability
+that a random seed givesi+ 3 j> 4 , 100 :
+
+```
+Õ
+```
+```
+i+ 3 j> 4 , 100
+```
+```
+2000 i
+i!e^2000
+```
+```
+400 j
+j!e^400
+```
+#### ≃ 2 −^100
+
+To check if a seed value satisfiesi+ 3 j> 4 , 100 , the ad-
+versary has to do at least one cryptographic hash or VRF
+operation. Each round has committees for at mostMaxSteps
+= 150 steps. For each round, only 2 / 3 of those 150 (i.e., 100)
+committees can create a certificate (only those that vote in
+the first or second step in theBinaryBA⋆loop). So by union
+bound, the probability that a seed value givesi+ 3 j> 4 , 100
+for a specific round (and any step of that round) is≃ 2 −^93. So
+it is infeasible for the adversary to find such a seed.
+Notice that our argument above does not exclude the possi-
+bility that more than a single pair of roundfinalcommittee
+
+```
+hasimalicious members and a targetedBinaryBA⋆commit-
+tee hasjmalicious members, wherei+ 3 j= 4 , 100. Intuitively,
+however, if the adversary concentrates all of his computa-
+tional power on finding a round (with highly maliciousfinal
+committee to finalize block A) and a targeted step within that
+round (with a highly malicious committee to certify block B)
+such thati+ 3 j= 4 , 100 , then for all other rounds and steps,
+the number of malicious committee members is random,
+which makes the probability that the attacker succeeds in
+one of those round/step pairs negligible (< 10 −^20 ).
+More precisely, if the adversary targets two round/step
+pairs wherei+ 3 j> 3850 , then both of those pairs will have
+i+ 3 j< 3950. This is true, because the probability thati+ 3 j>
+3850 is approximately 0. 41 · 10 −^18 , while the probability that
+i+ 3 j> 3950 is approximately 0. 6 · 10 −^23 , so the probability
+that both events happen for two specific round-step pairs is
+less than 2. 5 · 10 −^41. Since for a specific selection seed there
+areR= 103 rounds with 102 steps each, there are
+```
+####  102 · 103
+
+```
+2
+```
+#### 
+
+#### =
+
+```
+1
+210
+```
+(^10) possible pairs of round/step. The probability that the
+attacker manages to target more than one round/step where
+i+ 3 j> 3950 is therefore, by union bound, less than 2. 5 · 10 −^41 ·
+0. 5 · 1010 = 1. 25 · 10 −^31 < 2 −^93 , so it should never happen.
+In sum, the attacker has two strategies: (1) target one
+round and step within that round such thati+ 3 j≤ 4 , 100 , or
+(2) target multiple step/round pairs wherei+ 3 j≤ 3950. We
+next analyze these two strategies.
+Strategy 1: one round/step pair wherei+ 3 j≤ 4100. If
+thefinalstep committee at round r’ hasimalicious mem-
+bers, then any other committee at the same round has at
+most^41003 −imalicious members. Clearly, the worst case is
+wheni+ 3 j= 4100. Thus, in order to prove that the proba-
+bility of failure is 10 −^7 , we need to show that for all integral
+tuples(i,j)on the linei+ 3 j= 4100 , the probability that both
+committees have enough users is less than 10 −^7. Equiva-
+lently, for each integral valuejin the interval[ 0 ,^41003 ], we
+need to prove that fori= 4100 − 3 j, the probability that both
+committees have enough honest members (i.e., thefinal
+committee has 0. 74 · 10 , 000 −i= 7400 −iand the other com-
+mittee has 0. 685 · 2000 −j= 1370 −jhonest members) is less
+than 10 −^7 (sinceTfinal= 0. 74 ,τfinal= 1000 andTstep= 0. 685 ,
+τstep= 2000 ). For each integral valuej∈[ 0 ,^41003 ]we did a
+separate calculation to prove that the desired probability
+always is less than 10 −^7.
+We next describe the method used to upper-bound the
+probability for each tuple(i,j)=( 4100 − 3 j,j).
+Fix(i,j). Theimalicious votes go towards the final block
+A, while thejvotes go towards certifying another blockB. So
+7400 −imore signatures are required for thefinalcommittee
+and 1370 −jmore signatures for the other committee. LetAÛ
+denote the set of honest users who would vote to approve
+block A as final (if completedBinaryBA⋆at the first step and
+selected to thefinalcommittee), andBÛthe set of honest
+users who would vote to certify another block B (,A) if they
+were in a committee and did not finishBinaryBA⋆at the
+first step. Clearly,AÛ∩BÛ=∅. So each honest user eventually
+
+
+becomes a member of at most one of the two sets. For the
+7400 and 1370 thresholds to both be reached, setAÛmust
+include 7400 −icommittee members forfinal, while setBÛ
+must include 1370 −jcommittee members for another step.
+We say that an honest user “joins” setAÛwhen that user
+counts sufficiently many (more thanTstep·τstep) votes for
+block_hashto complete BinaryBA⋆in its first step. Else
+(after the first step of BinaryBA⋆), we say that the honest
+user “joins” setBÛ. Without strong synchrony, the network
+is under the attacker’s control, so the attacker can choose
+whether a user joins setAÛorBÛ(by delivering votes to that
+user). This allows the attacker to get some feedback: if the
+attacker lets a user join setAÛ, then he can observe whether
+that user is selected to thefinalcommittee (i.e., see if that
+user votes). In this fashion the attacker can let users join
+setAÛone by one until sufficiently many votes are produced
+to approve block A asfinal, and then join the rest of the
+honest users to setBÛ.
+Therefore, users join setAÛin some order. Letnbe the size
+ofAÛwhen the users in setAÛcan, for the first time, produce
+7400 −ifinalstep votes in the targeted round. LetHbe the
+total number of units of Algorand currency held by honest
+users; to simplify our proof, we assume that each user has
+exactly one unit of currency soHis also the number of users
+(if a user has more than one unit, we consider that user to
+be represented by multiple “subusers” each with one unit of
+currency). For a fixed value ofn, at mostH−nusers join
+setBÛ. For the attacker to succeed, theseH−nusers must
+produce 1370 −jvotes for block B in the targeted step of
+BinaryBA⋆. LetPkdenote the probability that: (1)n=k, and
+(2) the remainingH−kusers in setBÛproduce 1370-j votes
+for blockB.Pkis given by:
+
+Pk=Pr[n=k]Pr[the H-k users inBÛproduce at least 1370-j votes]=
+
+```
+Pr[n=k]
+```
+#### Õ∞
+
+```
+c= 1370 −j
+```
+```
+Pr[the H-k users inBÛproduce exactly c votes]
+```
+Using the formula in Equation 2 we can compute
+Pr[the H-k users inBÛproduce exactly c votes]. The expected
+number of honest users selected for the committee in the set
+BÛ(which includes H-k users) ish· 2000 ·HH−k, so forh= 0. 8
+the expected number of users is 1600 ·HH−k. Therefore, the
+expression in Equation 3 equals to:
+
+```
+Pr[n=k]
+```
+(^) ∞
+Õ
+c= 1370 −j
+( 1600 HH−k)c
+c!e^1600
+HH−k
+
+#### !
+
+```
+The adversary succeeds with probability
+```
+#### ÍH
+
+k= 0 Pk, which
+is equal to:
+
+```
+ÕH
+```
+```
+k= 0
+```
+```
+Pk=
+```
+#### ÕH
+
+```
+k= 0
+```
+```
+Pr[n=k]
+```
+(^) ∞
+Õ
+c= 1370 −j
+( 1600 HH−k)c
+c!e^1600
+HH−k
+
+#### !
+
+The inner sum converges and can be evaluated. However,
+the outer sum iterates over total number amount of honest
+
+```
+currency units which might be arbitrarily large. We therefore
+evaluate an upper bound:
+```
+#### ≤
+
+#### Õ^100
+
+```
+f= 1
+```
+```
+Pr
+```
+#### 
+
+```
+f− 1
+100
+```
+```
+H≤n≤
+```
+```
+f
+100
+```
+#### H
+
+#### 
+
+#### ©
+
+#### ­
+
+#### «
+
+#### Õ∞
+
+```
+c= 1370 −j
+```
+#### ( 1600
+
+```
+H−f 100 −^1 H
+H )
+```
+```
+c
+```
+```
+c!e^1600
+```
+```
+H−f 100 −^1 H
+H
+```
+#### ª
+
+#### ®
+
+#### ¬
+
+```
+The above is the upper Riemann sum of the integral
+```
+```
+of
+```
+#### Í∞
+
+```
+c= 1370 −j
+```
+```
+( 1600 H−
+```
+```
+f− 1
+H^100 H)c
+c!e^1600
+```
+```
+H−f 100 −^1 H
+H
+```
+```
+from 0 toH, where the interval
+```
+```
+[ 0 ,H]is partitioned into 100 equal parts. Since the function
+Í∞
+c= 1370 −j
+```
+```
+( 1600 HH−k)c
+c!e^1600 HH−k
+```
+```
+is decreasing in k, this is an upper bound.
+It is evaluated as follows:
+```
+```
+Pr
+```
+#### 
+
+```
+f− 1
+100
+```
+```
+H≤n≤
+```
+```
+f
+100
+```
+#### H
+
+#### 
+
+#### =
+
+```
+Pr[the
+```
+```
+f
+100
+```
+```
+H honest users inAÛproduce 7400-i votes]−
+```
+```
+Pr[the
+```
+```
+f− 1
+100
+```
+```
+H honest users inAÛproduce 7400-i votes]=
+```
+#### ( 8000
+
+```
+f
+100 )
+```
+```
+7400 −i
+```
+```
+( 7400 −i)!e^8000
+```
+```
+f
+100
+```
+#### −
+
+#### ( 8000
+
+```
+f− 1
+100 )
+```
+```
+7400 −i
+```
+```
+( 7400 −i)!e^8000
+```
+```
+f− 1
+100
+Thus, the probability of failure is upper-bounded by the
+following formula, which can be computed:
+```
+```
+≤
+```
+```
+Õ^100
+f= 1
+```
+```
+©­
+«
+```
+```
+( 8000100 f )^7400 −i
+( 7400 −i)!e^8000
+```
+```
+f
+100
+```
+```
+−
+```
+```
+( 8000 f 100 −^1 )^7400 −i
+( 7400 −i)!e^8000
+```
+```
+f− 1
+100
+```
+```
+ª®
+¬
+```
+(^) ∞
+Õ
+c= 1370 −j
+( 1600 ( 1 −f 100 −^1 )c
+c!e^1600 (^1 −
+f− 1
+100 )
+!
+Strategy 2: multiple round/step pairs wherei+ 3 j≤
+3950 .We first show that the adversary cannot target 3
+round/step pairs, where thefinalcommittee has at leasti
+malicious members and the step committee hasjmalicious
+members wherei+ 3 j> 3850. This is because the probabil-
+ity of targeting one round/step pair wherei+ 3 j> 3850 is
+at most 0. 41 · 10 −^18 , so the probability to target three such
+pairs is( 0. 41 · 10 −^18 )^3 < 10 −^51. For each selection seed there
+areR= 103 rounds and each round has at most 102 steps
+that the attacker can target (i.e. steps whereBinaryBA⋆can
+conclude and certify a block). So we have at most 103 · 102
+step committees set for every selection seed, therefore the
+number of step/round pairs that the attacker can target is
+ 102 · 103
+3
+
+#### 
+
+```
+< 1015. The probability of attacker success is thus
+bounded by 1015 · 10 −^51 = 10 −^36. Thus, the attacker can have
+at most two pairs withi+ 3 j> 3850 , in which case for both
+we will havei+ 3 j< 3950. This allows us to analyze the
+following two cases (within the above attacker strategy):
+```
+- Two targeted round/step pairs where 3850 <i+ 3 j≤
+    3950. It can be shown (with similar calculations to the
+    casei+ 3 j≤ 4100 ) that the probability of success for
+    the adversary success is less than 10 −^9 for one targeted
+    round/step pair, and therefore less than 2 · 10 −^9 in total.
+
+
+- All round/step pairs havei+ 3 j≤ 3850. It can be simi-
+    larly shown that probability of success for the adversary
+    is less than 10 −^20. Since each round has at most 102 steps
+    and there areR= 103 rounds set by the same selection
+    seed, the attacker’s probability for success is bounded
+    by 102 · 103 · 10 −^20 = 10 −^15.
+
+```
+In conclusion, strategy 2 provides a lower attacker success
+rate than strategy 1, where the attacker’s success rate is
+bounded by 10 −^7 for every sequence ofR= 103 rounds. □
+```
+### C.2 Liveness with strong synchrony
+
+```
+In this section we show that under the strong synchrony
+assumption, Algorand maintains liveness.
+```
+```
+Theorem 4.Under strong synchrony, all users will eventu-
+ally reach consensus on a block. If the highest priority block
+proposer is honest, then all honest users reach final consensus
+on that block.
+```
+```
+Proof.The proof of the liveness theorem above follows from
+several properties ofBA⋆under strong synchrony which
+we next prove. First, in Lemma 1, we show that under weak
+synchrony the CountVotes procedure (Algorithm 5) does
+not return two different nontimeoutvalues for two users
+in the same round and step. Second, we prove Theorem 2,
+which shows that this property of CountVotes guarantees
+that if a final block exists for an Algorand round, then no
+other block was agreed upon in that round. Third, given
+this property, we show, in Lemma 2, that ifBA⋆executed
+by an honest user returns that consensus was achieved on
+some value for a particular round, then for all other honest
+usersBA⋆indicates consensus on the same value. Fourth,
+in Lemma 3, we prove thatBA⋆executed by an honest user
+always eventually returns a value. Finally, in Lemma 4, we
+show that if all honest users calledBA⋆with the same value
+and round, then they all agree on that value for the round
+and furthermore, the consensus is final. □
+```
+Lemma 1.The probability that CountVotes, called for the
+same round and step by two honest users, returns some value
+v 1 ,timeoutfor one honest user, and returns a valuev 2 <
+{timeout,v 1 }for another honest user is negligible.
+
+```
+Proof.Under strong synchrony, the two conditions about the
+committee from §7.5 (analyzed in §B.2) hold with overwhelm-
+ing probability. Since CountVotes returnedv 1 ,timeoutfor
+an honest user, that user counted more thanTstep·τstepvotes
+forv 1 by committee members in the particular round and
+step ofBA⋆. In order to cross theTstep·τstepthresholdv 1
+must receive more than half of the honest committee mem-
+bers’ votes. We select a committee large enough such that
+the safety condition,^12 #good+#bad≤Tstep·τstep, holds with
+overwhelming probability. Since honest committee mem-
+bers only vote for one value, then when the safety condition
+holds, no other valuev 2 can receive enough votes. □
+```
+```
+Lemma 2.Under strong synchrony, if an honest user com-
+pletesBA⋆for roundrwith consensus on valuev, then all
+honest users complete BA⋆for roundrwith the same value.
+```
+```
+Proof.Under strong synchrony, we assume that all users are
+in consensus on the block for roundr− 1 (if there was a fork
+due to an earlier non-strongly-synchronous period, the fork
+resolution protocol in §8 has resolved it). In this case, the
+Reduction procedure (Algorithm 7) returns for each honest
+user one of two values: either the empty block’s hash, which
+is completely determined by the previous block and therefore
+the same for all users, or the Reduction procedure returns
+the sameblock_hash(applying Lemma 1 we observe that
+only a single value can cross the threshold for CountVotes in
+the first step of the reduction, and hence only a single value
+different than the hash of the empty block is possible).
+SinceBA⋆returns consensus on what BinaryBA⋆returns,
+it is sufficient to show that if BinaryBA⋆returns for an honest
+user with a valuev, then it does so for all other honest users.
+Without loss of generality, let us assume that a user
+completedBinaryBA⋆with block_hash. Therefore the
+CountVotes procedure called by that user with roundrand
+step 1 (mod 3) returnedblock_hash. By Lemma 1 other users
+have either concluded that step withblock_hashtoo, or with
+timeout. Therefore, all honest users who did not finish the
+protocol in that step will next vote forblock_hash(since the
+step index was 1 mod 3). The users who completed the pro-
+tocol will gossip all the votes they received forblock_hash.
+In the following step (indexed 2 mod 3), since all honest
+users who timed out in the previous step (and therefore did
+not finish) will voteblock_hash, the CountVotes procedure
+called by any honest user will returnblock_hash. Further-
+more, honest committee members for this step, who finished
+in the previous step, have also sent their votes. Therefore,
+since we select a committee sufficiently large such that with
+high probability#good>Tstep·τstep, CountVotes will return
+block_hash. This consensus will carry forward until the
+next step indexed 1 mod 3, where all users will agree on
+block_hash. □
+```
+```
+Lemma 3.Under strong synchrony, Algorand eventually con-
+firms a block in each round.
+```
+```
+Proof.Algorand confirms a block whenBA⋆reaches con-
+sensus. It is sufficient to show that BinaryBA⋆eventually
+reaches consensus, which implies thatBA⋆also reaches con-
+sensus, since the rest ofBA⋆has a limited number of steps.
+By Lemma 2, it is sufficient to show that only one honest
+user confirms a block (since the rest will finish after that user
+within at most 3 steps). Let us consider the steps ofBA⋆in
+sequences of three, as in one loop iteration in Algorithm 8.
+So if an honest user finished BinaryBA⋆in the first two steps,
+we are done.
+Let us assume that this is not the case, and therefore,
+all honest users reach the third “common coin” step of
+BinaryBA⋆. If in that step all honest users receive more
+```
+
+thanTstep·τstepvotes for valuev(one of two possible op-
+tions), then they will all vote for that value in the next steps,
+and reach consensus on that value within the next two steps.
+Let us now assume the complementary case, that at least
+some honest users change their vote according to the com-
+mon coin. Assume further that the user setting the coin
+(according to Algorithm 9) is honest; therefore, all honest
+users who did not observe sufficiently many votes for a value
+vin the coin step see the same random coin and change their
+vote to that coin (since the network is strongly synchronous,
+all honest users receive messages within a bounded delay).
+Therefore, there are only three cases to consider:
+
+- Some honest users counted enough votes for
+    block_hashand the rest observe the coin.In this
+    case at the end of the coin step, all honest users will
+    vote forblock_hashif the common coin is 0 (that is, with
+    probability 1/2).
+- Some honest users counted enough votes for
+    empty_blockand the rest observe the coin.In this
+    case at the end of the coin step, all honest users will
+    vote forempty_hashif the common coin is 1 (that is,
+    with probability 1/2).
+- All honest users observe the coin.In this case all
+    honest users will vote for the common coin. The agree-
+    ment will carry forward until BinaryBA⋆completes in
+    the next two steps.
+
+```
+Importantly, the case where some honest users counted
+enough votes forempty_blockwhile others counted enough
+votes forblock_hashhas negligible probability. See Lemma 1.
+Therefore, if the user setting the coin is honest, we reach
+consensus with probability of at least 1/2. Since the user
+setting the coin is selected at random out of the committee,
+and in the committee at least 2/3 of the members are honest,
+then the probability of reaching consensus is at least^12 ·
+2
+3 =
+```
+```
+1
+3. Since the probability of reaching consensus in every
+sequence of 3 steps is greater than 0, the protocol eventually
+reaches consensus. □
+```
+```
+Lemma 4.Under strong synchrony, if all honest users start
+BA⋆with the same value for the same round, then they reach
+a final consensus on that value.
+```
+```
+Proof.Let us follow theBA⋆protocol and show that this is
+correct. All honest users will call the reduction with the same
+hash of the block, call itblock_hash. Therefore in the first
+step of the reduction all honest users will count more than a
+threshold votes forblock_hash, and will also vote for it in the
+second step of the reduction, where they will again count
+more than a threshold of votes forblock_hash, and therefore
+all honest users will call BinaryBA⋆withblock_hashand
+return after exactly one step, and therefore also vote on
+block_hashas a final consensus. □
+```
+### C.3 Efficiency
+
+```
+Theorem 5.Under strong synchrony,BA⋆reaches final con-
+sensus in 4 steps if the highest priority block proposer was
+honest, and otherwise isexpectedto reach consensus in 13
+steps. The probability BinaryBA⋆does not complete within
+MaxSteps= 150 steps even in the worst case is negligible
+(< 3 · 10 −^9 ).
+```
+```
+Proof.The first part of the theorem (reaching fast and final
+consensus when the highest priority block proposer is hon-
+est) was shown in Lemma 4. We focus on the second part,
+thatBA⋆is expected to reach consensus within 13 steps in
+the worst case.
+Let us analyze the probability that the common coin leads
+to consensus. The binary-agreement phase ofBA⋆consists
+of three repeated steps. A malicious highest-priority block
+proposer can make the first two steps of BinaryBA⋆go with-
+out consensus, but after every “common coin” step, the hon-
+est users will reach consensus with probability 1/3 in the
+following two steps (see Lemma 3). Therefore, following the
+first 2 steps, every sequence of three steps reaches consensus
+with probability 1/3. Thus, in total, binary-agreement re-
+quires an expected number of 2 + 3 ∗ 3 = 11 steps in the worst
+case, andBA⋆has two extra initial steps for the reduction
+to binary-agreement, i.e., expected 13 steps in total.
+Since in each sequence of 3 steps of BinaryBA⋆(except
+the first iteration), it holds thatBA⋆reaches consensus with
+probability 1/3, then afterMaxSteps= 150 steps is^23
+```
+(^1503) − 1
+<
+3 · 10 −^9. □
+
+
