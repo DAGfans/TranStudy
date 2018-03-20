@@ -5,10 +5,7 @@ Cryptographic sortition is an algorithm for choosing a random subset of users ac
  To allow a user to prove that they were chosen, sortition requires each user i to have a public/private key pair, (pk i ,sk i ).
 
 
-![figure 2](https://user-images.
-githubusercontent.
-com/22833166/37686063-d9220766-2cd0-11e8-9e8f-7d867fb9720d.
-jpg)
+![figure 2](https://user-images.githubusercontent.com/22833166/37686063-d9220766-2cd0-11e8-9e8f-7d867fb9720d.jpg)
 
 **Figure 2:** An overview of one step of BA⋆.
  To simplify the figure, each user is shown twice: once at the top of the diagram and once at the bottom.
@@ -22,8 +19,7 @@ Sortition is implemented using verifiable random functions (VRFs) [38].
  For security, we require that the VRF provides these properties even if pk and sk are chosen by an attacker.
 
 
-### 5.
-1 Selection procedure
+### 5.1 Selection procedure
 
 Using VRFs, Algorand implements cryptographic sortition as shown in Algorithm 1.
  Sortition requires a role parameter that distinguishes the different roles that a user may be selected for; for example, the user may be selected to propose a block in some round, or they may be selected to be the member of the committee at a certain step of BA⋆.
@@ -39,10 +35,7 @@ It is important that sortition selects users in proportion to their weight; othe
 ”
 
 To select users in proportion to their money, we consider each unit of Algorand as a different “sub-user.
-” If user i owns w i (integral) units of Algorand, then simulated user (i,j) with j ∈ {1,.
-.
-.
-,w i } represents the j th unit of currency τ i owns, and is selected with probability p = W , where W is the total amount of currency units in Algorand.
+” If user i owns w i (integral) units of Algorand, then simulated user (i,j) with j ∈ {1,...,w i } represents the j th unit of currency τ i owns, and is selected with probability p = W , where W is the total amount of currency units in Algorand.
 
 
 As shown in Algorithm 1, a user performs sortition by computing ⟨hash,π⟩ ← VRF sk (seed||role), where sk is the user’s secret key.
@@ -53,11 +46,7 @@ As shown in Algorithm 1, a user performs sortition by computing ⟨hash,π⟩ �
 
 To determine how many of a user’s w sub-users are selected, the sortition algorithm divides the interval [0,1) into consecutive intervals of the form I j = h Í Í  j j+1
 
-B(k;w,p), B(k;w,p) for j ∈ {0,1,.
-.
-.
-,w}.
- If k=0 k=0
+B(k;w,p), B(k;w,p) for j ∈ {0,1,...,w}. If k=0 k=0
 
 hash/2 hashlen (where hashlen is the bit-length of hash) falls in the interval I j , then the user has exactly j selected sub-users.
  The number of selected sub-users is publicly verifiable using the proof π (from the VRF output).
@@ -76,8 +65,7 @@ The pseudocode for verifying a sortition proof, shown in Algorithm 2, follows th
 Algorithm 2: Pseudocode for verifying sortition of a user with public key pk.
 
 
-### 5.
-2 Choosing the seed
+### 5.2 Choosing the seed
 
 Sortition requires a seed that is chosen at random and publicly known.
  For Algorand, each round requires a seed that is publicly known by everyone for that round, but cannot be controlled by the adversary; otherwise, an adversary may be able to choose a seed that favors selection of corrupted users.
@@ -100,8 +88,7 @@ To limit the adversary’s ability to manipulate sortition, and thus manipulate 
  Namely, at roundr Algorand calls the sortition functions with seed r−1−(r mod R) .
 
 
-### 5.
-3 Choosing sk u well in advance of the seed
+### 5.3 Choosing sk u well in advance of the seed
 
 Computing seed r requires that every user’s secret key sk u is chosen well in advance of the selection seed used in that round, i.e., seed r−1−(r mod R) .
  When the network is not strongly synchronous, the attacker has complete control over the links, and can therefore drop block proposals and force users to agree on empty blocks, such that future selection seeds can be computed.
