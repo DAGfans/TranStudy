@@ -30,6 +30,7 @@ BA⋆’s design also allows it to scale to many users(e.g., 500,000 shown in ou
 
 Most Byzantine consensus protocols require more than2 / 3 of servers to be honest, and Algorand’s BA⋆inherits this limitation (in the form of 2 / 3 of the money being held by honest users).
  BFT2F [ 35 ] shows that it is possible to achieve “fork∗-consensus” with just over half of the servers being honest, but fork∗-consensus would allow an adversary to double-spend on the two forked blockchains, which Algorand avoids.
+ 大多数的拜占庭式共识协议需要超过2/3的服务器是诚实的，algorand BA⋆ 继承了这个限制（以2/3的钱被诚实的用户持有）。bft2f [ 35 ]表明，它是可能实现“fork∗-consensus”的，只需要服务器超过1/2是诚实的，但"fork∗-consensus"会让对手在两个分叉的区块链上双花，Algorand避免了这个问题。
  
 Honey Badger [ 39 ] demonstrated how Byzantine fault tolerance can be used to build a cryptocurrency.
  Specifically,Honey Badger designates a set of servers to be in charge of reaching consensus on the set of approved transactions.
@@ -37,11 +38,14 @@ This allows Honey Badger to reach consensus within 5 minutes and achieve a throu
  One downside of this design is that the cryptocurrency is no longer decentralized; there are a fixed set of servers chosen when the system is first configured.
 Fixed servers are also problematic in terms of targeted attacks that either compromise the servers or disconnect them from the network.
  Algorand achieves better performance(confirming transactions in about a minute, reaching similar throughput) without having to choose a fixed set of servers ahead of time.
+Honey Badger[ 39 ]展示了拜占庭容错可以用来建立一个加密货币。具体而言，Honey Badger指定了一组服务器，负责在批准的事务集上达成协商一致。这允许Honey Badger在5分钟内达到共识，实现200k/s的吞吐量数据追加到账本，使用10M字节块和104个参与服务器。这种设计的一个缺点是，加密货币不再是分散的；当系统首次配置时有一套固定的服务器选择。固定服务器在针对服务器的攻击或断开网络的目标攻击方面也存在问题。algorand达到更好的性能（确认交易在大约一分钟，达到类似的吞吐量）无需提前选择一组固定的服务器。
  
 Bitcoin-NG [ 26 ] suggests using the Nakamoto consensus to elect a leader, and then have that leader publish blocks of transactions, resulting in an order of magnitude of improvement in latency of confirming transactions over Bitcoin.
 Hybrid consensus [ 30 , 32 , 42 ] refines the approach of using the Nakamoto consensus to periodically select a group of participants (e.g., every day), and runs a Byzantine agreement between selected participants to confirm transactions until new servers are selected.
  This allows improving performance over standard Nakamoto consensus (e.g., Bitcoin); for example, ByzCoin [ 32 ] provides a latency of about 35 seconds and a throughput of 230 KBytes/sec of data appended to the ledger with an 8 MByte block size and 1000 participants in the Byzantine agreement.
  Although Hybrid consensus makes the set of Byzantine servers dynamic, it opens up the possibility of forks, due to the use of proof-of-work consensus to agree on the set of servers; this problem cannot arise in Algorand.
+ 比特币非盈利组织 [ 26 ]建议使用中本聪共识来选出一个领导者，然后由领导者发布交易区块，从而在确认交易比特币延迟方面提示一个数量级。混合共识[ 30, 32, 42 ]提炼了中本聪共识的使用，定期选择一组参与者（例如，每天），并在选定参与者中运行一个拜占庭协议来确认交易，直到到新的服务器被选择。这可以提高标准中本聪共识性能（例如，比特币）；例如，byzcoin [ 32 ]提供延迟35秒左右，吞吐量为230字节/秒，8M区块的大小和1000参与者。虽然混合共识的拜占庭服务器是动态的集合，它任然可能分叉，因为服务器集群使用pow共识来达成一致；这个问题不会出现在Algorand里。
+ 
  
 Pass and Shi’s paper [ 42 ] acknowledges that the Hybrid consensus design is secure only with respect to a “mildly adaptive” adversary that cannot compromise the selected servers within a day (the participant selection interval), and explicitly calls out the open problem of handling fully adaptive adversaries.
  Algorand’sBA⋆explicitly addresses thisopen problem by immediately replacing any chosen committee members.
