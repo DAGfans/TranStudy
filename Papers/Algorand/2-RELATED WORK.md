@@ -1,24 +1,32 @@
 ## 2 RELATED WORK
+相关工作
 **Proof-of-work.** Bitcoin [ 41 ], the predominant cryptocurrency, uses proof-of-work to ensure that everyone agrees on the set of approved transactions; this approach is often called “Nakamoto consensus”. 
-Bitcoin must balance the length of time to compute a new block with the possibility of wasted work [ 41 ], and sets parameters to generate anew block every 10 minutes on average.
+Bitcoin must balance the length of time to compute a new block with the possibility of wasted work [ 41 ], and sets parameters to generate a new block every 10 minutes on average.
  Nonetheless, due to the possibility of forks, it is widely suggested that users wait for the blockchain to grow by at least six blocks before considering their transaction to be confirmed [7].
  This means transactions in Bitcoin take on the order of an hour to be confirmed.
  Many follow-on cryptocurrencies adoptBitcoin’s proof-of-work approach and inherit its limitations.
 The possibility of forks also makes it difficult for new users to bootstrap securely: an adversary that isolates the user’s network can convince the user to use a particular fork of the blockchain [28].
+工作量证明。比特币，主要的加密货币，使用工作量证明来确保每个人都认可区块的交易集合（简单说就是使用pow达成共识），这种共识机制经常被叫做“中本聪共识”。
+比特币必须平衡计算新块的时间长度和浪费工作的可能性[ 41 ]，并设置参数以平均每10分钟生成一个新块。尽管如此，因为有分叉的可能性，人们普遍认为用户等待区块链增长至少六块才考虑他们的交易被确认[ 7 ]。这意味着比特币的交易需要一个小时的时间才能得到确认。许多后续的加密货币采用了比特币的pow同时也继承了他的局限性。分叉的可能性也使得引导新用户安全性变得困难：攻击者通过隔离用户网络，使用户使用一个特别的区块链分叉。
+
 
 By relying on Byzantine agreement, Algorand eliminates the possibility of forks, and avoids the need to reason about mining strategies [ 8 , 25 , 46 ].
  As a result, transactions are confirmed on the order of a minute.
  To make the Byzantine agreement robust to Sybil attacks, Algorand associates weights with users according to the money they hold.
  Other techniques have been proposed in the past to resist Sybil attacks in Byzantine-agreement-based cryptocurrencies, including having participants submit security deposits and punishing those who deviate from the protocol [13].
+依靠拜占庭协议，algorand消除了分叉的可能性，避免了挖矿的需要。因此，交易按一分钟就可以完成。为了使拜占庭协议面对对女巫攻击任然健壮，algorand将他们持有的资金与权重相关联。基于拜占庭协议的货币中，其他的技术在过去已经被提出以抵抗女巫攻击，包括参加者提交保证金和惩罚那些作恶者[ 13 ]。
 
 **Byzantine consensus.** Byzantine agreement protocols have been used to replicate a service across a small group of servers, such as in PBFT [ 15 ].
  Follow-on work has shown how to make Byzantine fault tolerance perform well and scale to dozens of servers [ 1 , 17 , 33 ].
  One downside of Byzantine fault tolerance protocols used in this setting is that they require a fixed set of servers to be determined ahead of time;
  allowing anyone to join the set of servers would open up the protocols to Sybil attacks.
  These protocols also do not scaleto the large number of users targeted by Algorand.
-BA⋆is aByzantine consensus protocol that does not rely on a fixed set of servers, which avoids the possibility of targeted attacks on well-known servers.
+BA⋆is a Byzantine consensus protocol that does not rely on a fixed set of servers, which avoids the possibility of targeted attacks on well-known servers.
  By weighing users according to their currency balance,BA⋆allows users to join the cryptocurrency without risking Sybil attacks, as long as the fraction of the money held by honest users is at least a constant greater than 2/3.
 BA⋆’s design also allows it to scale to many users(e.g., 500,000 shown in our evaluation) using VRFs to fairly select a random committee.
+拜占庭式共识。拜占庭协议被重写改进，通过一小组服务器，如PBFT [ 15 ]。接下来的工作展示了如何使拜占庭容错性能良好，并扩展到更多台服务器上[ 1, 17, 33 ]。拜占庭容错协议使用此设置的一个缺点是，它们需要提前确定一套固定的服务器；允许任何人加入服务器集合将使得对女巫攻击开放。这些协议还不能扩展到满足algorand用户数量。BA⋆是一个拜占庭共识的协议，不依赖于固定的一组服务器，避免了针对已知服务器攻击的可能性。根据他们的货币余额的权衡用户权重，BA⋆允许用户不用冒Sybil攻击风险加入货币网络，只要诚实的用户余额比例至少是大于2/3的常数。BA⋆的设计也可以扩展到许多用户（例如，在我们的评估中是500000），用以公平地选择随机委员会。
+
+
 
 Most Byzantine consensus protocols require more than2 / 3 of servers to be honest, and Algorand’s BA⋆inherits this limitation (in the form of 2 / 3 of the money being held by honest users).
  BFT2F [ 35 ] shows that it is possible to achieve “fork∗-consensus” with just over half of the servers being honest, but fork∗-consensus would allow an adversary to double-spend on the two forked blockchains, which Algorand avoids.
