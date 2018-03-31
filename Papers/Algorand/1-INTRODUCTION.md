@@ -1,3 +1,8 @@
+* Source: https://people.csail.mit.edu/nickolai/papers/gilad-algorand-eprint.pdf
+* TranStudy: https://github.com/DAGfans/TranStudy/edit/master/Papers/Algorand/1-INTRODUCTION.md
+
+
+
 
 ## 1 INTRODUCTION
 
@@ -39,9 +44,9 @@ A key technique that makes BA⋆ suitable for Algorand is the use of verifiable 
 BA⋆was previously presented at a workshop at a high level [ 37 ], and a technical report by Chen and Micali [16] described an earlier version of Algorand.
 
 本文介绍了Algorand，一种新的加密货币，旨在一分钟的规模内的确认交易。
-Algorand的核心在于使用了称为BA*的拜占庭协定的协议，它可以扩展到许多用户，这使得Algorand能够以低延迟达成共识，而且不会产生分叉。
-使BA*适用Algorand的一种关键技术是用可验证的随机函数（VRF）[38]来以私有和非交互的方式随机选择用户.
-BA*之前在高级别的研讨会上提出[37 ], 并且Chen和Micali [16]的技术报告描述了Algorand的早期版本。
+Algorand的核心在于使用了称为BA* 的拜占庭协定的协议，它可以扩展到许多用户，这使得Algorand能够以低延迟达成共识，而且不会产生分叉。
+使BA* 适用Algorand的一种关键技术是用可验证的随机函数（VRF）[38]来以私有和非交互的方式随机选择用户.
+BA* 之前在高级别的研讨会上提出[37 ], 并且Chen和Micali [16]的技术报告描述了Algorand的早期版本。
 
 Algorand faces three challenges. 
 First, Algorand must avoid Sybil attacks, where an adversary creates many pseudonyms to influence the Byzantine agreement protocol.
@@ -50,7 +55,7 @@ Finally, Algorand must be resilient to denial-of-service attacks, and continue t
 
 Algorand面临三大挑战。
 首先，Algorand必须避免女巫攻击，在这种攻击中，攻击者会创建许多假账号来影响拜占庭协议。
-其次，BA必须扩展到数百万用户，这远远高于最先进的拜占庭协议的运行规模。
+其次，BA* 必须扩展到数百万用户，这远远高于最先进的拜占庭协议的运行规模。
 最后，Algorand必须能够抵御拒绝服务攻击，并且即使攻击者切断某些用户的连接也可以继续运行[29,51]。
 
 Algorand addresses these challenges using several techniques, as follows.
@@ -65,7 +70,7 @@ Thus, as long as more than some fraction (over 2/3) of the money is owned by hon
 
 **有权重的用户** 
 为了防止女巫，Algorand对每个用户都加以权衡.
-BA被设计为只要诚实用户的总权重达到一定比例（某大于2/3的常数），就能保证一致性。
+BA* 被设计为只要诚实用户的总权重达到一定比例（某大于2/3的常数），就能保证一致性。
 在Algorand，我们根据用户账户中的资金来衡量用户的权重。
 因此，只要有诚实用户拥有一部分（超过2/3）的钱，Algorand就可以避免分叉和双花。
 
@@ -77,7 +82,7 @@ This allows Algorand to ensure that a sufficient fraction of committee members a
 However, relying on a committee creates the possibility of targeted attacks against the chosen committee members.
 
 **委员会的共识** 
-BA*通过选择一个委员会（一组从全体用户中随机选出的一些代表）来执行协议的每一步，来提高可扩展性。
+BA* 通过选择一个委员会（一组从全体用户中随机选出的一些代表）来执行协议的每一步，来提高可扩展性。
 所有其他用户观察协议消息，这使他们能够得知已商定的块。
 BA* 根据用户的权重在所有用户中随机选择委员会成员。
 因此Algorand可以确保有足够比例的委员会成员是诚实的。
@@ -103,11 +108,11 @@ BA⋆ achieves this property by avoiding any private state (except for the user�
 
 **参与者的更换**
 最后，一旦某委员会成员在BA*发送信息，攻击者可能会定位该名成员。
-BA*通过要求委员会成员只发一次消息来消除这种攻击。
-因此，一旦委员会成员发送他的消息（将他的身份暴露给对手），它就不参与BA*了。
-BA*通过避免任何私有状态（用户的私钥除外），使所有用户都有能力参与，并通过为拜占庭协议的每一步选举新的委员会成员来实现此功能。
+BA* 通过要求委员会成员只发一次消息来消除这种攻击。
+因此，一旦委员会成员发送他的消息（将他的身份暴露给对手），它就不参与BA* 了。
+BA* 通过避免任何私有状态（用户的私钥除外），使所有用户都有能力参与，并通过为拜占庭协议的每一步选举新的委员会成员来实现此功能。
 
 We implement a prototype of Algorand and BA⋆, and use it to empirically evaluate Algorand’s performance. Experimental results running on 1,000 Amazon EC2 VMs demonstrate that Algorand can confirm a 1 MByte block of transactions in∼22 seconds with 50,000 users, that Algorand’s latency remains nearly constant when scaling to half a million users, that Algorand achieves 125×the transaction throughput of Bitcoin, and that Algorand achieves acceptable latency even in the presence of actively malicious users.
 
-我们实现了Algorand和BA*的原型，并用它来评估Algorand的真实表现。 
-在1,000台亚马逊EC2虚拟机上运行的实验结果表明，在Algorand下，50,000个用户可以在约22秒内确认一个1M字节的交易块，当扩展到50万用户时，Algorand的延迟几乎保持不变，Algorand实现了125倍的交易吞吐量 比特币，Algorand甚至在存在主动恶意用户的情况下也能达到可接受的延迟。
+我们实现了Algorand和BA* 的原型，并用它来评估Algorand的真实表现。 
+在1,000台亚马逊EC2虚拟机上运行的实验结果表明，在Algorand下，50,000个用户可以在约22秒内确认一个1M字节的交易块，当扩展到50万用户时，Algorand的延迟几乎保持不变，Algorand实现了比特币125倍的交易吞吐量 ，Algorand甚至在存在主动恶意用户的情况下也能达到可接受的延迟。
