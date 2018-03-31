@@ -1,9 +1,6 @@
 * Source: https://people.csail.mit.edu/nickolai/papers/gilad-algorand-eprint.pdf
 * TranStudy: https://github.com/DAGfans/TranStudy/edit/master/Papers/Algorand/1-INTRODUCTION.md
 
-
-
-
 ## 1 INTRODUCTION
 
 ## 1 介绍
@@ -107,7 +104,7 @@ Thus, once a committee member sends his message (exposing his identity to an adv
 BA⋆ achieves this property by avoiding any private state (except for the user’s private key), which makes all users equally capable of participating, and by electing new committee members for each step of the Byzantine agreement protocol.
 
 **参与者的更换**
-最后，一旦某委员会成员在BA*发送信息，攻击者可能会定位该名成员。
+最后，一旦某委员会成员在BA* 发送信息，攻击者可能会定位该名成员。
 BA* 通过要求委员会成员只发一次消息来消除这种攻击。
 因此，一旦委员会成员发送他的消息（将他的身份暴露给对手），它就不参与BA* 了。
 BA* 通过避免任何私有状态（用户的私钥除外），使所有用户都有能力参与，并通过为拜占庭协议的每一步选举新的委员会成员来实现此功能。
