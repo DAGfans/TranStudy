@@ -1,3 +1,6 @@
+* **Source:** https://people.csail.mit.edu/nickolai/papers/gilad-algorand-eprint.pdf
+* **TranStudy:** https://github.com/DAGfans/TranStudy/edit/master/Papers/Algorand/2-RELATED%20WORK.md
+
 
 ## 2 RELATED WORK
 ## 2   相关工作
@@ -100,7 +103,7 @@ In many proof-of-stake cryptocurrencies, a malicious leader(who assembles a new 
  The weights in Algorand, however, are only to ensure that the attacker cannot amplify his power by using pseudonyms; as long as the attacker controls less than 1/3 of the monetary value, Algorand can guarantee that the probability for forks is negligible.
  Algorand may be extended to “detect and punish” malicious users, but this is not required to prevent forks or double spending.
  
-** 股权证明.**  股权证明，是一种建议替代或改进POW的共识算法，Algorand从中得到启发，根据用户在系统中的货币价值的比例分配权重。
+**股权证明.**  股权证明，是一种建议替代或改进POW的共识算法，Algorand从中得到启发，根据用户在系统中的货币价值的比例分配权重。
 但是Algorand和许多股权证明加密货币在使用货币价值量作为权重的规则上有着很关键的区别。
 在许多其他股权证明的加密货币中，一个恶意的见证人在生产出一个区块后可以在网络中创建分叉，但是如果被抓住（例如， 两个版本的新区块都被他签名），这个见证人将丢失他的钱。
 在Algorand中，权重只是确保攻击者无法通过使用虚假账号来增强他的能力；只要攻击者控制的货币价值少于1/3，Algorand能够保证分叉的可能性是微乎其微的。
@@ -142,5 +145,5 @@ Ouroboros [ 30 ] is a recent proposal for realizing proof-of-stake.
  通过精心设计的树/图分支之间的选择规则，能够大幅提高吞吐量。
  相比之下，Algorand的重点是消除分叉；在今后的工作中，研究树或DAG结构是否可以采用类似的方法增加Algorand的吞吐量可能会很有趣。
  
- 翻译：伍歌歌wytiger
-校订： DAG fans
+ * 翻译：伍歌歌wytiger
+ * 校订： DAG fans
