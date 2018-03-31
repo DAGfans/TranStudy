@@ -87,3 +87,5 @@ Ouroboros [ 30 ] is a recent proposal for realizing proof-ofstake.
  In contrast, Algorand is focused on eliminating forks; in future work, it may be interesting to explore whether tree or DAG structures can similarly increase Algorand’s throughput.
  使用数或者有向无环图代替链
  GHOST [ 47 ], SPECTRE [ 48 ], and Meshcash [ 5 ] 是最近用来提示比特币吞吐量的一些提议，通过使用树或者有向无环图来代替底层区块链的账本结构，并且解决区块链分叉的问题。这些协议依赖于使用工作量证明的中本聪共识，通过精心设计的树/图分支之间的选择规则，能够大幅提高吞吐量。相比之下，Algorand的重点是消除叉；在今后的工作中，可以探讨树或DAG结构同样可以增加Algorand的吞吐量。
+ 
+ 翻译：伍歌歌wytiger
