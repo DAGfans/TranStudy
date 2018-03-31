@@ -62,6 +62,9 @@ Stellar [ 36 ] takes an alternative approach to using Byzantine consensus in a c
 In many proof-of-stake cryptocurrencies, a malicious leader(who assembles a new block)can create a fork in the network, but if caught (e.g., since two versions of the new block are signed with his key), the leader loses his money.
  The weights in Algorand, however, are only to ensure that the attacker cannot amplify his power by using pseudonyms; as long as the attacker controls less than 1/3 of the monetary value, Algorand can guarantee that the probability for forks is negligible.
  Algorand may be extended to “detect and punish” malicious users, but this is not required to prevent forks or double spending.
+ 股份证明
+ algorand分配用户权重，根据他们在系统中的货币价值的比例，从股权的方法证明，建议作为一种POW的替代或增强。但是有一个关键区别，在algorand使用货币价值量作为权重和许多股权证明货币之间。在许多其他股权证明的货币中，一个恶意的见证人可以在网络中创建分叉，但是如果被抓住，这个见证人将丢失他的钱。在Algorand中，只能确保攻击者无法通过使用假名来扩大他的影响。只要攻击者控制的价值少于1/3，Algorand能够保证分叉的可能性是微乎其微的，algorand可以扩展到“检测和惩罚“恶意用户，但这不需要叉或双花。
+  
  
 Proof-of-stake avoids the computational overhead of proof-of-work and therefore allows reducing transaction confirmation time.
  However, realizing proof-of-stake in practice is challenging [ 4 ].
@@ -70,13 +73,17 @@ Proof-of-stake avoids the computational overhead of proof-of-work and therefore 
  Therefore some proof-of-stake cryptocurrencies require a master key to periodically sign the correct branch of the ledger in order to mitigate forks [ 31 ].
  This raises significant trust concerns regarding the currency, and has also caused accidental forks in the past [ 43 ].
  Algorand answers this challenge by avoiding forks, even if the leader turns out to be malicious.
+ 股权证明避免了工作证明的计算开销，因此可以减少交易确认时间。然而，在实践中也需要认识到股权证明是会面临挑战性的[ 4 ]。由于没有涉及生成块的工作，恶意的领导者可以宣布一个块，然后向隔离的用户呈现其他的块。攻击者也可以把他们的存款分成几个“用户”，他们可能会被选为领导者，从而当一个坏领导被抓住时，将惩罚降至最低。因此，一些股权证明的加密货币需要一个主key在账本的正确分支上不断签名，来减少分叉。这引发了对货币的重大信任问题，并在过去[ 43 ]中也引起了意外的分叉。algorand解决了这一挑战避免分叉，即使领导原来是恶意的。
  
 Ouroboros [ 30 ] is a recent proposal for realizing proof-ofstake.
  For security, Ouroboros assumes that honest users can communicate within some bounded delay (i.e., a strongly synchronous network).
  Furthermore, it selects some users to participate in a joint-coin-flipping protocol and assumes that most of them are incorruptible by the adversary fora significant epoch (such as a day).
  In contrast Algorand assumes that the adversary may temporarily fully control the network and immediately corrupt users in targeted attacks.
+ Ouroboros（衔尾蛇）[ 30 ]是最近的一个实现股权证明的提议。为了安全，衔尾蛇假定诚实的用户能够在一些有限的延迟里进行沟通（即，一个强烈的同步网络）。此外，它还选择了一些用户参与一个联合掷币协议，并假设他们中的大部分人在一个重要的时代（比如一天）被对手破坏了。相反，Algorand认为对手可能暂时完全控制网络和有针对性的攻击，立即损坏用户。
  
 **Trees and DAGs instead of chains.** GHOST [ 47 ], SPECTRE [ 48 ], and Meshcash [ 5 ] are recent proposals for increasing Bitcoin’s throughput by replacing the underlying chain structured ledger with a tree or directed acyclic graph (DAG)structures, and resolving conflicts in the forks of these data structures.
  These protocols rely on the Nakamoto consensus using proof-of-work.
  By carefully designing the selection rule between branches of the trees/DAGs, they are able to substantially increase the throughput.
  In contrast, Algorand is focused on eliminating forks; in future work, it may be interesting to explore whether tree or DAG structures can similarly increase Algorand’s throughput.
+ 使用数或者有向无环图代替链
+ GHOST [ 47 ], SPECTRE [ 48 ], and Meshcash [ 5 ] 是最近用来提示比特币吞吐量的一些提议，通过使用树或者有向无环图来代替底层区块链的账本结构，并且解决区块链分叉的问题。这些协议依赖于使用工作量证明的中本聪共识，通过精心设计的树/图分支之间的选择规则，能够大幅提高吞吐量。相比之下，Algorand的重点是消除叉；在今后的工作中，可以探讨树或DAG结构同样可以增加Algorand的吞吐量。
