@@ -50,10 +50,12 @@ Hybrid consensus [ 30 , 32 , 42 ] refines the approach of using the Nakamoto con
 Pass and Shi’s paper [ 42 ] acknowledges that the Hybrid consensus design is secure only with respect to a “mildly adaptive” adversary that cannot compromise the selected servers within a day (the participant selection interval), and explicitly calls out the open problem of handling fully adaptive adversaries.
  Algorand’sBA⋆explicitly addresses thisopen problem by immediately replacing any chosen committee members.
  As a result, Algorand is not susceptible to either targeted compromises or targeted DoS attacks.
- 
+ Pass and Shi 的论文指出， 混合共识的设计只针对那种温和的攻击者是安全的，这种攻击者在一天之内（见证人选举间隔）无法使服务器瘫痪，并明确提出了处理完全自适应的对手时的开放性问题。Algorand的BA*算法针对这个问题提出了解决办法，立刻更换被敌方选中的委员会成员，因此，Algorand不会受到针对性妥协或dos攻击的影响。
 Stellar [ 36 ] takes an alternative approach to using Byzantine consensus in a cryptocurrency, where each user can trust quorums of other users, forming a trust hierarchy.
  Consistency is ensured as long as all transactions share at least one transitively trusted quorum of users, and sufficiently many of these users are honest.
  Algorand avoids this assumption, which means that users do not have to make complex trust decisions when configuring their client software.
+ 恒星币[ 36 ]以另一种方法使用拜占庭式的共识，即每个用户可以信任其他用户的法定人数，形成一个信任等级。共识能够达成，只要所有事务共享至少一个可信赖的群体用户，和足够多的这些用户都是诚实的。algorand并不需要这个假设前提，这意味着用户在配置客户机软件时不必做出复杂的信任决策。
+ 
  
 **Proof of stake.** Algorand assigns weights to users proportionally to the monetary value they have in the system, inspired by proof-of-stake approaches, suggested as an alternative or enhancement to proof-of-work [ 3 , 10 ].
  There is a key difference, however, between Algorand using monetary value as weights and many proof-of-stake cryptocurrencies.
