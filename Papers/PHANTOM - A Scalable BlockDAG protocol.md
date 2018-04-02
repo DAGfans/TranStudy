@@ -676,21 +676,22 @@ For convenience, we use the same notation B≺GC when B∈G but C /∈G.
 
 
 D. Convergence of the order
+
 D. 顺序的收敛
 
 The following definition captures the desired security of the protocol, in terms of the
 probability that some order between two blocks will be reversed.
 
-Definition 3.Fix a ruleord. LetB∈G=Gpubt 0. The functionRiskis defined by the probability
+下面的定义通过两个块之间的顺序会被颠倒的概率，描述了协议所要求的安全性。
+
+Definition 3. Fix a rule ord. LetB∈G=Gpubt 0. The function Riskis defined by the probability
 that a block that did not precedes Bin timet 1 ≥t 0 will later come to precede it:Risk(B,t 1 ) := Pr(∃s > t 1 ,∃C∈Gpubs :B≺Gpubt 1 C∧C≺Gpubs B).
+
+定义3. 规定一个规则ord。 设B∈G= Gpubt 0. 函数Risk定义为在时间t1≥ t0 ，B之后出现的区块但优先于B的概率：Risk(B,t 1 ) := Pr(∃s > t 1 ,∃C∈Gpubs :B≺Gpubt 1 C∧C≺Gpubs B)。（译注：∃ 表示“存在”——即英文Exist的意思。）
 
 In the definition above, the probability is taken over all random events in the network, including
 block creation and propagation, as well as the attacker’s arbitrary (byzantine) behaviour. The
 convergence property below guarantees that the order between a block and those succeeding it, or those not published yet, will not be reversed,w.h.p.This captures the security of the protocol, as it provides honest nodes with (probabilistic) security guarantees regarding possible reorgs.
-
-根据两个块之间的某个顺序将被颠倒的概率，下面的定义抓住了协议的期望安全性。
-
-定义3. 规定一个规则ord。 设B∈G= Gpubt 0. 函数Risk定义为在时间t1≥ t0 ，B之后出现的区块但优先于B的概率：Risk(B,t 1 ) := Pr(∃s > t 1 ,∃C∈Gpubs :B≺Gpubt 1 C∧C≺Gpubs B).
 
 在上面的定义中，网络中的所有随机事件，包括块创建和传播 以及攻击者的肆意（拜占庭）行为都会被接管。 下面的收敛属性尽可能保证了一个区块和它后继去块或尚未生成区块之间的顺序不会被颠倒。 这里抓住了协议的安全性，因为它在概率上为可靠的节点提供了关于可能重组的安全保证。
 
