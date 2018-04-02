@@ -700,7 +700,7 @@ Property 1. An ordering rule ord is converging if ∀t0 > 0 and B ∈ G pub t0 :
 
 Remark. Property 1 essentially couples the Safety and Liveness properties required from consensus protocols. Indeed, once Risk (B, t1) < , a decision to accept transactions in B can be made (Liveness), and is guaranteed to be irreversible (Safety) up to an error probability of  (as in Bitcoin and other protocols). Nevertheless, we avoid phrasing our results in these terms, for the sake of clarity of presentation. The complication arises from the need to analyze the system from the perspective of every node Gv t , and not merely from the public ledger’s hypothetical perspective Gpubt ; this technicality is not unique to PHANTOM, and should be regarded in any work that formalizes blockchain based consensus (unless propagation delays are assumed to be negligible). We leave the task of bridging this gap to a later version.
 
-The security threshold is the minimal hashing power that the attacker must acquire i order to
+The security threshold is the minimal hashing power that the attacker must acquire in order to
 disrupt the protocol’s operation:
 
 Definition 4.The security threshold of an ordering ruleord is defined as the maximalα
