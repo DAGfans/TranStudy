@@ -1,3 +1,6 @@
+* **Source:** https://people.csail.mit.edu/nickolai/papers/gilad-algorand-eprint.pdf
+* **TranStudy:** https://github.com/DAGfans/TranStudy/edit/master/Papers/Algorand/3-GOALS%20AND%20ASSUMPTIONS.md 
+
 
 ## 3 GOALS AND ASSUMPTIONS
 ## 3 目标和假设 
