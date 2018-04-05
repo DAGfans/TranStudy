@@ -458,7 +458,7 @@ In Section 5 we prove that robustness is indeed obtained, after some waiting tim
 
 考虑一个交易$tx\in B$，其中B是G的蓝色集合中的一个块。
 
-为了使tx无效，冲突交易$\bar{tx}$ 必须在它的顺序之前，因此必须嵌入在B之前的块$C\in anticone(B)$
+为了使tx无效，冲突交易$\bar{tx}$ 必须在它的顺序之前，因此必须嵌入在B之前的块$C\in anticone(B)$ ^6
 
 排序过程意味着，对于C先于B，它必须是蓝色块或过去的蓝色块。
 
@@ -467,3 +467,7 @@ In Section 5 we prove that robustness is indeed obtained, after some waiting tim
 因此，tx的接收者可以等待B周围的蓝色集合对重组变得足够强健后，然后批准tx。
 
 在第5节中，我们证明了在一段等待时间之后确实获得了鲁棒性。
+
+(^6) Or, $\bar{tx}$ can appear in B before tx, but this is not an interesting scenario.
+(^6) 或者， $\bar{tx}$可以在tx之前出现在B中，但这不是一个有趣的场景。
+
