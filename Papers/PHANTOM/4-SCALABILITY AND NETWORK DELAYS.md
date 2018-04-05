@@ -1,11 +1,14 @@
+>* **Source：** [https://eprint.iacr.org/2018/104.pdf](https://eprint.iacr.org/2018/104.pdf)  
+>* **TranStudy：** [https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM/4-SCALABILITY%20AND%20NETWORK%20DELAYS.md](https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM/4-SCALABILITY%20AND%20NETWORK%20DELAYS.md)
 
-#### 4. SCALABILITY AND NETWORK DELAYS
 
-#### 4. 可扩展性和网络延迟
+# 4. SCALABILITY AND NETWORK DELAYS
 
-A. The propagation delay parameter Dmax
+# 4. 可扩展性和网络延迟
 
-A. 传播时延参数Dmax
+## A. The propagation delay parameter $D_{max}$
+
+## A. 传播时延参数$D_{max}$
 
 The scalability of a distributed algorithm is closely tied to the assumptions it makes on the
 underlying network, and specifically on its propagation delay D. The real value of D is both
@@ -30,43 +33,43 @@ to this added assumption; see further discussion in Section 7.
 
 PHANTOM的安全模型与SPECTRE的不同就在于使用了先验已知的上限Dmax。虽然两者协议的安全性都建立在网络传播时延D的上限是某个常数这个假设上，但在SPECTRE中协议不需要知道或假设该常数的数值，而PHANTOM在对DAG里的区块排序时（通过k）显式地使用了这个参数。PHANTOM中任意两个区块之间的顺序都是鲁棒的，而SPECTRE则不是，正是因为PHANTOM比SPECTRE多做了这一步假设；见第7节进一步的讨论。
 
-B. The anticone size parameter k
+## B. The anticone size parameter k
 
-B. 反锥体大小参数k
+## B. 反锥体大小参数k
 
 The parameter k is decided from the outset and hard-coded in the protocol. It is defined as
 follows:
 
 协议在开头就定义并硬编码了参数k。定义如下所示：
+$$
+ k(D_{max},δ) := min \left \{\hat{k} \in N : (1-e^{-2\cdot D_{max}\cdot λ})^{-1}\cdot \left ( \sum_{j=\hat{k} + 1}^{∞}{e^{-2\cdot D_{max}\cdot λ}\cdot \frac{(2\cdot D_{max}\cdot λ)^j}{j!}}\right )\right \}
+$$
 
-```
-k(Dmax,δ) := min {\hat{k} \in N : (1 − e^{-2 ·Dmax·λ})^{-1} · ($\sum_{j=\hat{k} + 1}^{\infty} {e^{−2 ·Dmax·λ} · (2·Dmax·λ)^j / j!}) < δ} (1)
-```
 
 The motivation here is to devise a bound over the number of blocks created in parallel. Since
 the block creation rate follows a Poisson process, for an arbitrary block B created at time t,
-at most k(Dmax,δ) additional blocks were created in the time interval[t - Dmax, t + Dmax], with
-probability of at least 1 - δ. (In more detail: The second multiplicand in the definition of k
+at most $k(D_{max},δ)$ additional blocks were created in the time interval$[t - D_{max}, t + D_{max}]$, with
+probability of at least $1 - δ$. (In more detail: The second multiplicand in the definition of k
 bounds the probability that more than k blocks were created in parallel to B in the time interval
-[t - Dmax, t + Dmax]. This term is divided by 1 - e^{-2 ·Dmax·λ}, which is the probability that
+$[t - D_{max}, t + D_{max}]$. This term is divided by $1 - e^{-2 \cdot D_{max}}$, which is the probability that
 at least one block was created during this time, namely, B. Thus, conditioned on the
 appearance of B, at most k blocks were created during this time interval, with probability of
-1 - δ at least.)
+$1 - δ$ at least.)
 
-这里的目的是为同时创建的区块数量设计一个上限。由于区块的创建频率服从泊松分布，因此对任意一个在时刻t创建的区块B，在时间间隔[t - Dmax, t + Dmax]中创建出的其它区块数量最多为k(Dmax,δ)，且其概率至少为1 - δ。（更具体地说：在k的定义中的第二个乘数限定了在时间间隔[t - Dmax, t + Dmax]中在B以外同时创建的区块数量大于k的概率。这一项被1 - e^{-2 ·Dmax·λ}，也就是在此期间至少有一个区块即B被创建的概率所除。因此，以B的出现为条件，在此期间最多有k个区块被创建的概率至少为1 - δ。）
+这里的目的是为同时创建的区块数量设计一个上限。由于区块的创建频率服从泊松分布，因此对任意一个在时刻t创建的区块B，在时间间隔$[t - D_{max}, t + D_{max}]$,中创建出的其它区块数量最多为$k(D_{max},δ)$，且其概率至少为 $1 - δ$。（更具体地说：在k的定义中的第二个乘数限定了在时间间隔$[t - D_{max}, t + D_{max}]$中在B以外同时创建的区块数量大于k的概率。这一项被$1 - e^{-2 \cdot D_{max}}$，也就是在此期间至少有一个区块即B被创建的概率所除。因此，以B的出现为条件，在此期间最多有k个区块被创建的概率至少为$1 - δ$。）
 
-Observe that blocks created in the intervals [0, t - Dmax) and (t + Dmax, ∞), by honest nodes,
-belong to B’s past and future sets, respectively. Consequently, in principle, |anticone(B)| ≤ k
-with probability of 1 - δ at least. However, an attacker can artificially increase B’s anticone by
+Observe that blocks created in the intervals $[0, t - D_{max})$ and $(t + D_{max}, ∞)$, by honest nodes,
+belong to B’s past and future sets, respectively. Consequently, in principle, $|anticone(B)| ≤ k$
+with probability of $1 - δ$ at least. However, an attacker can artificially increase B’s anticone by
 creating blocks that do not reference it and by withholding his blocks so that B cannot reference
 them.
 
-我们可以观察到在[0, t - Dmax)和(t + Dmax, ∞)期间内由诚实节点创建的区块分别属于B的过去和将来集。因此，原则上|anticone(B)| ≤ k的概率至少为1 - δ。尽管如此，攻击者可以通过创建不引用B的区块，并且将区块隐藏起来不让B指向它们，从而人为增大B的反锥体。
+我们可以观察到在$[0, t - D_{max})$和$(t + D_{max}, ∞)$期间内由诚实节点创建的区块分别属于B的过去和将来集。因此，原则上$|anticone(B)| ≤ k$的概率至少为$1 - δ$。尽管如此，攻击者可以通过创建不引用B的区块，并且将区块隐藏起来不让B指向它们，从而人为增大B的反锥体。
 
 
-C. Trade-offs
+## C. Trade-offs
 
-C. 取舍
+## C. 取舍
 
 Theorem 5, and the parameterization of PHANTOM in (1), tie between $k$, $D_{max}$, $λ$, and $δ$.
 Striving for a better performance by modifying one parameter (e.g., increasing $λ$ to obtain larger
