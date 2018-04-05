@@ -96,7 +96,7 @@ same time a positive effect on confirmation times, and so a certain $λ$ will be
 
 **更高的安全阈值。** 定理5通过$δ$描述了安全阈值。从（1）我们可以注意到，（通过选择一个较小的$δ$值从而）收紧安全阈值就需要增大$k$。$k$值增大就意味着确认时间变慢，下文很快就会讨论到。（高阶读者应该能够意识到$λ$对$k$也有类似的负面影响，同时对确认时间有正面影响，因此只要能考虑到确认时间，$λ$的值必然就是最佳的。）
 
-**Larger safety margin.** Similarly, if $D_{max} is to be increased, one needs to increase $k$ as well
+**Larger safety margin.** Similarly, if $D_{max}$ is to be increased, one needs to increase $k$ as well
 in order to maintain the same security level (represented by $δ$).
 
 **更大的安全边界。** 类似地，如果要增大$D_{max}$，为了维持安全等级（由$δ$表示）不变，就需要增大$k$。
@@ -115,7 +115,7 @@ supports a very large throughput, and does not suffer from a security-scalabilit
 我们在4.1节讨论过，一般最好是高估$D$并选择一个较大的$D_{max}$从而确保安全性。（有的基于区块链的项目并不这么做，因此它们的系统在安全阈值方面做了妥协。）回顾一下，比特币的安全性依赖于$D \cdot λ \ll 1$这个假设，也就是说，一个区块被创建之后，极有可能要至少过$D$秒才会有下一个区块被创建，因此分叉极少。因此，比特币的大于$D$的安全边界严重抑制了它的吞吐量，因为它要选择一个很低的区块创建频率$λ = 1 / 600$（每10分钟一个区块）。而PHANTOM的DAG并不是这样，因为DAG排序的安全性并不依赖$D \cdot λ \ll 1$这个假设。因此，即使我们高估了$D$，也依然可以在维持安全等级不变的情况下允许十分高的区块创建频率。所以PHANTOM支持非常大的吞吐量，并且不需要对安全性和可扩展性做出取舍。
 
 That said, in PHANTOM there is still a tradeoff between a large safety margin and fast
-convergence of the protocol. A gross overestimation of $D_{max} - resulting an increase in $k$ -
+convergence of the protocol. A gross overestimation of $D_{max}$ - resulting an increase in $k$ -
 would significantly slow down the waiting time for transaction settlement. Thus, $D_{max}$ should
 be set to a reasonable level. In Section 7 we discuss how this tradeoff can be restricted to visible
 conflicts only, and how applications such as *Payments* can enjoy very fast confirmation times
