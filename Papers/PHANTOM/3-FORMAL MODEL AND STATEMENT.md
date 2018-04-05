@@ -1,3 +1,6 @@
+>* **Source：** [https://eprint.iacr.org/2018/104.pdf](https://eprint.iacr.org/2018/104.pdf)  
+>* **TranStudy：** [https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM/3-FORMAL%20MODEL%20AND%20STATEMENT.md](https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM/3-FORMAL%20MODEL%20AND%20STATEMENT.md)
+
 # 3. FORMAL MODEL AND STATEMENT
 # 3. 形式模型和陈述
 
