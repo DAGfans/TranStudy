@@ -64,7 +64,7 @@ We rely on this property and set PHANTOM’s parameter k such that the latter pr
 
 see discussion in Section 4.
 
-因此，B的反锥体中的诚实块集- 我们表示为anticone h(B) - 通常很小，并且只包含在时段$\left [t-D,t+D \right ]$中创建的块。^2
+因此，B的反锥体中的诚实块集- 我们表示为$anticone_h(B)$ - 通常很小，并且只包含在时段$\left [t-D,t+D \right ]$中创建的块。^2
 
 换句话说，一个诚实的块B会面临一个大的诚实的反锥体的可能性很小：
 
