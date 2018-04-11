@@ -252,7 +252,7 @@ Our goal in this paper is to describe formally the ordering procedure of PHANTOM
 
 **Theorem 5**  (PHANTOM scales). Given a block creation rate $λ > 0, δ > 0$, and $D_{max} > 0$, if $D_{max}$ is equal to or greater than the network’s propagation delay diameter D, then the security threshold of PHANTOM, parameterized with $k(D_{max} , δ)$, is at least $1/2 \cdot (1-\delta )$.
 
-**定理5** (PHANTOM可扩展). 给定块创建率$λ > 0, δ > 0$且$D_{max} > 0$，如果$D_{max}$大于或等于网络的传播延迟直径D，则以$k(D_{max} , δ)$作为参数的PHANTOM的安全阈值至少为$1/2 \cdot (1-\delta )$。
+**定理5** (PHANTOM可扩展). 给定块创建率$λ > 0, δ > 0$且$D_{max} > 0$，如果$D_{max}$大于或等于网络的传播延迟直径D，则作为$k(D_{max} , δ)$参数的PHANTOM的安全阈值至少为$1/2 \cdot (1-\delta )$。
 
 The parameterization of PHANTOM via $k(D_{max} , δ)$ is deﬁned in the subsequent section (see (1)). 
 Theorem 5 encapsulates the main achievement of our work. 
