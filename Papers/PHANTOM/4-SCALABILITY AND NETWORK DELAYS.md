@@ -1,3 +1,4 @@
+
 >* **Source：** [https://eprint.iacr.org/2018/104.pdf](https://eprint.iacr.org/2018/104.pdf)  
 >* **TranStudy：** [https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM/4-SCALABILITY%20AND%20NETWORK%20DELAYS.md](https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM/4-SCALABILITY%20AND%20NETWORK%20DELAYS.md)
 
@@ -17,13 +18,13 @@ the assumption that D is much smaller than 10 minutes, and sets the average bloc
 time to 10 minutes. While this seems like an overestimation of the network’s propagation delay
 under normal conditions (at least in 2018’s Internet terms), some safety margin must be taken,
 to account for peculiar network conditions as well. Similarly, in PHANTOM we assume that
-the unknown D is upper bounded by some Dmax which is known to the protocol. The protocol
-does not explicitly encode Dmax, rather, it is parameterized with k which depends on it, as will
+the unknown D is upper bounded by some $D_{max}$ which is known to the protocol. The protocol
+does not explicitly encode $D_{max}$, rather, it is parameterized with k which depends on it, as will
 be described in the next subsection.
 
-一个分布式算法的可扩展性与其对底层网络所作的假设——尤其是传播时延D密切相关。D的真实数值是未知的，并且会随着网络条件的时刻变化而改变。因此，比特币假设D远小于10分钟，并将区块的平均生成间隔定为10分钟。虽然这看起来高估了正常条件下的网络传播时延（至少以2018年的因特网来说），但我们必须设置一些安全界限，以应对特殊罕见的网络条件。类似地，在PHANTOM中，虽然D的值未知，但我们假设其上限是Dmax，而这个值对协议来说是已知的。协议并不会显式地对Dmax进行编码，而是用参数k来表示它。也就是说，k的值取决于Dmax。下一小节将会对此进行论述。
+一个分布式算法的可扩展性与其对底层网络所作的假设——尤其是传播时延D密切相关。D的真实数值是未知的，并且会随着网络条件的时刻变化而改变。因此，比特币假设D远小于10分钟，并将区块的平均生成间隔定为10分钟。虽然这看起来高估了正常条件下的网络传播时延（至少以2018年的因特网来说），但我们必须设置一些安全界限，以应对特殊罕见的网络条件。类似地，在PHANTOM中，虽然D的值未知，但我们假设其上限是$D_{max}$，而这个值对协议来说是已知的。协议并不会显式地对$D_{max}$进行编码，而是用参数k来表示它。也就是说，k的值取决于$D_{max}$。下一小节将会对此进行论述。
 
-The use of an *a priori* known bound Dmax distinguishes PHANTOM’s security model from
+The use of an *a priori* known bound $D_{max}$ distinguishes PHANTOM’s security model from
 that of SPECTRE [8]. While the security of both protocols depends on the assumption that the
 network’s propagation delay D is upper bounded by some constant, in SPECTRE the value of
 such a constant need not be known or assumed by the protocol, whereas PHANTOM makes
@@ -31,7 +32,7 @@ explicit use of this parameter (via k) when ordering the DAG’s blocks. The fac
 between any two blocks becomes robust in PHANTOM, but not in SPECTRE, should be ascribed
 to this added assumption; see further discussion in Section 7.
 
-PHANTOM的安全模型与SPECTRE的不同就在于使用了先验已知的上限Dmax。虽然两者协议的安全性都建立在网络传播时延D的上限是某个常数这个假设上，但在SPECTRE中协议不需要知道或假设该常数的数值，而PHANTOM在对DAG里的区块排序时（通过k）显式地使用了这个参数。PHANTOM中任意两个区块之间的顺序都是鲁棒的，而SPECTRE则不是，正是因为PHANTOM比SPECTRE多做了这一步假设；见第7节进一步的讨论。
+PHANTOM的安全模型与SPECTRE的不同就在于使用了先验已知的上限$D_{max}$。虽然两者协议的安全性都建立在网络传播时延D的上限是某个常数这个假设上，但在SPECTRE中协议不需要知道或假设该常数的数值，而PHANTOM在对DAG里的区块排序时（通过k）显式地使用了这个参数。PHANTOM中任意两个区块之间的顺序都是鲁棒的，而SPECTRE则不是，正是因为PHANTOM比SPECTRE多做了这一步假设；见第7节进一步的讨论。
 
 ## B. The anticone size parameter k
 
@@ -64,7 +65,7 @@ with probability of $1 - δ$ at least. However, an attacker can artificially inc
 creating blocks that do not reference it and by withholding his blocks so that B cannot reference
 them.
 
-我们可以观察到在$[0, t - D_{max})$和$(t + D_{max}, ∞)$期间内由诚实节点创建的区块分别属于B的过去和将来集。因此，原则上$|anticone(B)| ≤ k$的概率至少为$1 - δ$。尽管如此，攻击者可以通过创建不引用B的区块，并且将区块隐藏起来不让B指向它们，从而人为增大B的反锥体。
+我们可以观察到在$[0, t - D_{max})$和$(t + D_{max}, ∞)$期间内由诚实节点创建的区块分别属于B的过去和将来集。因此，原则上$\|anticone(B)\| ≤ k$的概率至少为$1 - δ$。尽管如此，攻击者可以通过创建不引用B的区块，并且将区块隐藏起来不让B指向它们，从而人为增大B的反锥体。
 
 
 ## C. Trade-offs
