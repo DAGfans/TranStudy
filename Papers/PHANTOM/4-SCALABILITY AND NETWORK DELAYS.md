@@ -42,7 +42,7 @@ follows:
 
 协议在开头就定义并硬编码了参数k。定义如下所示：
 $$
- k(D_{max},δ) := min \left \{\hat{k} \in N : (1-e^{-2\cdot D_{max}\cdot λ})^{-1}\cdot \left ( \sum_{j=\hat{k} + 1}^{∞}{e^{-2\cdot D_{max}\cdot λ}\cdot \frac{(2\cdot D_{max}\cdot λ)^j}{j!}}\right )\right \}
+ k(D_{max},δ) := min \left \{\hat{k} \in N : (1-e^{-2\cdot D_{max}\cdot λ})^{-1}\cdot \left ( \sum_{j=\hat{k} + 1}^{∞}{e^{-2\cdot D_{max}\cdot λ}\cdot \frac{(2\cdot D_{max}\cdot λ)^j}{j!}}\right )<δ\right \}
 $$
 
 
