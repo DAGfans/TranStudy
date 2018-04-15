@@ -2,7 +2,7 @@
 > **TranStudy：** [https://github.com/DAGfans/TranStudy/new/master/Papers/SPECTRE](https://github.com/DAGfans/TranStudy/new/master/Papers/SPECTRE)
 
 
-# I NTRODUCTION
+# 1. INTRODUCTION
 
 Bitcoin is a novel cryptocurrency system, and an accompanying protocol, invented and deployed by Satoshi Nakamoto [13]. 
 Transactions made in the currency are organized in a public ledger, the blockchain. 
