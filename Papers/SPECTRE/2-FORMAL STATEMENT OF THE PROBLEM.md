@@ -36,14 +36,14 @@ we then write $tx 2 ∈ conflict (tx 1 )$ (this is a symmetric relation).
 ## Mining protocol. 
 We denote by $N$ the set of nodes, aka miners. 
 Miners maintain and extend the ledger, by adding transactions to it and propagating messages, according to the *mining protocol*. 
-The propagation time of a message of size B KB to all nodes in the system is assumed to be under $D = D(B) $ seconds. 
+The propagation time of a message of size B KB to all nodes in the system is assumed to be under$D = D(B)$ seconds. 
 For now, we regard the mining protocol as an abstract set of rules that miners must follow. 
 We denote by honest the set of nodes that always follow the protocol’s instructions, and by malicious the complementary of this set.
 
-## 挖坑协议 
+## 挖矿协议 
 我们用$N$来表示一组节点，又名矿工。 
 根据*挖矿协议*，矿工通过添加交易并传播消息来维护和扩展账本。
-大小为B KB的消息传播到系统中的所有节点的传播时间假定在 $D = D(B) $秒以内。 
+大小为B KB的消息传播到系统中的所有节点的传播时间假定在 $D = D(B)$秒以内。 
 目前，我们认为挖矿协议是矿工必须遵循的一套抽象规则。 
 我们用诚实节点表示总是遵循协议指示的一组节点，并通过恶意节点表示非诚实节点。
 
