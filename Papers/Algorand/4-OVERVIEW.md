@@ -10,8 +10,7 @@ Algorand users communicate through a gossip protocol. The gossip protocol is use
 
 Algorand用户通过流言（gossip）协议进行通信。流言协议被用户用来提交新的交易。如图1所示，每个用户收集一个他们发现的待处理交易块，以供他们选择提议下一个块。Algorand使用BA⋆对这些待处理的区块之一达成共识。
 
-figure 1
-
+![figure 1](https://user-images.githubusercontent.com/22833166/38860679-563e9230-4263-11e8-91cd-6bbf3251ff68.jpg)
 
 
 Figure 1: An overview of transaction flow in Algorand. Algorand中的交易流概览
@@ -58,6 +57,7 @@ We now describe how Algorand’s components fit together.
 **使用BA⋆协议（§7）达成共识.** 区块提议并不保证所有用户都收到相同的区块，并且Algorand不依赖区块提议协议以确保安全。为了达成一个单独区块的共识，Algorand使用BA⋆。每个用户使用他们收到的优先级最高的区块来初始化BA⋆。BA⋆以重复的步骤执行，如图2所示。每个步骤都从抽签（§5）开始，所有用户都会检查他们是否在该步骤中被选为委员会成员。委员会成员随后广播了一条包含他们被选择的证明的信息。重复这些步骤直到在BA⋆的某个步骤中，委员会中有足够的用户达成共识。 （步骤在用户之间不同步；每当用户观察到前一步骤结束时，每个用户都会检查是否被选择。）如前所述，BA⋆的一个重要特征是委员会成员除私钥以外不保留私有状态，因此可以在每一步后更换，以减轻对它们的有针对性的攻击。
 
 
+![figure 2](https://user-images.githubusercontent.com/22833166/38860743-7e6e6334-4263-11e8-922e-5fa6af6c09f4.jpg)
 
 Figure 2: An overview of one step of BA⋆. To simplify the figure, each user is shown twice: once at the top of the diagram and once at the bottom. Each arrow color indicates a message from a particular user.
 
