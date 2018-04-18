@@ -1,82 +1,175 @@
 > **Source：** [https://eprint.iacr.org/2016/1159.pdf](https://eprint.iacr.org/2016/1159.pdf)  
 > **TranStudy：** [https://github.com/DAGfans/TranStudy/new/master/Papers/SPECTRE](https://github.com/DAGfans/TranStudy/new/master/Papers/SPECTRE)
 
+# 2. FORMAL STATEMENT OF THE PROBLEM
+# 2. 问题的形式化论述
 
-# 1. INTRODUCTION
+In this section we describe a generic framework for reasoning about the security and scalability properties of cryptocurrency protocols. 
+Generally, in our framework, a cryptocurrency protocol speciﬁes two sets of instructions – the mining protocol, regarding the creation of blocks and formation of the block ledger, and the TxO protocol, interpreting the ledger and extracting from it a consistent subset of valid transactions. 
+Since transactions in the protocol are accepted with increasing probability as time goes on, users additionally run the Robust TxO protocol, to quantify the robustness of an accepted transaction – a bound on the probability that it will ever be reversed, when a malicious attacker attempts to do so (Bitcoin transactions for example, can be reversed if the attacker manages to produce a longer alternative chain on which they are not present – this event occurs with decreasing probability as time passes). 
+Next, we present our framework in the abstract sense, so as to keep it as general as possible. 
+In Section 4, we present a protocol that meets the requirements and uses a block DAG to do so. 
+We defer the speciﬁcs of the solution and the mining protocol, till then. 
+We will use our framework to make clear the sense in which SPECTRE avoids the security-scalability trade-off that Bitcoin suffers from. 
 
-Bitcoin is a novel cryptocurrency system, and an accompanying protocol, invented and deployed by Satoshi Nakamoto [13]. 
-Transactions made in the currency are organized in a public ledger, the blockchain. 
-Each block in the chain is a batch of transactions that were published by users of the currency. 
-The blockchain contains consistent transactions only, as new blocks that extend it are required to maintain consistency.
+在本节中，我们将介绍一个用于论述加密货币协议的安全性和可扩展性属性的通用框架。
+通常，在我们的框架中，一个加密货币协议指定了两套指令 - 挖矿协议，与区块的创建和区块账本的形成有关，以及TxO协议，解释账本并从中提取一个一致的有效交易的子集。
+由于协议中的交易随着时间的推移而越来越可能被接受，所以用户需要另外运行Robust TxO协议来量化已接受交易的健壮性 - 即当恶意攻击者试图攻击协议时，协议被逆转的可能性的上限（比如比特币交易，如果攻击者设法产生一个还未出现的更长的替代链 - 发生这种情况的可能性随着时间的推移而降低）。
+接下来，我们以抽象的意义的形式介绍我们的框架，以尽可能保持通用性。
+在第4节中，我们提出了一个满足要求并使用区块DAG的协议。
+到时候我们再来介绍该解决方案和挖矿协议的具体规定。
+我们将使用我们的框架来阐述SPECTRE避免比特币遭受的安全可扩展性取舍的意义。
 
-比特币是一种新型的加密货币系统同时也是一个协议，由中本聪 [13]发明和部署。 
-以货币形式进行的交易被组织在一个公共账本，即区块链。 
-链中的每个块都是由货币用户发布的一批交易。 
-区块链仅包含一致的交易，因为需要保持一致性才能扩展它的新块。
+>### Transactions
+>A transaction is typically denoted $tx$. $inputs (tx)$ is the set of transactions that must be accepted before $tx$ can be accepted; 
+these are the transactions that have provided the money that is being spent in $tx$. 
+Two different transactions $tx 1$ and $tx 2$ conﬂict if they share a common input, i.e., they double spend the same money; 
+we then write $tx 2 ∈ conflict (tx 1 )$ (this is a symmetric relation).
 
-Unfortunately, Nakamoto Consensus has severe scalability limitations [5], [18], [14]: adjusting the protocol to support a high transaction throughput – by creating larger or more frequent blocks – requires stronger assumptions on the underlying network, hence smaller safety margins.
+> ### 交易
+> 交易通常表示为$tx$。$inputs (tx)$是$tx$可以被接受之前必须被接受的一组交易;
+这些交易提供在$tx$上花费的资金。
+两个不同的交易$tx 1$和$tx 2$如果共享一个共同的输入则它们是冲突的，即它们花费相同的资金;
+我们以后表示为$tx 2 ∈ conflict (tx 1 )$（这是一个对称关系）。
+**译注：** 对称是指 $tx 2 ∈ conflict (tx 1 )$ 同时也意味着 $tx 1 ∈ conflict (tx 2 )$
 
-不幸的是，中本聪共识有严重的可扩展性限制[5],[18],[14]：通过调整协议来支持高交易吞吐量 - 通过创建更大或更频繁的块 - 需要对底层网络进行更强的假设，因此会导致更小的安全系数。
 
-In this paper we propose a new protocol, SPECTRE, that achieves high scalability. 
-Transactions in SPECTRE can be conﬁrmed within seconds, and the throughput can be improved by orders-of-magnitude over Bitcoin; 
-it is limited by the network infrastructure and capacity only. 
-The protocol thus alleviates the security-scalablility trade-off imposed by Nakamoto Consensus.
+> ### Mining protocol 
+> We denote by $\mathcal{N}$ the set of nodes, aka miners. 
+Miners maintain and extend the ledger, by adding transactions to it and propagating messages, according to the *mining protocol*. 
+The propagation time of a message of size B KB to all nodes in the system is assumed to be under$D = D(B)$ seconds. 
+For now, we regard the mining protocol as an abstract set of rules that miners must follow. 
+We denote by honest the set of nodes that always follow the protocol’s instructions, and by malicious the complementary of this set.
 
-在本文中，我们提出了一种新的协议，即SPECTRE，它具有很高的可扩展性。 
-SPECTRE中的交易可以在几秒钟内得到确认，吞吐量可以相较于比特币有数量级的提高; 
-它仅受网络基础设施和容量的限制。 
-因此该协议减轻了中本聪共识强加的安全可扩展性之间的取舍。
+>### 挖矿协议 
+>我们用$\mathcal{N}$来表示一组节点，又名矿工。 
+根据*挖矿协议*，矿工通过添加交易并传播消息来维护和扩展账本。
+大小为B KB的消息传播到系统中的所有节点的传播时间假定在 $D = D(B)$秒以内。 
+目前，我们认为挖矿协议是矿工必须遵循的一套抽象规则。 
+我们用诚实节点表示总是遵循协议指示的一组节点，并通过恶意节点表示非诚实节点。
 
-In SPECTRE, every block is counted and integrated into the ledger. 
-Technically, SPECTRE generalizes Nakamoto’s blockchain into a direct acyclic graph – a block DAG. 
-By maintaining a full DAG of blocks, SPECTRE can allow miners to create blocks concurrently and much more frequently. 
-This design is intended to avoid the need for nodes to reconcile their different world views regarding the identity of a selected chain at the time of block creation.
+In the family of protocols we focus on, miners possess computational power and perform proof-of-work (PoW). 
+We denote by α the attacker’s relative computational power. 
+Formally, it is the probability that the creator of the next PoW in the system belongs malicious; 
+this is well deﬁned, as PoW creation is modeled as a memoryless process [13], [18], [17].
 
-在SPECTRE中，每个块都被包括并集成到账本中。 
-从技术上讲，SPECTRE将中本聪的区块链泛化为有向无环图 - 区块DAG。 
-**译注：**泛化这里指链式结构可以看作Block DAG的特例
-通过保持块的完整DAG，SPECTRE可以允许矿工并发并且高频地创建区块。 
-这种设计旨在避免节点在块创建时协调其关于所选链的身份的不同世界观。
-**译注**：这句话指，所谓链式还是图式其实是因为看问题的角度不同，站在DAG的角度来看，链式也算是一种DAG
+在我们关注的协议族中，矿工拥有计算能力并执行工作量证明（PoW）。 
+我们用α表示攻击者的相对计算能力。 
+形式上表示为，系统中下一个PoW的创建者属于恶意节点的可能性;
+这是很好的定义，因为PoW的创建是一个无记忆的过程[13]，[18]，[17]。
+**译注：** 无记忆应该是指是纯随机的一个过程，每次随机都是独立的, 随机的结果不会记录
 
-Reasoning about the consensus properties of SPECTRE requires a new formal framework. 
-Indeed, previous work that formalized the robustness of Nakamoto Consensus [7], [15] focused on robustness of blocks in the ledger. 
-Extending this to the robustness of transactions in SPECTRE is not immediate, because all blocks are incorporated into the DAG, but individual transactions embedded in the DAG may still be rejected due to conﬂicts.
+>## Formation of ledger
+>The result of the mining protocol is an (abstract) public data structure G containing transactions (to be instantiated later, in our solution proposal, as a block DAG), aka the ledger. 
+Nodes replicate the ledger locally. 
+As they might hold slightly different views of the ledger (e.g., since blocks take time to propagate to all nodes), we denote by $G_t^v$ the state of the ledger as observed by node v at time t; 
+we write $G_t$ when the local context is unimportant. 
 
-论证SPECTRE的共识特性需要一个新的形式化框架。 
-事实上，之前形式化中本聪共识健壮性的工作专注在账本中的区块的健壮性上[7]，[15]。 
-但这并不能立即扩展到SPECTRE中的交易的健壮性，因为所有的块都包含在DAG中，但嵌入在DAG中的单个交易可能因冲突而被拒绝。
-**译注：**冲突一般指的就是双花
+>## 账本的形成
+>挖矿协议的结果是一个包含交易的（抽象的）公共数据结构G（稍后将在我们的解决方案提案中作为区块DAG实例化），也就是账本。 
+节点在本地存有账本副本。 
+由于它们可能保存着略有不同的账本状态（例如，因为区块需要花费时间传播到所有节点），所以我们用$G_t^v$表示时间t处由节点v观察到的账本的状态; 
+当本地环境不重要时，我们写成$G_t$。 
 
-Thus, this paper contains two contributions: 
-(1) an inherently scalable protocol, SPECTRE; 
-and (2) a formal framework for cryptocurrency payment protocols that do not necessarily use a chain of blocks to represent their ledger (in this respect we differ from previously proposed frameworks). 
-We apply it on SPECTRE, and provide rigorous analysis of SPECTRE’s robustness properties.
+>## TxO protocol
+>Given a public ledger G, the TxO protocol extracts a consistent subset of transactions from G, denoted $TxO(G)$. 
+Every transaction in this set must have its inputs in it as well, and cannot conﬂict with another transaction in the set.
 
-因此，本文包含两个贡献：
-（1）一个可扩展的协议，SPECTRE; 
-（2）一个加密货币支付协议的形式化框架，它不一定要使用区块链表示账本（在这方面，我们不同于以前提出的框架）。 
-我们将其应用于SPECTRE，并对SPECTER的健壮性进行严格分析。
+>## TxO协议
+>给定公共账本G，TxO协议从G中提取一致的交易子集，表示为$TxO(G)$。 
+该集合中的每个交易都必须有其输入，并且不能与集合中的另一个交易冲突。
 
-The main technique behind SPECTRE is a voting algorithm regarding the order between each pair of blocks in the DAG. 
-The voters are blocks (not miners); 
-the vote of each block is interpreted algorithmically (and not provided interactively) according to its location within the DAG. 
-We show that the majority’s aggregate vote becomes irreversible very fast, and we use this majority vote to extract a consistent set of transactions. 
-Essentially, Bitcoin’s longest chain rule can be seen as a voting mechanism as well – each block adding one vote to every chain that contains it – the highest-scoring chain being also the longest one. 
-However, Bitcoin’s selection of a “single winner chain” makes it inherently unscalable, as we demonstrate below.
+>## Robust TxO protocol
+>Users of the system must get assurances regarding their payments. 
+Basically, we want to guarantee that transactions will be accepted by all users, and that they will remain so forever. 
+Given $G_t$, the RobustTxO protocol speciﬁes a subset of $G_t$, denoted $RobustTxO(G_t^v)$, which represents the set of accepted transactions that are guaranteed to remain so forever, up to an error probability of $ϵ$. RobustTxO takes as input $G_t^v$ (the local replicate of v ), and the values of D,λ,α, and $ϵ$. [^1] 
+A tx in (Robust) TxO is said to be (robustly) accepted. 
 
-SPECTRE背后的主要技术是关于DAG中对区块之间的顺序进行投票的算法。 
-投票者是区块（不是矿工）; 
-根据其在DAG内的位置通过算法表示每个块（并且不提供交互式）。 
-我们表明，大多数的总体投票不可逆转的速度会很快，我们使用这个多数票来提取一组一致的交易。 
-从本质上讲，比特币最长链规则也可以被看作是一种投票机制 - 每个区块给每一个包含它的链添加一票 - 最高得分的链也是最长的。 
-但是，比特币选择的“单一赢家链”使得它本质上不可扩展，正如我们下面所示。
+>## 可靠 TxO 协议
+>系统用户必须获得有关他们支付的保证。
+基本上，我们希望保证交易将被所有用户接受，并且它们将永远保持接受状态。
+给定$G_t$，RobustTxO协议指定$G_t$的一个子集，表示为$RobustTxO(G_t^v)$，它表示一组被保证永久保存的已接受的交易，出错概率为$ϵ$。 
+（**译注：** 这里的出错是指已接收的交易被逆转）
+RobustTxO将输入$G_t^v$（v的本地复制）以及D，λ，α和$ϵ$的值作为输入。[^1]
+(Robust) TxO 中的tx被认为是（可靠地）接受的。
 
-We note that there have been several recent works revolving around new protocols for public blockchain systems. 
-These include Bitcoin-NG [6], Byzcoin [9], a work by Decker et. al. [4], Hybrid Consensus [16], Solidus [1], and recently Algorand [11]. 
-We discuss these and other related works in Section 6.
+>## Desired properties
+>Thus, the following properties are essential for a cryptocurrency protocol:
 
-我们注意到最近有几项工作围绕公有区块链系统的新协议。 
-这些包括Bitcoin-NG [6]，Byzcoin [9]，Decker等人的工作[4]，混合共识（Hybrid Consensus）[16]，Solidus [1]和最近Algorand [11]。 
-我们在第6节讨论这些和其他相关的工作。
+>## 所需的属性
+>因此，以下属性对于加密货币协议至关重要：
+
+>### Property 1 (Consistency)
+>The accepted set is consistent: For any ledger G,
+
+1) if $tx ∈ TxO(G)$ and $tx_2 ∈ inputs (tx)$ then $tx_2 ∈ TxO(G)$.
+
+2) if $tx ∈ TxO(G)$ and $tx_2 ∈ conflict (tx)$ then $tx_2 ∉ TxO(G)$.
+
+>### 属性 1 (一致性)
+>对于任何账本G，接受的集合满足如下条件则是一致的：
+
+1) 如果$tx ∈ TxO(G)$且$tx_2 ∈ inputs (tx)$，则$tx_2 ∈ TxO(G)$。
+
+2) 如果$tx ∈ TxO(G)$且$tx_2 ∈ conflict (tx)$，则$tx_2 ∉ TxO(G)$）。
+
+>### Property 2 (Safety)
+>If a transaction is robustly accepted by some node, then w.h.p. it will be robustly accepted forever by all nodes, and the expected waiting time for this event is constant. 
+Formally, $∀>0$ , $∀v ∈ \mathcal{N}$ , if $tx ∈ RobustTxO(G_t^v , D, λ, α,ϵ)$, then w.p. of at least $1-ϵ$, there exists a time $τ ≥ t$ such that $∀u ∈ \mathcal{N}$, $∀s ≥ τ : tx ∈ RobustTxO(G_s^u , D, λ, α,ϵ)$. 
+If this event occurs, the expected value of $τ-t$ is constant.
+
+>### 属性 2 (安全性)
+>如果交易被某个节点可靠地接受，那么很大概率它将永远被所有节点永久接受，并且此事件的预期等待时间是恒定的。 
+形式上表示为，$∀>0$ ，$∀v ∈ \mathcal{N}$，如果$tx ∈ RobustTxO(G_t^v , D, λ, α,ϵ)$，则在概率至少为$1-ϵ$的情况下,存在时间$τ ≥ t$，使得$∀u ∈ \mathcal{N}$, $∀s ≥ τ : tx ∈ RobustTxO(G_s^u , D, λ, α,ϵ)$。 
+如果这个事件发生，$τ-t$的期望值是恒定的。
+
+>### Property 3 (Weak Liveness)
+>If a transaction is published in the ledger, it is robustly accepted by any node after a short while, provided that its inputs are robustly accepted and that no conﬂicting transactions are published. 
+Formally, let $v ∈ \mathcal{N}$ , $tx ∈ G_t^v$ , and $ϵ>0$. 
+Deﬁne by $ψ(t, D, λ, α,ϵ):= min\{s≥ t:tx ∈ RobustTxO(G_s^v,D,λ,α,ϵ)\}$ the waiting time for its  robust acceptance by v . 
+Then, $\mathbb{E}[ψ-t|inputs(tx)⊆ TxO(G_ψ^v)∧ conflict(tx)∩ G_ψ^v=ϕ]$ is constant.
+
+>### 属性 3 (弱活性)
+>如果一个交易已经在账本上发布，它可以在短时间内被任何节点可靠地接受，只要它的输入被可靠接受并且没有发布冲突的交易。 
+形式上表示为，让 $v ∈ \mathcal{N}$，$tx ∈ G_t^v$，并且$ϵ>0$。
+定义为$ψ(t, D, λ, α,ϵ):= min\{s≥ t:tx ∈ RobustTxO(G_s^v,D,λ,α,ϵ)\}$，即被节点v可靠地接受所等待的时间。 
+那么，$\mathbb{E}[ψ-t|inputs(tx)⊆ TxO(G_ψ^v)∧ conflict(tx)∩ G_ψ^v=ϕ]$是常数。
+(**译注：** $\mathbb{E}$ 是期望值的意思)
+
+>### Deﬁnition 1
+>The *security threshold* of a cryptocurrency protocol is deﬁned by the maximal α (attacker’s relative computational power) for which Properties 1-3 hold.
+
+>### 定义 1
+>加密货币协议的*安全阈值*定义为属性1-3所能承受的最大α（攻击者的相对计算能力）。
+
+The expected values of $τ-t$ and $ψ-t$, as written in Properties 2 and 3, deﬁne the expected waiting time for conﬁrmation of transactions in the given protocol.
+
+如属性2和3中所写的$τ-t$和$ψ-t$的期望值定义了在给定协议中确认交易的预期等待时间。
+
+The “weakness” of the Liveness property corresponds to the fact that we do not guarantee (though it is still hard for an attacker to prevent) a resolution in case conﬂicting transactions were published soon one after the other. 
+Contrast this to traditional consensus protocols, where all conﬂicts are required to be decided in ﬁnite time, a property usually referred to as Liveness. 
+Observe, however, that an honest user of the system will never publish conﬂicting transactions, and will transfer money only after he robustly accepted the original funds (the inputs) himself; 
+payments of honest users are thus guaranteed to meet the conditions formalized in Weak Liveness, and to be robustly accepted. 
+On the other hand, an attacker trying to defraud must keep his attack secret before publishing the conﬂict, until the victim robustly accepts; 
+but then the victim is guaranteed that w.h.p. his transaction will not be reversed. 
+Therefore, these two properties together ensure that payments of honest users will be robustly accepted in constant expected time, and that they remain robustly accepted forever, w.h.p.
+
+在活性属性的“弱”对应的结果是，我们不保证（虽然它仍然很难防止攻击者去这么做）能解决紧挨着的两笔冲突的交易。
+与传统的共识协议进行对比，其中所有冲突都需要在有限时间内决定，通常称之为活性。
+但是，考虑到该系统的一个诚实的用户不会发布冲突的交易，并只有在他亲自可靠地接受了来源资金（输入）后才会转账;
+由此能保证诚实用户的支付符合弱活性中形式化的条件，并被可靠地接受。
+另一方面，试图欺诈的攻击者在发布冲突交易之前必须保密，直到受害者可靠接受;
+但是那时就可以保证受害者的交易极大地可能性不会被逆转。
+因此，这两个属性共同确保诚实用户的支付将在恒定的预期时间内可靠接受，并将永远保持可靠接受.
+(**译注：** 这里的逻辑还是有点绕，举个例子说明，A 如果是攻击者是一个买家，B是受害者是一个卖家，A 不大可能连续发两笔双花的交易，因为这样很有可能B就能检测到双花交易而拒绝发货，更大的可能是A等B确认支付成功了并发货了，再发起一笔双花的交易。因为这个时候两笔双花交易间已经有足够长的时间了，不满足紧挨着的条件，SPECTRE是有办法保证活性的。)
+
+In this work we set out to design a protocol that can support a large throughput, and achieve fast conﬁrmation times, while maintaining a high security threshold.
+
+在这项工作中，我们开始着手设计一个协议，该协议可以支持大吞吐量，并实现快速确认时间，同时保持高安全阈值。
+
+[^1]:For the sake of clear exposition, we regard here these values as known. 
+However, we emphasize that SPECTRE does not assume that nodes know or agree on the precise values of these parameters. 
+See Section 3. 4
+为了清楚说明，我们将这些值视为已知。 
+但是，我们强调SPECTRE不会假设节点知道或同意这些参数的精确值。 
+参见第3节
