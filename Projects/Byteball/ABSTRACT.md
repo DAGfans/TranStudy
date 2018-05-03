@@ -1,3 +1,9 @@
+
+>* **Source：** [https://byteball.org/Byteball.pdf](https://byteball.org/Byteball.pdf)  
+>* **TranStudy：** [https://github.com/DAGfans/TranStudy/tree/master/Projects/Byteball
+](https://github.com/DAGfans/TranStudy/tree/master/Projects/Byteball
+)
+
 # Byteball: A Decentralized System for Storage and Transfer of Value
 # 字节雪球: 去中心化的存储和价值转移系统
 
