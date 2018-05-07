@@ -55,3 +55,13 @@ Now, no block in $anticone(\hat{B})$ is pushed into $topo\_queue$ before $\hat{B
 The fact that blocks in $anticone(\hat{B})$ are not pushed into the queue before all of $past(\hat{B})$ is popped out, implies further that the order in which Algorithm 2 pushes blocks in $past(\hat{B})$ into and out of $topo\_queue$ depends only on $past(\hat{B})$, and not on the DAG $G$. Hence, $ord(G) \cap past(\hat{B}) = ord(past(\hat{B})$. $\square$
 
 在 $past(\hat{B})$ 的所有区块被弹出之前，$anticone(\hat{B})$ 中的区块不会被压入队列。这进一步意味着算法2将 $past(\hat{B})$ 里的区块压入和弹出 $topo\_queue$ 的顺序仅取决于 $past(\hat{B})$，而不取决于 DAG $G$。因此，$ord(G) \cap past(\hat{B}) = ord(past(\hat{B})$。 $\square$
+
+The proof of Theorem 5 uses the occurrence of Hourglass blocks to secure all blocks in their past set.
+
+定理5的证明利用沙漏区块来保证沙漏区块过去集里所有区块的安全性。
+
+*Proof of Therom 5.* Let $\delta > 0$ and assume that $\alpha < 1/2 \cdot (1 - \delta)$. We need to prove that $\forall t_0 > 0$ and $B \in G_{t_0}^{pub}$: $\lim\limits_{t_1 \to \infty} Risk(B, t_1) = 0$, where $Risk(B, t_1) := Pr(\exists s > t_1, \exists C \in G_s^{pub}: B \prec_{G_{t_1}^{pub}}  C \wedge C \prec_{G_s^{pub}} B)$, and assuming a fraction of at most $1/2 - \delta$ can deviate arbitrarily from the mining pool.
+
+Fix $t_0$ and $B$, and let $\tau(t_0)$ be the first time after $t_0$ where an honest block $\hat{B}$ was published such that $\hat{B}$ is an Hourglass block and will forever remain so:
+
+
