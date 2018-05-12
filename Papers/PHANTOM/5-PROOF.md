@@ -36,9 +36,9 @@ In Figure 4 we provide an example of an Hourglass block. The proof of this lemma
 
 *引理7的证明。* 首先注意到如果 $BLUE_k(G) \cap anticone(\hat{B}) = \emptyset$，则 $\hat{B} \in BLUE_k(G)$。确实，算法1定义了一条链，$Chn(G)$（见2.2节）。这条链一定会和 $anticone(\hat{B}) \cup \{\hat{B}\}$ 中的某个区块相交。根据算法的6-7行，相交的区块自身一定是蓝色。（译注：可以反过来理解。算法1在图中寻找一条从起始区块延伸至图末端的蓝色区块组成的链。如果 $\hat{B}$ 自己和其反锥体都是红色区块，那这条链就无法从起始区块眼神至末端了。）因此，$BLUE_k(G) \cap anticone(\hat{B}) = \emptyset$ 意味着 $\hat{B} \in Chn(G)$，尤其是 $\hat{B} \in BLUE_k(G)$。
 
-Now, Algorithm 2 pushes a block into the queue only after it has pushed already all blocks in its past (lines 11 and 12). Therefore, $topo\_queue$ pops out blocks according to a topological order. Now, there are no blue blocks in $anticone(\hat{B}$, hence if $C$ is a blue block then it must belong to $future(\hat{B}) \cup \{\hat{B}\}$, in which case it must have been pushed to the queue after $\hat{B}$ was popped (unless $C = \hat{B}$). Thus, if $C$ is blue, any block in $past(\hat{B})$ was popped out before $C$, and added to the ordered list $L$ before it (line 8). In particular, $B \prec_G C$. On the other hand, if $C$ is not blue, it was necessarily pushed into the queue only by belonging to the past set of some blue block $B'$ (lines 9-11). $B'$ was popped out after $\hat{B}$ (unless $B' = \hat{B}$), from the same argument as in the previous case. Thus, $C$ was pushed into the queue after $\hat{B}$ was popped out, which in turn must have occurred after $B$ was popped out. In particular, in this case as well, $B \prec_G C$. $\square$
+Now, Algorithm 2 pushes a block into the queue only after it has pushed already all blocks in its past (lines 11 and 12). Therefore, $topo\_queue$ pops out blocks according to a topological order. Now, there are no blue blocks in $anticone(\hat{B}$, hence if $C$ is a blue block then it must belong to $future(\hat{B}) \cup \{\hat{B}\}$, in which case it must have been pushed to the queue after $\hat{B}$ was popped (unless $C = \hat{B}$). Thus, if $C$ is blue, any block in $past(\hat{B})$ was popped out before $C$, and added to the ordered list $L$ before it (line 8). In particular, $B \prec_G C$. On the other hand, if $C$ is not blue, it was necessarily pushed into the queue only by belonging to the past set of some blue block $B'$ (lines 9-11). $B'$ was popped out after $\hat{B}$ (unless $B' = \hat{B}$), from the same argument as in the previous case. Thus, $C$ was pushed into the queue after $\hat{B}$ was popped out, which in turn must have occurred after $B$ was popped out. In particular, in this case as well, $B \prec_G C$. $\hspace{5mm}\square$
 
-现在，在算法2中，对任意一个区块来说，只有当该区块过去集中的所有区块都被压入队列之后，该区块才会被压入队列中（11和12行）。因此，$topo\_queue$ 会按照某种拓扑顺序弹出区块。因此，如果 $C$ 是蓝色区块，那么它一定属于 $future(\hat{B}) \cup \{\hat{B}\}$，于是它一定会在 $\hat{B}$ 被弹出之后才被压入队列中（除非 $C = \hat{B}$）。因此，如果 $C$ 是蓝色，那么 $past(\hat{B})$ 中的任意一个区块都会在 $C$ 之前被弹出，并在它之前被添加到有序列表 $L$ 中（第8行）。也就是说，$B \prec_G C$。另一方面，如果 $C$ 不是蓝色，它一定只能通过从属于某个蓝色区块 $B'$ 的过去集从而被压入队列中（第9-11行）。$B'$ 是在 $\hat{B}$ 之后被弹出的（除非 $B' = \hat{B}$），于是证明思路和前一种情况一样。因此， $C$ 被压入队列发生在 $\hat{B}$ 被弹出队列之后，而 $\hat{B}$ 被弹出又发生在 $B$ 被弹出之后。于是，这种情况下同样也有 $B \prec_G C$。 $\square$
+现在，在算法2中，对任意一个区块来说，只有当该区块过去集中的所有区块都被压入队列之后，该区块才会被压入队列中（11和12行）。因此，$topo\_queue$ 会按照某种拓扑顺序弹出区块。因此，如果 $C$ 是蓝色区块，那么它一定属于 $future(\hat{B}) \cup \{\hat{B}\}$，于是它一定会在 $\hat{B}$ 被弹出之后才被压入队列中（除非 $C = \hat{B}$）。因此，如果 $C$ 是蓝色，那么 $past(\hat{B})$ 中的任意一个区块都会在 $C$ 之前被弹出，并在它之前被添加到有序列表 $L$ 中（第8行）。也就是说，$B \prec_G C$。另一方面，如果 $C$ 不是蓝色，它一定只能通过从属于某个蓝色区块 $B'$ 的过去集从而被压入队列中（第9-11行）。$B'$ 是在 $\hat{B}$ 之后被弹出的（除非 $B' = \hat{B}$），于是证明思路和前一种情况一样。因此， $C$ 被压入队列发生在 $\hat{B}$ 被弹出队列之后，而 $\hat{B}$ 被弹出又发生在 $B$ 被弹出之后。于是，这种情况下同样也有 $B \prec_G C$。 $\hspace{5mm}\square$
 
 **Lemma 8.** *If $\hat{B}$ is an Hourglass block in a DAG $G$, then $G$ inherits the order from $\hat{B}$: $ord(G) \cap past(\hat{B}) = ord(past(\hat{B}))$.*
 
@@ -52,16 +52,31 @@ Now, no block in $anticone(\hat{B})$ is pushed into $topo\_queue$ before $\hat{B
 
 现在，在 $\hat{B}$ 从 $topo\_queue$ 中被弹出之前，$anticone(\hat{B})$ 中没有区块被压入 $topo\_queue$。这是因为一个区块必须要满足以下两个条件之一才会被压入队列：要么该区块是蓝色（而这样的区块在 $anticone(\hat{B})$ 中并不存在）；要么该区块将来集中的某个蓝色区块被压入队列——这也只能发生在 $\hat{B}$ 被弹出之后。因为队列遵循拓扑，所以 $past(\hat{B})$ 中的所有区块（它们肯定都在 $\hat{B}$ 之前被访问过）都会在 $past(\hat{B})$ 以外的任意区块之前被弹出。
 
-The fact that blocks in $anticone(\hat{B})$ are not pushed into the queue before all of $past(\hat{B})$ is popped out, implies further that the order in which Algorithm 2 pushes blocks in $past(\hat{B})$ into and out of $topo\_queue$ depends only on $past(\hat{B})$, and not on the DAG $G$. Hence, $ord(G) \cap past(\hat{B}) = ord(past(\hat{B})$. $\square$
+The fact that blocks in $anticone(\hat{B})$ are not pushed into the queue before all of $past(\hat{B})$ is popped out, implies further that the order in which Algorithm 2 pushes blocks in $past(\hat{B})$ into and out of $topo\_queue$ depends only on $past(\hat{B})$, and not on the DAG $G$. Hence, $ord(G) \cap past(\hat{B}) = ord(past(\hat{B})$. $\hspace{5mm}\square$
 
-在 $past(\hat{B})$ 的所有区块被弹出之前，$anticone(\hat{B})$ 中的区块不会被压入队列。这进一步意味着算法2将 $past(\hat{B})$ 里的区块压入和弹出 $topo\_queue$ 的顺序仅取决于 $past(\hat{B})$，而不取决于 DAG $G$。因此，$ord(G) \cap past(\hat{B}) = ord(past(\hat{B})$。 $\square$
+在 $past(\hat{B})$ 的所有区块被弹出之前，$anticone(\hat{B})$ 中的区块不会被压入队列。这进一步意味着算法2将 $past(\hat{B})$ 里的区块压入和弹出 $topo\_queue$ 的顺序仅取决于 $past(\hat{B})$，而不取决于 DAG $G$。因此，$ord(G) \cap past(\hat{B}) = ord(past(\hat{B})$。 $\hspace{5mm}\square$
 
 The proof of Theorem 5 uses the occurrence of Hourglass blocks to secure all blocks in their past set.
 
 定理5的证明利用沙漏区块来保证沙漏区块过去集里所有区块的安全性。
 
-*Proof of Therom 5.* Let $\delta > 0$ and assume that $\alpha < 1/2 \cdot (1 - \delta)$. We need to prove that $\forall t_0 > 0$ and $B \in G_{t_0}^{pub}$: $\lim\limits_{t_1 \to \infty} Risk(B, t_1) = 0$, where $Risk(B, t_1) := Pr(\exists s > t_1, \exists C \in G_s^{pub}: B \prec_{G_{t_1}^{pub}}  C \wedge C \prec_{G_s^{pub}} B)$, and assuming a fraction of at most $1/2 - \delta$ can deviate arbitrarily from the mining pool.
+*Proof of Therom 5.* Let $\delta > 0$ and assume that $\alpha < 1/2 \cdot (1 - \delta)$. We need to prove that $\forall t_0 > 0$ and $B \in G_{t_0}^{pub}$: $\lim\limits_{t_1 \to \infty} Risk(B, t_1) = 0$, where $Risk(B, t_1) := \Pr(\exists s > t_1, \exists C \in G_s^{pub}: B \prec_{G_{t_1}^{pub}} C \wedge C \prec_{G_s^{pub}} B)$, and assuming a fraction of at most $1/2 - \delta$ can deviate arbitrarily from the mining pool.
+
+*定理5的证明：* 假设 $\delta > 0$ and assume that $\alpha < 1/2 \cdot (1 - \delta)$。我们需要证明对于 $\forall t_0 > 0$ 和 $B \in G_{t_0}^{pub}$： $\lim\limits_{t_1 \to \infty} Risk(B, t_1) = 0$，其中 $Risk(B, t_1) := \Pr(\exists s > t_1, \exists C \in G_s^{pub}: B \prec_{G_{t_1}^{pub}} C \wedge C \prec_{G_s^{pub}} B)$，并且假设不遵守挖矿协议的节点占比最多只有 $1/2 - \delta$。
 
 Fix $t_0$ and $B$, and let $\tau(t_0)$ be the first time after $t_0$ where an honest block $\hat{B}$ was published such that $\hat{B}$ is an Hourglass block and will forever remain so:
 
+将 $t_0$ 和 $B$ 固定，并且假设 $t_0$ 之后符合下面条件的一个诚实区块 $\hat{B}$ 被发布——该区块是 $t_0$ 之后首个被发布的诚实的沙漏区块，并且之后也将一直保持为沙漏区块。我们将该区块的发布时间记为 $\tau(t_0)$：
+
+$$
+\tau(t_0) := min \{ u \geq t_0 : \exists \hat{B} \in G_u^{pub} \text{ such that } \hat{B} \in \cap_{r \geq s}Hourglass(G_r^{pub}) \} \hspace{1cm} (2)
+$$
+
+$\tau(t_0)$ is a random variable. By Lemma 9 it has finite expectation. In particular, $\lim\limits_{t_1 \to \infty} \Pr(\tau(t_0) > t_1) = 0$ (e.g., by Markov’s Inequality).
+
+$\tau(t_0)$ 是一个随机变量。根据定理9，它的期望是有限的。特别是，$\lim\limits_{t_1 \to \infty} \Pr(\tau(t_0) > t_1) = 0$ （比如，根据马尔可夫不等式）。
+
+Assume that such a $\tau(t_0)$ arrives, i.e., that a block $\hat{B}$ is created and remains permanently an Hourglass block. Then, by Lemma 8, the order between all blocks in $past(\hat{B})$ never changes, and in particular the order between $B$ and any other block $C$ never changes. Thus, $Risk(B, \tau(t_0)) = 0$. Therefore, $\lim\limits_{t_1 \to \infty} \Pr(\tau(t_0) > t_1) = 0$ implies $\lim\limits_{t_1 \to \infty} Risk(B, t_1) = 0$. $\hspace{5mm}\square$
+
+假设这样的一个 $\tau(t_0)$ 出现了，也就是有一个区块 $\hat{B}$ 被创建并且永远保持为一个沙漏区块。接着，根据引理8，$past(\hat{B})$ 里面所有区块之前的顺序都永不改变，并且尤其是 $B$ 和其它任意一个区块 $C$ 之间的顺序都永不改变。于是，$Risk(B, \tau(t_0) = 0$。因此，$\lim\limits_{t_1 \to \infty} \Pr(\tau(t_0) > t_1) = 0$ 意味着 $\lim\limits_{t_1 \to \infty} Risk(B, t_1) = 0$。 $\hspace{5mm}\square$
 
