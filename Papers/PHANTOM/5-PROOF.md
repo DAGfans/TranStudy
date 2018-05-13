@@ -102,4 +102,4 @@ Assume that such a $\tau(t_0)$ arrives, i.e., that a block $\hat{B}$ is created 
 
 3) The score of $\hat{B}$'s chain is forever higher than the score of any chain that does not pass through $\hat{B}$: $\forall s \geq u, \forall C_1, C_2 \in tips(G_s^{pub}): score(C_1) \geq score(C_2) \Longrightarrow \hat{B} \in Chn(past(C_1))$.
 
-3）$\hat{B}$ 的链的得分永远比任意一条不穿过 $\hat{B}$ 的链的得分高：$\forall s \geq u, \forall C_1, C_2 \in tips(G_s^{pub}): score(C_1) \geq score(C_2) \Longrightarrow \hat{B} \in Chn(past(C_1))$。（译注：感觉这里的数学符号表达并不严谨，因为有可能 $Chn(past(C_1))$ 和 $Chn(past(C_2))$ 都不包含 $\hat{B}$。）
+3）$\hat{B}$ 的链的得分永远比任意一条不穿过 $\hat{B}$ 的链的得分高：$\forall s \geq u, \forall C_1, C_2 \in tips(G_s^{pub}): score(C_1) \geq score(C_2) \Longrightarrow \hat{B} \in Chn(past(C_1))$。（译注：感觉这里的数学符号表达并不严谨，因为有可能 $Chn(past(C_1))$ 和 $Chn(past(C_2))$ 都不包含 $\hat{B}$。但我并不确定。可能需要详细理解下文断言3的证明。）
