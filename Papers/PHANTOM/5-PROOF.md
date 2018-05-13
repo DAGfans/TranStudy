@@ -80,3 +80,26 @@ Assume that such a $\tau(t_0)$ arrives, i.e., that a block $\hat{B}$ is created 
 
 假设这样的一个 $\tau(t_0)$ 出现了，也就是有一个区块 $\hat{B}$ 被创建并且永远保持为一个沙漏区块。接着，根据引理8，$past(\hat{B})$ 里面所有区块之前的顺序都永不改变，并且尤其是 $B$ 和其它任意一个区块 $C$ 之间的顺序都永不改变。于是，$Risk(B, \tau(t_0) = 0$。因此，$\lim\limits_{t_1 \to \infty} \Pr(\tau(t_0) > t_1) = 0$ 意味着 $\lim\limits_{t_1 \to \infty} Risk(B, t_1) = 0$。 $\hspace{5mm}\square$
 
+**Lemma 9.** *Let $t_0 \geq 0$. The expected waiting time for $\tau(t_0)$ (defined in (2)) is finite, and moreover is upper bounded by a constant that does not depend on $t_0$.*
+
+**引理9：** *假设 $t_0 \geq 0$。$\tau(t_0)$ 的期望等待时间（在（2）中定义）是有限的，并且其上限是一个不依赖 $t_0$ 的常数。*
+
+*Proof.* Let $\varepsilon(t_0)$ denote the event defined by the following conditions:
+
+*证明：* 将 $\varepsilon(t_0)$ 记为满足下列条件的事件：
+
+1) Some block $\hat{B}$ was created at some time $u > t_0$ by an honest node (i.e., $\hat{B} \in G_u^{pub}$) and apart from $\hat{B}$ no other block was created in the time interval $[u - D, u + D]$. ^13
+
+1）某个区块 $\hat{B}$ 在某个时刻 $u > t_0$ 被一个诚实节点所创建（即 $\hat{B} \in G_u^{pub}$）并且除了 $\hat{B}$ 以外在时间区间 $[u - D, u + D]$ 以内没有其它区块被创建。 ^13
+
+^13 We cannot assume, however, that no block was published during this interval, because the attacker might decide to publish during this interval blocks that he created earlier.
+
+^13 然而，我们不能假设在此区间内没有区块被发布，因为攻击者可能会决定在此区间内发布他早前创建的区块。
+
+2) For some $T_1$, the $k$ last blocks in $BLUE_k(past(\hat{B}))$, denoted $LAST_k(past(\hat{B}))$, was created in the time interval $[u - T_1, u]$, and dishonest miners created no blocks in this time interval.
+
+2）对某个时间长度 $T_1$ 来说，$BLUE_k(past(\hat{B}))$ 的最后 $k$ 个区块，记为 $LAST_k(past(\hat{B}))$，是在时间区间 $[u - T_1], u]$ 内被创建的，并且在此时间区间内作弊矿工没有创建区块。
+
+3) The score of $\hat{B}$'s chain is forever higher than the score of any chain that does not pass through $\hat{B}$: $\forall s \geq u, \forall C_1, C_2 \in tips(G_s^{pub}): score(C_1) \geq score(C_2) \Longrightarrow \hat{B} \in Chn(past(C_1))$.
+
+3）$\hat{B}$ 的链的得分永远比任意一条不穿过 $\hat{B}$ 的链的得分高：$\forall s \geq u, \forall C_1, C_2 \in tips(G_s^{pub}): score(C_1) \geq score(C_2) \Longrightarrow \hat{B} \in Chn(past(C_1))$。（译注：感觉这里的数学符号表达并不严谨，因为有可能 $Chn(past(C_1))$ 和 $Chn(past(C_2))$ 都不包含 $\hat{B}$。）
