@@ -22,7 +22,7 @@ Our proof relies on the following lemma, which states that if some block B has t
 
 **引理7：** *如果对于某个 $\hat{B} \in G$, $BLUE_k(G) \cap anticone(\hat{B}) = \emptyset$, 那么 $\forall B \in past(\hat{B}) \cap BLUE_k(G)$ 并且 $\forall C \notin past(\hat{B})$, $B \prec_G C$. 我们写作 $\hat{B} \in Hourglass(G)$.* （译注：Hourglass 在英文中的意思即是“沙漏”。根据该引理，$G$ 的蓝色区块一定在 $\hat{B}$ 的过去集、将来集和 $\hat{B}$ 自身当中。具体原因见下面引理7的证明部分。因此所有的蓝色区块组成的形状就像一个沙漏，而 $\hat{B}\$ 就是沙漏中间直径最小的两头相连的孔径。故将 $\hat{B}$ 称为沙漏区块。引理7换句话说，即沙漏区块的过去集里的蓝色区块在排序时一定在沙漏区块过去集以外的区块之前。）
 
-![phantom_figure_4](https://user-images.githubusercontent.com/10098144/39358889-bb480462-4a52-11e8-9fa0-d02a2bcaa981.jpeg)
+![phantom_figure_4](https://user-images.githubusercontent.com/10098144/40277558-9f37438a-5c5b-11e8-851e-4a81bed989d3.png)
 
 **Fig. 4:** An example of a DAG with an Hourglass block $K$. Here, the delay parameter is $k = 3$. As in Figure 3, the small circle near each block represents its score. The colouring of the DAG was done according to Algorithm 1. The greedily selected chain of blocks of highest score is marked with light-blue filling (note that this chain is not the longest one). Block $K$ has the property that all blue blocks are either in $K$’s past or in its future (in addition to $K$ itself). It is thus an Hourglass block.
 
