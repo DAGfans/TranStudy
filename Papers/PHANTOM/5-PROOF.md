@@ -103,3 +103,15 @@ Assume that such a $\tau(t_0)$ arrives, i.e., that a block $\hat{B}$ is created 
 3\) The score of $\hat{B}$'s chain is forever higher than the score of any chain that does not pass through $\hat{B}$: $\forall s \geq u, \forall C_1, C_2 \in tips(G_s^{pub}): score(C_1) \geq score(C_2) \Longrightarrow \hat{B} \in Chn(past(C_1))$.
 
 3\) $\hat{B}$ 的链的得分永远比任意一条不穿过 $\hat{B}$ 的链的得分高：$\forall s \geq u, \forall C_1, C_2 \in tips(G_s^{pub}): score(C_1) \geq score(C_2) \Longrightarrow \hat{B} \in Chn(past(C_1))$。（译注：感觉这里的数学符号表达并不严谨，因为有可能 $Chn(past(C_1))$ 和 $Chn(past(C_2))$ 都不包含 $\hat{B}$。但我并不确定。可能需要详细理解下文断言3的证明。）
+
+Claim 2 and 4 together imply the required result.
+
+由断言2和4可共同推导出所需的结果（即引理9）。
+
+The following claim states that the first two conditions in the above definition guarantee that as long as $\hat{B}$ is blue no block in its anticone is blue:
+
+下面的断言表示，上面定义中的前两个条件保证了只要 $\hat{B}$ 是蓝色的，它的反锥体中就没有区块是蓝色的：
+
+**Claim 1.** *Assume that for some block $\hat{B}$ the first two conditions in the definition of $\varepsilon(t_0)$ hold true. Then, as long as $\hat{B}$ is blue, all blue blocks have $\hat{B}$ in their past: $\forall s \geq u, \forall B \in anticone(\hat{B}) : B \notin BLUE_k(G_s^{pub}) \lor \hat{B} \notin BLUE_k(G_s^{pub})$.
+
+**断言1：** *假设某个区块 $\hat{B}$ 满足 $\varepsilon(t_0)$ 定义中的前两个条件。那么，只要 $\hat{B}$ 是蓝色的，所有蓝色区块的过去集都会包含 $\hat{B}$：$\forall s \geq u, \forall B \in anticone(\hat{B}) : B \notin BLUE_k(G_s^{pub}) \lor \hat{B} \notin BLUE_k(G_s^{pub})$。*
