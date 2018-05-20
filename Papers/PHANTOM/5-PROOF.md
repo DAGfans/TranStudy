@@ -112,6 +112,6 @@ The following claim states that the first two conditions in the above definition
 
 下面的断言表示，上面定义中的前两个条件保证了只要 $\hat{B}$ 是蓝色的，它的反锥体中就没有区块是蓝色的：
 
-**Claim 1.** *Assume that for some block $\hat{B}$ the first two conditions in the definition of $\varepsilon(t_0)$ hold true. Then, as long as $\hat{B}$ is blue, all blue blocks have $\hat{B}$ in their past: $\forall s \geq u, \forall B \in anticone(\hat{B}) : B \notin BLUE_k(G_s^{pub}) \lor \hat{B} \notin BLUE_k(G_s^{pub})$.
+**Claim 1.** *Assume that for some block $\hat{B}$ the first two conditions in the definition of $\varepsilon(t_0)$ hold true. Then, as long as $\hat{B}$ is blue, all blue blocks have $\hat{B}$ in their past: $\forall s \geq u, \forall B \in anticone(\hat{B}) : B \notin BLUE_k(G_s^{pub}) \lor \hat{B} \notin BLUE_k(G_s^{pub})$.*
 
 **断言1：** *假设某个区块 $\hat{B}$ 满足 $\varepsilon(t_0)$ 定义中的前两个条件。那么，只要 $\hat{B}$ 是蓝色的，所有蓝色区块的过去集都会包含 $\hat{B}$：$\forall s \geq u, \forall B \in anticone(\hat{B}) : B \notin BLUE_k(G_s^{pub}) \lor \hat{B} \notin BLUE_k(G_s^{pub})$。*
