@@ -28,6 +28,8 @@ Our proof relies on the following lemma, which states that if some block B has t
 
 **图4：** 含有一个沙漏区块 $K$ 的 DAG 的例子。在这里，延迟参数是 $k = 3$。和图3一样，每个区块旁边的小圆圈代表它的得分。我们依据算法1对 DAG 着色。由贪婪算法选出的最高得分的区块组成的链被标为浅蓝填充色（注意这条链并不是最长的链）。区块 $K$ 具有这样的性质：所有的蓝色区块要么在 $K$ 的过去集中，要么在其将来集中（除了 $K$ 自己）。因此它是一个沙漏区块。
 
+译注：在图4里，区块 M 的得分是9；然而我们看到在 M 的过去集中却只有8个区块（即创世区块、B、C、D、F、I、J 和 K）被标注为蓝色。这并不是图有误。实际上当我们描述一个区块是否蓝色的时候，必须要先假设现在是站在哪个区块的视角来回答这个问题。回顾一下文章第2节中的步骤1和图3所描述的蓝色区块的选择算法。图4所标注的蓝色区块集记为 $BLUE_k(G)$，这等同于图中添加一个不存在的区块 V，然后让 M、R、U 作为 V 的父亲，最后从 V 的视角进行红蓝标注的结果。**每个区块的得分是在该区块刚发布连入图的时候，从该区块本身的视角进行红蓝标注之后，该区块过去集中蓝色区块的数量。文章对于这一点并没有描述得很清楚，这是译者在 DAGlabs 的 Slack 频道讨论后得知的结果。原话是：“Aviv & Yonatan 's algorithm is an iteration procedure, when you check $M$ you must stand on $M$'s viewpoint, that means $L$ is also blue on $M$'s viewpoint. Same for $H, N, Q, S, T, U$.”。**从图4的拓扑结构，我们可以推断，当 M 发布的时候，图中只有 L 和 K 两个末端区块（tip），E 的孩子和 K 的孩子都还没发布出来（注意区块发布的时候一定会连接图里面所有的末端区块）。这个时候，从 M 的角度看，L 是蓝色的，于是 M 的过去集中的蓝色区块就包括了创世区块、B、C、D、F、I、J、K 和 L 九个区块。因此 M 的得分为9。
+
 In Figure 4 we provide an example of an Hourglass block. The proof of this lemma is straightforward from the operation of Algorithm 2:
 
 在图4中我们给出了沙漏区块的一个例子。通过算法2的操作可以直接证明该引理：
