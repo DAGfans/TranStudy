@@ -28,7 +28,7 @@ In the context of distributed ledgers, a blockDAG is a DAG whose vertices repres
 
 There are many barriers to blockchain scalability, including processing speeds, disk I/O, RAM, bandwidth, and syncing new nodes. While these limitations can be addressed with improved hardware and technology, a major barrier exists on the protocol level: the orphan rate. Orphans are blocks that are created outside the longest chain due to unavoidable network propagation delays.
 
-有许多因素制约着区块链的可扩展性，包括处理速度、磁盘 I/O、RAM、带宽，以及新节点的同步（译注：这里应该是指网络扩容的时候发现新节点）。虽说可以通过改善硬件和技术来突破这些限制，但一个最主要的瓶颈是在协议层面：孤儿率。孤儿是指由于不可避免的网络延迟而在最长链以外创建的区块。
+有许多因素制约着区块链的可扩展性，包括处理速度、磁盘 I/O、RAM、带宽，以及新节点的同步（译注：即新节点刚加入网络时将整条区块链下载同步到自己本地的过程）。虽说可以通过改善硬件和技术来突破这些限制，但一个最主要的瓶颈是在协议层面：孤儿率。孤儿是指由于不可避免的网络延迟而在最长链以外创建的区块。
 
 Accelerating block creation and/or increasing block sizes increases the orphan rate: by the time a new block propagates throughout the network, other new blocks which do not reference it are likely to be created. It is well established that a high orphan rate amounts to compromised security; the more honest blocks that end up outside the longest chain due to spontaneous forks, the less secure is the chain. ^1
 
