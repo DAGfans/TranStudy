@@ -32,4 +32,8 @@ There are many barriers to blockchain scalability, including processing speeds, 
 
 Accelerating block creation and/or increasing block sizes increases the orphan rate: by the time a new block propagates throughout the network, other new blocks which do not reference it are likely to be created. It is well established that a high orphan rate amounts to compromised security; the more honest blocks that end up outside the longest chain due to spontaneous forks, the less secure is the chain. ^1
 
-加快区块创建速度以及／或者增大区块大小会增大孤儿率：在一个新区块传播遍网络之前，很可能会有其它新的不引用它的区块被创建出来。孤儿率增大会导致安全性降低，这是公认的；如果有越多的诚实区块因为
+加快区块创建速度以及／或者增大区块大小会增大孤儿率：在一个新区块传播遍网络之前，很可能会有其它新的不引用它的区块被创建出来。孤儿率增大会导致安全性降低，这是公认的；如果有越多的诚实区块因为自然分叉的原因导致自己不在最长链中，那么这条链就越不安全。^1 （译注：这里的自然分叉是指由于协议本身的特性和网络延迟导致的分叉，而非攻击导致的分叉。在最长链规则下，分叉越多，攻击者为了使自己成为最长链而需要的算力就越小，因此最长链就越不安全。比如在有三条分叉的情况下，攻击者只需超过全网三分之一的算力即可攻占最长链。因此从协议本身的角度来讲，自然分叉越少越好。）
+
+Blockchain protocols typically impose a maximum block size and constant block creation rate to accommodate the network propagation and minimize orphans. This artificial limit of transaction throughput and lower bound on latency (in Bitcoin’s case, to 3–7 transactions per second and tens of minutes confirmation times) is a hard pill for blockchains to swallow — while it impedes on-chain scaling, it guarantees that spontaneous forks and orphans are rare and, therefore, that the main chain is secure. DAG protocols, however, may deal with orphans in other ways.
+
+区块链协议一般会规定一个最大区块大小和一个常数的出块率从而应对网络延时并且将孤儿的数量降到最低。这种对交易吞吐量和等待时间下限的人工限制（在比特币的情况下，这个限制是每秒3至7个交易和数十分钟的确认时间）对区块链来说是一副苦药丸——它阻止了链上扩容，但保证了自然分叉和孤儿极少出现，因此主链是安全的。然而 DAG 可以通过其它方式处理孤儿问题。
