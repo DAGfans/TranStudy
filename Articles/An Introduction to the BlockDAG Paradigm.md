@@ -37,3 +37,25 @@ Accelerating block creation and/or increasing block sizes increases the orphan r
 Blockchain protocols typically impose a maximum block size and constant block creation rate to accommodate the network propagation and minimize orphans. This artificial limit of transaction throughput and lower bound on latency (in Bitcoin’s case, to 3–7 transactions per second and tens of minutes confirmation times) is a hard pill for blockchains to swallow — while it impedes on-chain scaling, it guarantees that spontaneous forks and orphans are rare and, therefore, that the main chain is secure. DAG protocols, however, may deal with orphans in other ways.
 
 区块链协议一般会规定一个最大区块大小和一个常数的出块率从而应对网络延时并且将孤儿的数量降到最低。这种对交易吞吐量和等待时间下限的人工限制（在比特币的情况下，这个限制是每秒3至7个交易和数十分钟的确认时间）对区块链来说是一副苦药丸——它阻止了链上扩容，但保证了自然分叉和孤儿极少出现，因此主链是安全的。然而 DAG 可以通过其它方式处理孤儿问题。
+
+##### The blockDAG paradigm
+
+##### blockDAG 范式
+
+The notion of a fork is organically absorbed in the DAG framework, so it seems worthwhile to consider if a DAG could do better than the chain/linked list structure of blockchains. Accordingly, with Satoshi’s proof-of-work system as the starting point, we need to make one change to the mining protocol in order to yield a blockDAG: blocks may reference multiple predecessors instead of a single parent. A canonical way to extend the ledger is to have blocks reference all tips of the graph (that their miners observe locally) instead of referencing the tip of the single longest chain, as in Satoshi’s original protocol.
+
+DAG 框架有机地吸收了分叉这一概念，所以看上去 DAG 是否可以比链式／链表结构的区块链做得更好这件事情是值得我们考虑的。于是，以中本聪的工作量证明系统为基础，为了生成一个 blockDAG，我们需要对挖矿协议做出一个改变：区块可以引用多个父辈，而非一个单一的父亲。一种典型的扩展账本的方式是让区块引用（产生区块的挖矿者在本地能看到的）图中的所有末端，而非依照中本聪的原始协议只引用最长链的末端。
+
+![blockDAG](https://cdn-images-1.medium.com/max/2000/1*YJgJTzHlnrXrDU_ddsWtAA.png)
+
+In a canonical blockDAG ledger, new blocks reference all tips of the graph (blocks that have not yet been referenced) that their miners see locally. As in a blockchain, blocks are published immediately.
+
+在一个典型的 blockDAG 账本中，新区块引用它们的挖矿者在本地看到的图中的所有末端（即还未被引用的区块）。和在区块链中一样，区块会被立即发布。
+
+However, unlike a blockchain which, by construction, preserves consistency (every block in the chain adds transactions that are consistent with its predecessors in the chain), a blockDAG incorporates blocks from different “branches” and so may contain many conflicting transactions. Because of this, a DAG, or blockDAG, cannot be considered a “solution” or “novel approach” or “new protocol” in and of itself. Instead, a blockDAG is a framework for devising consensus protocols that may (or may not) be as secure as and more scalable than chain-based protocols.²
+
+然而，和区块链不同的是，区块链在构建时会一直维护着一致性（链中的每个区块添加的交易都与链中的父辈一致），而 blockDAG 包含了来自不同“分支”的区块，所以可能包含许多冲突交易。因此，DAG 或是 blockDAG 本身并不能被认为是一个“解决方案”或是“新方法“或是”新协议“。blockDAG 只是一个用来设计比链式协议扩展性更高的共识协议的框架，而所设计出的协议可能（也可能不）具有链式协议同等的安全性。
+
+We therefore need a method to recover consistency; in other words, a blockDAG system requires replacing Satoshi’s longest chain rule with a new consensus protocol.
+
+因此我们需要一种方法来恢复一致性；换句话说，一个 blockDAG 系统需要用一个新的共识协议来取代中本聪的最长链规则。
