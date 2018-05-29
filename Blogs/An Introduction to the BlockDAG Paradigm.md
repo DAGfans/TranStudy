@@ -68,6 +68,8 @@ Observe that if a distributed system achieves consensus on the order of all even
 
 如果一个分布式系统对系统中所有事件的顺序达成共识，我们就可以很容易地将这个共识扩展到状态的共识——只需要简单地按照达成共识的顺序遍历所有交易，并且接受那些与已经被接受的交易一致的交易。这种方法在构建区块链的过程中就一致维护着一致性。
 
+译注：注意作者在这里用的词是 accept，即“接受”。这个词容易与 confirm 即“确认”混淆。交易被接受不代表交易被确认。即便系统在某个时刻对交易排序达成共识，随着时间的推移，新交易的加入，这个排序可能会发生改变。系统可能会否定旧排序，转而对新排序达成共识。只有当排序不会随着时间推移而变化，交易才算是被“确认”。
+
 We are left with the task of defining an ordering protocol on all events in the system — in our context, on all blocks in the DAG — in a way that will be agreed upon, eventually, by all nodes.
 
 我们现在要做的就是为系统中的所有事件——在我们的上下文中，就是 DAG 中的所有区块——定义一个排序协议。所有节点都会遵从这个协议从而在区块顺序上最重达成共识。
@@ -79,3 +81,31 @@ DAG 的自然拓扑本身就已经为区块引入了偏序排序：若在 DAG �
 This paradigm began with the blockDAG-based protocols developed out of the Hebrew University ([Inclusive](http://www.cs.huji.ac.il/~yoni_sompo/pubs/15/inclusive_full.pdf), [SPECTRE](http://www.cs.huji.ac.il/~yoni_sompo/pubs/17/SPECTRE.pdf), and [PHANTOM](https://eprint.iacr.org/2018/104.pdf)); these protocols each define an algorithm that outputs an order over the DAG’s blocks, iterates the DAG by that order, and eliminates transactions that conflict with previous ones. (Actually, SPECTRE does something slightly weaker, but that’s a topic for a separate blog post.)
 
 这种范式起源于耶路撒冷希伯来大学开发的基于 blockDAG 的协议（[Inclusive](http://www.cs.huji.ac.il/~yoni_sompo/pubs/15/inclusive_full.pdf)、[SPECTRE](http://www.cs.huji.ac.il/~yoni_sompo/pubs/17/SPECTRE.pdf)，和 [PHANTOM](https://eprint.iacr.org/2018/104.pdf)）；这些协议分别定义了自己的算法，每个算法都对 DAG 中的区块进行排序，并按顺序遍历 DAG，消除与已经被遍历过的交易相冲突的交易。（实际上，SPECTRE 做的事情弱一些，不过这需要另写一篇单独的博文来论述。）
+
+#### Advantages of blockDAGs
+
+#### blockDAG 的优势
+
+BlockDAG protocols such as SPECTRE and PHANTOM circumvent the problems associated with high orphan rates. This comes with many advantages:
+
+SPECTRE 和 PHANTOM 这样的 BlockDAG 协议规避了与高孤儿率相关联的问题。这就带来了很多好处：
+
+1\. It allows for confirmation times on the order of seconds, at least when there are visible double-spends and conflicts
+
+1\. 确认时间可以以秒计算，至少是在有可见的双花和冲突交易时
+
+2\. It allows for a large transaction throughput, limited only by the network backbone and endpoints’ capacity; as a derivative, it implies low fees
+
+2\. 交易吞吐量可以变得很大，只受限于网络条件和终端能力；这样衍生出的好处是手续费会降低
+
+3\. It contributes to mining decentralization by allowing for roughly 100,000 blocks per day, which reduces the incentive to join a mining pool
+
+3\. 因为每天可以创建大约 100,000 个区块，所以矿工加入矿池的动机也会变弱，这进一步促成了挖矿去中心化
+
+4\. It avoids the risk of orphaning, which comes with many additional benefits (such as Layer Two compatibility)
+
+4\. 规避了孤儿的风险，从而带来很多额外好处（比如
+
+5\. It eliminates selfish mining by rewarding all blocks without discriminating between on-chain and off-chain blocks
+
+We will expand on each of these points and how SPECTRE and PHANTOM achieve them in future blog posts.
