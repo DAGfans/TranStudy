@@ -1,16 +1,16 @@
 原文：[https://blog.daglabs.com/an-introduction-to-the-blockdag-paradigm-50027f44facb](https://blog.daglabs.com/an-introduction-to-the-blockdag-paradigm-50027f44facb)
 
-#### An Introduction to the BlockDAG Paradigm
+## An Introduction to the BlockDAG Paradigm
 
-#### BlockDAG 范式入门
+## BlockDAG 范式入门
 
 *Contrary to popular belief, using a DAG (directed acyclic graph) as a distributed ledger is not about removing proof-of-work mining, blocks, or transaction fees. It is about leveraging the structural properties of DAGs to potentially solve blockchain’s orphan rate problem. The ability of a DAG to withstand this problem and thus improve on scalability is contingent on the additional rules implemented to deal with transaction consistency, and any other design choices made.*
 
 *与大众的普遍观点相反，将 DAG（有向无环图）用作分布式账本并不会消除工作量证明式的挖矿，也不会消除区块和交易手续费。它的目的是利用 DAG 的结构特性帮助解决区块链的孤儿率问题。DAG 解决这个问题并且改进可扩展性的能力取决于为了处理交易一致性而实现的额外规则，以及其它设计上所作的选择。*
 
-##### Directed acyclic graphs
+### Directed acyclic graphs
 
-##### 有向无环图
+### 有向无环图
 
 A DAG is not a novel concept or technology, and it is definitely not a consensus mechanism; it is purely a mathematical structure originating from centuries ago. Technically, a DAG is a graph with directed edges and no cycles (i.e., there is no path from a vertex back to itself).
 
@@ -22,9 +22,9 @@ In the context of distributed ledgers, a blockDAG is a DAG whose vertices repres
 
 在分布式账本的环境中，blockDAG 一种有特殊含义的 DAG。在这种 DAG 中，顶点代表区块，边代表区块对它们父辈的引用。显然，在 blockDAG 中，区块可能有多个父辈，而不是只有一个；下文会对此进行详细描述。首先，让我们回顾一下孤儿率问题。
 
-##### Blockchain’s orphan rate problem
+### Blockchain’s orphan rate problem
 
-##### 区块链的孤儿率问题
+### 区块链的孤儿率问题
 
 There are many barriers to blockchain scalability, including processing speeds, disk I/O, RAM, bandwidth, and syncing new nodes. While these limitations can be addressed with improved hardware and technology, a major barrier exists on the protocol level: the orphan rate. Orphans are blocks that are created outside the longest chain due to unavoidable network propagation delays.
 
@@ -38,9 +38,9 @@ Blockchain protocols typically impose a maximum block size and constant block cr
 
 区块链协议一般会规定一个最大区块大小和一个常数的出块率从而应对网络延时并且将孤儿的数量降到最低。这种对交易吞吐量和等待时间下限的人工限制（在比特币的情况下，这个限制是每秒3至7个交易和数十分钟的确认时间）对区块链来说是一副苦药丸——它阻止了链上扩容，但保证了自然分叉和孤儿极少出现，因此主链是安全的。然而 DAG 可以通过其它方式处理孤儿问题。
 
-##### The blockDAG paradigm
+### The blockDAG paradigm
 
-##### blockDAG 范式
+### blockDAG 范式
 
 The notion of a fork is organically absorbed in the DAG framework, so it seems worthwhile to consider if a DAG could do better than the chain/linked list structure of blockchains. Accordingly, with Satoshi’s proof-of-work system as the starting point, we need to make one change to the mining protocol in order to yield a blockDAG: blocks may reference multiple predecessors instead of a single parent. A canonical way to extend the ledger is to have blocks reference all tips of the graph (that their miners observe locally) instead of referencing the tip of the single longest chain, as in Satoshi’s original protocol.
 
@@ -59,3 +59,23 @@ However, unlike a blockchain which, by construction, preserves consistency (ever
 We therefore need a method to recover consistency; in other words, a blockDAG system requires replacing Satoshi’s longest chain rule with a new consensus protocol.
 
 因此我们需要一种方法来恢复一致性；换句话说，一个 blockDAG 系统需要用一个新的共识协议来取代中本聪的最长链规则。
+
+#### Consensus via ordering
+
+#### 通过排序达成共识
+
+Observe that if a distributed system achieves consensus on the order of all events in it, then we can easily extend this agreement to achieve consensus on the state — we simply iterate over all transactions according to the agreed order, and accept each transaction that is consistent with those accepted so far. This method preserves consistency by construction.
+
+如果一个分布式系统对系统中所有事件的顺序达成共识，我们就可以很容易地将这个共识扩展到状态的共识——只需要简单地按照达成共识的顺序遍历所有交易，并且接受那些与已经被接受的交易一致的交易。这种方法在构建区块链的过程中就一致维护着一致性。
+
+We are left with the task of defining an ordering protocol on all events in the system — in our context, on all blocks in the DAG — in a way that will be agreed upon, eventually, by all nodes.
+
+我们现在要做的就是为系统中的所有事件——在我们的上下文中，就是 DAG 中的所有区块——定义一个排序协议。所有节点都会遵从这个协议从而在区块顺序上最重达成共识。
+
+The natural topology of a DAG already induces a partial ordering over the blocks: if there is a path from block X to block Y in the DAG, then block Y was provably created before block X and so should precede X in the global order, and vice versa. Thus, we only need to define an order over blocks created in parallel, i.e. any set of blocks such that there is no path that connects them.
+
+DAG 的自然拓扑本身就已经为区块引入了偏序排序：若在 DAG 中有一条路径从区块 X 到区块 Y，即可证明区块 Y 是在区块 X 之前被创建的，因此在全局排序中应该排在 X 前面，反之亦然。因此，我们只需要为并行创建的区块，也就是相互之间没有路径相连的区块所组成的集定义一种顺序。
+
+This paradigm began with the blockDAG-based protocols developed out of the Hebrew University ([Inclusive](http://www.cs.huji.ac.il/~yoni_sompo/pubs/15/inclusive_full.pdf), [SPECTRE](http://www.cs.huji.ac.il/~yoni_sompo/pubs/17/SPECTRE.pdf), and [PHANTOM](https://eprint.iacr.org/2018/104.pdf)); these protocols each define an algorithm that outputs an order over the DAG’s blocks, iterates the DAG by that order, and eliminates transactions that conflict with previous ones. (Actually, SPECTRE does something slightly weaker, but that’s a topic for a separate blog post.)
+
+这种范式起源于耶路撒冷希伯来大学开发的基于 blockDAG 的协议（[Inclusive](http://www.cs.huji.ac.il/~yoni_sompo/pubs/15/inclusive_full.pdf)、[SPECTRE](http://www.cs.huji.ac.il/~yoni_sompo/pubs/17/SPECTRE.pdf)，和 [PHANTOM](https://eprint.iacr.org/2018/104.pdf)）；这些协议分别定义了自己的算法，每个算法都对 DAG 中的区块进行排序，并按顺序遍历 DAG，消除与已经被遍历过的交易相冲突的交易。（实际上，SPECTRE 做的事情弱一些，不过这需要另写一篇单独的博文来论述。）
