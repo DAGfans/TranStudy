@@ -104,8 +104,20 @@ SPECTRE 和 PHANTOM 这样的 BlockDAG 协议规避了与高孤块率相关联�
 
 4\. It avoids the risk of orphaning, which comes with many additional benefits (such as Layer Two compatibility)
 
-4\. 规避了孤块的风险，从而带来很多额外好处（比如
+4\. 规避了孤块的风险，从而带来很多额外好处（比如与第二层兼容）（译注：第二层是指侧链或链下的解决方案，即在主链之上，新建一层辅助的平台和协议。比如[闪电网络](https://lightning.network/)，具体可参考《[区块链水平扩展：第二层网络](https://www.jianshu.com/p/8b5327c6d273)》。）
 
 5\. It eliminates selfish mining by rewarding all blocks without discriminating between on-chain and off-chain blocks
 
+5\. 通过奖励所有区块，消除链上和链下区块的差别，从而消除自私的挖矿行为
+
 We will expand on each of these points and how SPECTRE and PHANTOM achieve them in future blog posts.
+
+我们会在未来的博客文章里对上面的每一点进行具体论述，并讲述 SPECTRE 和 PHANTOM 是如何做到上面这几点的。
+
+#### BlockDAGs vs. blockless DAGs
+
+#### BlockDAG vs. 无区块 DAG
+
+Almost every single DAG-based cryptocurrency on the market (IOTA, Byteball, Nano, etc.) has deviated from Satoshi’s blockchain paradigm, not only by using the DAG structure, but also in economic design: some have relegated mining to their users, some have eliminated proof-of-work mining altogether, many have no transaction fees, and practically all have no blocks, chaining together individual transactions. These design decisions may work in a DAG system, but they are characteristics independent of DAGs. In fact, these projects’ use of a DAG is probably their least defining characteristic.
+
+市场上几乎每种基于 DAG 的加密货币（IOTA、字节雪球、Nano，等等）都偏离了中本聪的区块链范式。这种偏离不仅体现在使用 DAG 结构上，还体现在经济学层面的设计上：有的将挖矿委托给用户，有的完全去除了工作量证明挖矿，许多货币没有交易手续费，
