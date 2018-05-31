@@ -12,7 +12,7 @@ We now turn to prove that the order converges, and that an attacker (with less t
 
 **Theorem 5**  (PHANTOM scales). *Given a block creation rate $\lambda > 0, \delta > 0$, and $D_{max} > 0$, if $D_{max}$ is equal to or greater than the network’s propagation delay diameter $D$, then the security threshold of PHANTOM, parameterized with $k(D_{max} , \delta)$, is at least $1/2 \cdot (1-\delta )$.*
 
-**定理5** (PHANTOM 可扩展) *给定区块创建率 $\lambda > 0, \delta > 0$ 且 $D_{max} > 0$ ，如果 $D_{max}$ 大于或等于网络的传播延迟直径 $D$，则作为 $k(D_{max} , \delta)$ 参数的 PHANTOM 的安全阈值至少为 $1/2 \cdot (1-\delta )$。*
+**定理5** (PHANTOM 可扩容) *给定区块创建率 $\lambda > 0, \delta > 0$ 且 $D_{max} > 0$ ，如果 $D_{max}$ 大于或等于网络的传播延迟直径 $D$，则作为 $k(D_{max} , \delta)$ 参数的 PHANTOM 的安全阈值至少为 $1/2 \cdot (1-\delta )$。*
 
 Our proof relies on the following lemma, which states that if some block B has the property that its anticone contains no blue blocks, then all blue blocks in its past precede all blocks outside its past. We call this the Hourglass property:
 

@@ -139,9 +139,11 @@ Many suggestions to improve Bitcoin’s scalability have been proposed in recent
 These proposals fall into two categories, on-chain scaling and off-chain scaling. 
 Roughly speaking, the former includes protocols where all valid transactions are those that appear – as in Bitcoin – inside blocks that are organized in some data structure (aka “the ledger”).  
 
-近年来提出了许多改善比特币可扩展性的建议。
+近年来提出了许多改善比特币扩容性的建议。
 这些建议分为两类，即链上扩容和链下扩容。
 粗略地说，前者包括的协议要求所有有效的交易都被组织在被称为账本的数据结构中，如比特币，交易被组织在区块中。
+
+译注：虽然 scalability 一般翻译为“扩展”，但是在区块链术语中，扩容和扩展是两个不同的概念。前者是指增大网络中的交易吞吐量，后者是指在原生网络的基础上定义不同的业务模型。举例来说，比特币的原生网络只能交换比特币这种虚拟货币。原生网络不能做其它的事情。但是有的人希望利用比特币网络进行资产交换。于是就有人开发第二层协议来扩展比特币，比如 [Omni Layer](https://www.omnilayer.org/)、[公证通](https://www.factom.com/)、[彩色币](http://coloredcoins.org/)，以及[闪电网络](https://lightning.network/)。它们都试图在比特币协议上进行扩展，来开展别的业务。但是本文的 scalability 并不是指这种业务层面的扩展，而是指吞吐量扩容。PHANTOM 是和业务无关的协议，也就是说它并不是应用层的协议。有的协议比如闪电网络则既有扩容性又有扩展性。阅读英文资料时务必注意原文的 scalability 指的是底层扩容还是业务扩展。
 
 **On-chain scaling.** The protocols in this category may differ e.g. in how fast blocks are created, how blocks are organized in the ledger (a chain, a tree, a DAG, etc.), which transactions in the ledger are considered valid, and more. 
 PHANTOM belongs to this line of works. 
@@ -153,7 +155,7 @@ The sole purpose of key blocks in Bitcoin NG is to define the miner that is elig
 **链上扩容.** 该类协议分为很多种，例如 在创建块的速度方面，在账本中如何组织块(链，树，DAG等)，账本中的哪些交易被认为是有效的等等。
 PHANTOM属于这一类。
 在这个协议族中，以前的作品包括GHOST [9]，其根据贪婪算法选择块的主链，而不是通过最长链规则;
-Inclusive [5]，其中任何链选择规则被扩展到一个有序的DAG，并且非主链上的交易以一致的方式被添加;
+Inclusive [5]，其中任何链选择规则被扩展到一个有序的 DAG，并且非主链上的交易以一致的方式被添加;
 Bitcoin NG [1]，其中帐本由慢速关键块(不包含交易)和包含交易的快速微块组成。
 Bitcoin NG中关键块的唯一目的是确定有资格在该时期创建微块的矿工，因此确认交易的速度很快。  
 
@@ -191,7 +193,7 @@ One example is Hybrid Consensus [6], improving over [4], which uses the chain to
 Another well known proposed solution in the same category is the Lightning Network [7] (LN), where transactions are processed off-chain over over a network of micro payment channels, and the blockchain is used only for settlement of these channels.
 
 **链下扩容.** 另一种完全不同的方法是使块创建频度降低并且让尺寸变小(因此传播延迟可以忽略不计)，所以这个慢速链不会记录整个经济活动。
-相反，大多数交易发生在链外，具有更好的可扩展性，链本身用于解决冲突或结算交易。
+相反，大多数交易发生在链外，具有更好的扩容性，链本身用于解决冲突或结算交易。
 一个例子是混合共识[6]，对[4]的改进，它使用链选择一个循环的节点委员会，然后运行经典的共识协议来确认相应时期的交易。
 另一个众所周知的同类解决方案是闪电网络 [7]（LN），其中交易是通过微支付通道网络进行离线处理的，区块链仅用于结算这些通道。
 

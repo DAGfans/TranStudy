@@ -240,7 +240,7 @@ The security threshold is the minimal hashing power that the attacker must acqui
 
 A protocol is scalable if it is safe to increase the block creation rate λ without compromising the security, that is, if the security threshold does not deteriorate as λ increases (this can be phrased also in terms of increasing the block size b rather than λ).
 
-如果在不影响安全性的情况下增加区块创建率λ是安全的，则协议是可扩展的，即，如果安全阈值不随着λ增加而变差（这也可以用增加块大小b而不是λ来表示）。
+如果在不影响安全性的情况下增加区块创建率λ是安全的，则协议是可扩容的，即，如果安全阈值不随着λ增加而变差（这也可以用增加块大小b而不是λ来表示）。
 
 
 ## E. Main result
@@ -248,11 +248,11 @@ A protocol is scalable if it is safe to increase the block creation rate λ with
 
 Our goal in this paper is to describe formally the ordering procedure of PHANTOM and to prove that it is scalable in the above sense.
 
-我们在本文中的目标是形式化地描述PHANTOM的排序过程并证明它在上述条件下是可扩展的。
+我们在本文中的目标是形式化地描述PHANTOM的排序过程并证明它在上述条件下是可扩容的。
 
 **Theorem 5**  (PHANTOM scales). Given a block creation rate $\lambda > 0, \delta > 0$, and $D_{max} > 0$, if $D_{max}$ is equal to or greater than the network’s propagation delay diameter $D$, then the security threshold of PHANTOM, parameterized with $k(D_{max} , \delta)$, is at least $1/2 \cdot (1-\delta )$.
 
-**定理5** (PHANTOM可扩展). 给定区块创建率$\lambda > 0, \delta > 0$且$D_{max} > 0$，如果$D_{max}$大于或等于网络的传播延迟直径$D$，则作为$k(D_{max} , \delta)$参数的PHANTOM的安全阈值至少为$1/2 \cdot (1-\delta )$。
+**定理5** (PHANTOM 可扩容). 给定区块创建率$\lambda > 0, \delta > 0$且$D_{max} > 0$，如果$D_{max}$大于或等于网络的传播延迟直径$D$，则作为$k(D_{max} , \delta)$参数的PHANTOM的安全阈值至少为$1/2 \cdot (1-\delta )$。
 
 The parameterization of PHANTOM via $k(D_{max} , δ)$ is deﬁned in the subsequent section (see (1)). 
 Theorem 5 encapsulates the main achievement of our work. 
@@ -266,7 +266,7 @@ PHANTOM通过$k(D_{max} , δ)$的参数化在后面的章节中定义(参见(1))
 
 **Theorem 6** (Bitcoin does not scale). As λ increases, the security threshold of the Bitcoin protocol goes to 0.
 
-**定理6** (比特币不可扩展)。随着λ增加，比特币协议的安全阈值变为0。
+**定理6** (比特币不可扩容)。随着λ增加，比特币协议的安全阈值变为0。
 
 Finally, we note that even if $D_{max} \ngeqslant D$, the system’s security does not immediately break apart. Rather, the minimal power needed to attack the system goes from 50% to 0, deteriorating at a rate that depends on the error gap $D-D_{max}$ .
 

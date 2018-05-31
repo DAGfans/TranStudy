@@ -5,7 +5,7 @@
 
 # 4. SCALABILITY AND NETWORK DELAYS
 
-# 4. 可扩展性和网络延迟
+# 4. 可扩容性和网络延迟
 
 ## A. The propagation delay parameter $D_{max}$
 
@@ -22,7 +22,7 @@ the unknown D is upper bounded by some $D_{max}$ which is known to the protocol.
 does not explicitly encode $D_{max}$, rather, it is parameterized with k which depends on it, as will
 be described in the next subsection.
 
-一个分布式算法的可扩展性与其对底层网络所作的假设——尤其是传播时延D密切相关。D的真实数值是未知的，并且会随着网络条件的时刻变化而改变。因此，比特币假设D远小于10分钟，并将区块的平均生成间隔定为10分钟。虽然这看起来高估了正常条件下的网络传播时延（至少以2018年的因特网来说），但我们必须设置一些安全界限，以应对特殊罕见的网络条件。类似地，在PHANTOM中，虽然D的值未知，但我们假设其上限是$D_{max}$，而这个值对协议来说是已知的。协议并不会显式地对$D_{max}$进行编码，而是用参数k来表示它。也就是说，k的值取决于$D_{max}$。下一小节将会对此进行论述。
+一个分布式算法的可扩容性与其对底层网络所作的假设——尤其是传播时延D密切相关。D的真实数值是未知的，并且会随着网络条件的时刻变化而改变。因此，比特币假设D远小于10分钟，并将区块的平均生成间隔定为10分钟。虽然这看起来高估了正常条件下的网络传播时延（至少以2018年的因特网来说），但我们必须设置一些安全界限，以应对特殊罕见的网络条件。类似地，在PHANTOM中，虽然D的值未知，但我们假设其上限是$D_{max}$，而这个值对协议来说是已知的。协议并不会显式地对$D_{max}$进行编码，而是用参数k来表示它。也就是说，k的值取决于$D_{max}$。下一小节将会对此进行论述。
 
 The use of an *a priori* known bound $D_{max}$ distinguishes PHANTOM’s security model from
 that of SPECTRE [8]. While the security of both protocols depends on the assumption that the
@@ -113,7 +113,7 @@ assumption $D \cdot λ \ll 1$. Therefore, even if we overestimate $D$, we can st
 block creation rates while maintaining the same level of security. Consequently, PHANTOM
 supports a very large throughput, and does not suffer from a security-scalability tradeoff.
 
-我们在4.1节讨论过，一般最好是高估$D$并选择一个较大的$D_{max}$从而确保安全性。（有的基于区块链的项目并不这么做，因此它们的系统在安全阈值方面做了妥协。）回顾一下，比特币的安全性依赖于$D \cdot λ \ll 1$这个假设，也就是说，一个区块被创建之后，极有可能要至少过$D$秒才会有下一个区块被创建，因此分叉极少。因此，比特币的大于$D$的安全边界严重抑制了它的吞吐量，因为它要选择一个很低的区块创建频率$λ = 1 / 600$（每10分钟一个区块）。而PHANTOM的DAG并不是这样，因为DAG排序的安全性并不依赖$D \cdot λ \ll 1$这个假设。因此，即使我们高估了$D$，也依然可以在维持安全等级不变的情况下允许十分高的区块创建频率。所以PHANTOM支持非常大的吞吐量，并且不需要对安全性和可扩展性做出取舍。
+我们在4.1节讨论过，一般最好是高估$D$并选择一个较大的$D_{max}$从而确保安全性。（有的基于区块链的项目并不这么做，因此它们的系统在安全阈值方面做了妥协。）回顾一下，比特币的安全性依赖于$D \cdot λ \ll 1$这个假设，也就是说，一个区块被创建之后，极有可能要至少过$D$秒才会有下一个区块被创建，因此分叉极少。因此，比特币的大于$D$的安全边界严重抑制了它的吞吐量，因为它要选择一个很低的区块创建频率$λ = 1 / 600$（每10分钟一个区块）。而PHANTOM的DAG并不是这样，因为DAG排序的安全性并不依赖$D \cdot λ \ll 1$这个假设。因此，即使我们高估了$D$，也依然可以在维持安全等级不变的情况下允许十分高的区块创建频率。所以PHANTOM支持非常大的吞吐量，并且不需要对安全性和可扩容性做出取舍。
 
 That said, in PHANTOM there is still a tradeoff between a large safety margin and fast
 convergence of the protocol. A gross overestimation of $D_{max}$ - resulting an increase in $k$ -
