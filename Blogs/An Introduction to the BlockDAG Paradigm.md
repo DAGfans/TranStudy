@@ -120,4 +120,22 @@ We will expand on each of these points and how SPECTRE and PHANTOM achieve them 
 
 Almost every single DAG-based cryptocurrency on the market (IOTA, Byteball, Nano, etc.) has deviated from Satoshi’s blockchain paradigm, not only by using the DAG structure, but also in economic design: some have relegated mining to their users, some have eliminated proof-of-work mining altogether, many have no transaction fees, and practically all have no blocks, chaining together individual transactions. These design decisions may work in a DAG system, but they are characteristics independent of DAGs. In fact, these projects’ use of a DAG is probably their least defining characteristic.
 
-市场上几乎每种基于 DAG 的加密货币（IOTA、字节雪球、Nano，等等）都偏离了中本聪的区块链范式。这种偏离不仅体现在使用 DAG 结构上，还体现在经济学层面的设计上：有的将挖矿委托给用户，有的完全去除了工作量证明挖矿，许多货币没有交易手续费，
+市场上几乎每种基于 DAG 的加密货币（IOTA、字节雪球、Nano，等等）都偏离了中本聪的区块链范式。这种偏离不仅体现在使用 DAG 结构上，还体现在经济学层面的设计上：有的将挖矿委托给用户，有的完全去除了工作量证明挖矿，许多货币没有交易手续费，并且实际上都没有区块——它们将一个个交易直接连在一起。虽然这些设计决策可以用在 DAG 系统中，但它们的特性和 DAG 完全无关。实际上，这些项目可能只用到了 DAG 特性的很小一部分。
+
+The rising popularity of these DAG systems has heavily influenced the community’s perception of DAGs. On the one hand, there are the fervent supporters who tout DAG technology as “blockchain 3.0”, and on the other, the skeptics who dismiss it as vaporware. Almost all, however, praise or criticize the economic design choices of existing DAG protocols, which have nothing to do with DAGs.
+
+这些 DAG 系统的兴起很大程度上影响了社区对 DAG 的看法。一方面，狂热支持派将 DAG 技术吹捧为“区块链3.0”；另一方面，怀疑论者对其不屑一顾。可是几乎所有人赞扬或批评的都是现存 DAG 协议在经济层面的设计决策，而这和 DAG 根本毫无关系。
+
+For instance, in a recent Q&A, renowned blockchain expert Andreas Antonopoulos described DAGs as “an alternative consensus mechanism” opposed to proof-of-work. “If you don’t have decentralized proof-of-work mining, you don’t really need blocks,” Antonopoulos says. “You can just chain transactions together, which is the basis of directed acyclic graphs.”
+
+比如，在最近的一个问答中，著名比特币专家 Andreas Antonopoulos 将 DAG 描述为和工作量证明相对的“另一种共识机制”。“如果你没有将工作量证明挖矿去中心化，你其实并不需要区块。” Antonopoulos 说道，“你只需要直接将交易连起来，这就是有向无环图的基础。”
+
+[点击查看 Andreas Antonopoulos 的问答视频](https://youtu.be/lfgMnbb5JeM)
+
+But, as explained above, DAGs are not about replacing proof-of-work or blocks. DAGs are merely a mathematical structure that happen to be used by several projects that deviate from Satoshi’s proof-of-work system. In contrast, blockDAGs are the applications of DAGs to a Nakamoto-based system (in particular, with proof-of-work), only redesigning the data structure and consensus layer.
+
+但是上文已经解释过，DAG 并不是要取代工作量证明或区块。DAG 只是一种数学结构。只是这种数学结构恰好被一些偏离了中本聪的工作量证明系统的项目所使用。与此相反，blockDAG 是要将 DAG 应用在基于中本聪的系统中（并且特别要强调的是，blockDAG 使用工作量证明），只是将数据结构和共识层重新设计了一遍。
+
+Bram Cohen of BitTorrent and Chia hits closer to the mark with this scathing tweet:
+
+比特流（BitTorrent）和 Chia 的创始人布拉姆·科恩（Bram Cohen）在推特上发表的尖锐评论更接近本质：
