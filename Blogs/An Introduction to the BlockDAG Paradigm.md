@@ -69,6 +69,7 @@ Observe that if a distributed system achieves consensus on the order of all even
 如果一个分布式系统对系统中所有事件的顺序达成共识，我们就可以很容易地将这个共识扩展到状态的共识——只需要简单地按照达成共识的顺序遍历所有交易，并且接受那些与已经被接受的交易一致的交易。这种方法在构建区块链的过程中就一致维护着一致性。
 
 译注：注意作者在这里用的词是 accept，即“接受”。这个词容易与 confirm 即“确认”混淆。交易被接受不代表交易被确认。即便系统在某个时刻对交易排序达成共识，随着时间的推移，新交易的加入，这个排序可能会发生改变。系统可能会否定旧排序，转而对新排序达成共识。只有当排序不会随着时间推移而变化，交易才算是被“确认”。
+译注: accept和confirm的定义很模糊, 在不同上下文会有不同的解读. confirm有的地方相当于finality, 就是达到一个比较稳定的状态, 有的地方是特指被多少个区块确认; accept的意思也要看主语是谁, 如果是节点, 一般指校验接收到的交易的合法性并加入到本地账本, 如果是网络, 则和confirm是一个意思, 只不过是首次confirm, 如果是用户, 则代表的是一种主观预期, 比如我说认为被两个区块确认了, 交易就是安全的. 综上此处的accept应该是指校验交易的合法性并加入本地账本
 
 We are left with the task of defining an ordering protocol on all events in the system — in our context, on all blocks in the DAG — in a way that will be agreed upon, eventually, by all nodes.
 
