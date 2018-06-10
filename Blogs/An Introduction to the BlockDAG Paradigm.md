@@ -58,7 +58,7 @@ However, unlike a blockchain which, by construction, preserves consistency (ever
 
 We therefore need a method to recover consistency; in other words, a blockDAG system requires replacing Satoshi’s longest chain rule with a new consensus protocol.
 
-因此我们需要一种方法来恢复一致性；换句话说，一个区块 DAG 系统需要用一个新的共识协议来取代中本聪的最长链规则。
+因此我们需要一种方法来恢复一致性；换句话说，区块 DAG 系统需要用新的共识协议来取代中本聪的最长链规则。
 
 #### Consensus via ordering
 
@@ -66,10 +66,9 @@ We therefore need a method to recover consistency; in other words, a blockDAG sy
 
 Observe that if a distributed system achieves consensus on the order of all events in it, then we can easily extend this agreement to achieve consensus on the state — we simply iterate over all transactions according to the agreed order, and accept each transaction that is consistent with those accepted so far. This method preserves consistency by construction.
 
-如果一个分布式系统对系统中所有事件的顺序达成共识，我们就可以很容易地将这个共识扩展到状态的共识——只需要简单地按照达成共识的顺序遍历所有交易，并且接受那些与已经被接受的交易一致的交易。这种方法在构建区块链的过程中就一致维护着一致性。
+如果一个分布式系统对系统中所有事件的顺序达成共识，我们就可以很容易地将这个共识扩展到状态的共识——只需要简单地按照达成共识的顺序遍历所有交易，并且接受那些与已经被接受的交易一致的交易。这种方法在构建区块链的过程中就一直维护着一致性。
 
-译注：注意作者在这里用的词是 accept，即“接受”。这个词容易与 confirm 即“确认”混淆。交易被接受不代表交易被确认。即便系统在某个时刻对交易排序达成共识，随着时间的推移，新交易的加入，这个排序可能会发生改变。系统可能会否定旧排序，转而对新排序达成共识。只有当排序不会随着时间推移而变化，交易才算是被“确认”。
-译注: accept和confirm的定义很模糊, 在不同上下文会有不同的解读. confirm有的地方相当于finality, 就是达到一个比较稳定的状态, 有的地方是特指被多少个区块确认; accept的意思也要看主语是谁, 如果是节点, 一般指校验接收到的交易的合法性并加入到本地账本, 如果是网络, 则和confirm是一个意思, 只不过是首次confirm, 如果是用户, 则代表的是一种主观预期, 比如我说认为被两个区块确认了, 交易就是安全的. 综上此处的accept应该是指校验交易的合法性并加入本地账本
+译注：注意作者在这里用的词是 accept，即“接受”。这个词容易与 confirm 即“确认”混淆。实际上两者的定义很模糊，在不同上下文会有不同解读。在有的上下文中，“确认”等同于 finality，笼统地说是指系统达到一个比较稳定的状态；在有的上下文中则是特指被多个区块“接受”，即交易所在的区块成为了多个区块的祖宗。至于“接受”的具体意思，还要看主语是什么（宾语是交易）。如果主语是节点，则一般指节点对接收到的交易进行校验后，认为交易合法并将其加入本地账本。如果主语是网络，则一般和“确认”意思相同，只不过是指首次“确认”。如果主语是用户，则代表的是用户的主观预期，比如用户可能认为如果交易被两个区块“接受”了，或者说成为了两个区块的合法祖宗，那交易就是安全的。原文此处“接受”的主语应该是节点，因此意思即指节点对交易的合法性进行校验后，将交易加入本地账本。在此处，交易合法性还包含了交易所隐含的历史交易顺序是否符合系统中已达成共识的顺序相一致的意思。这里仅仅是指交易被节点“接受”。至于具体怎样的标准才能算作交易被系统“确认”，则视具体协议而定。
 
 We are left with the task of defining an ordering protocol on all events in the system — in our context, on all blocks in the DAG — in a way that will be agreed upon, eventually, by all nodes.
 
