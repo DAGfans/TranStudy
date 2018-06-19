@@ -14,9 +14,9 @@ PHANTOM包含以下三个步骤：
 with high probability, blocks that were mined honestly belong to this cluster and vice versa.
 > 2) We extend the DAG’s natural partial ordering to a full topological ordering in a way that favours blocks inside the selected cluster and penalizes those outside it.
 > 3) The order over blocks induces an order over transactions;
-
 transactions in the same block are ordered according to the order of their appearance in it.
-We iterate over all transactions in this order, and accept each one that is consistent (according to the underlying Consistency notion) with those approved so far.
+We iterate over all transactions in this order, and accept each one that is consistent (according to the underlying 
+Consistency notion) with those approved so far.
 The Consistency notion used in the last step depends on the specific application under consideration.
 For instance, with regards to the Payments application, a transaction is consistent with the history only if all of its inputs have been approved and no double spending transaction has been approved before.
 Our work is agnostic to the definition of the Consistency rule.
@@ -376,7 +376,7 @@ In this way, blocks that were withheld by an attacker will not precede blocks th
 
 **Output:** $BLUE_k(G)$ – the dense-set of G
 
-1. **function** CALC-B L UE(G, k )
+1. **function** CALC-BLUE(G, k )
 
 2. > **if** $B == genesis$ **then**
 
