@@ -151,9 +151,9 @@ Let us compare the score of the honest chain to that of any chain that excludes 
 
 让我们比较诚实链和任何排除$\widehat(B)$􏰇的链的得分。以下定义可以看出这一差距：对于时间$r > 0$，定义
 
-$X^{1}_r:=\max_{B:\widehat{B} \notin Chn(B)}\{score(Chn(B))\}$
-$X^{2}_r:=\max_{B:\widehat{B} \in Chn(B)}\{score(Chn(B))\}$
-$X_r:=X^{1}_r-X^{2}_r$
+  $X^{1}_r:=\max_{B:\widehat{B} \notin Chn(B)}\{score(Chn(B))\}$
+  $X^{2}_r:=\max_{B:\widehat{B} \in Chn(B)}\{score(Chn(B))\}$
+  $X_r:=X^{1}_r-X^{2}_r$
 
 Let us focus first on the evolution of the process $X_r$ between time 0 and time $u−T_1$. We refer to the lead $X_u−T_1$ ，that the attacker obtained at the end of this stage as “the premining gap”; see [8].
 
