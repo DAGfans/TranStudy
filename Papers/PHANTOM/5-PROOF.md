@@ -120,4 +120,27 @@ The following claim states that the first two conditions in the above definition
 
 （译注：断言1换句话说，也就是All blocks created by the attacker before u-T_1 are either in \past(\hat{B}) or in the anticone of all k+1 blocks in Last (including \hat{B}) itself）
 
-*Proof of Claim 1.* Let $B \in anticone(\hat{B})$. If $\hat{B} \notin BLUE_k(G_s^{pub})$ we're done. Assume therefore that $\hat{B} \in BLUE_k(G_s^{pub})$. Any block that was published before time $u - D$ belongs to $past(\hat{B})$. Any block that was created after $u + D$ by an honest node belongs to $future(\hat{B})$. As honest nodes did not create blocks in the interim, blocks in $anticone(\hat{B})$ can only belong to the attacker. Now, since the attacher did not create new blocks while blocks in $LAST_k(past(\hat{B}))$ were created, all attacher blocks that were created before the interval $[u - T_1, u]$ and that do not belong to $past(\hat{B})$ (hence belong to $anticone(\hat{B})$) have all blocks in $LAST_k(past(\hat{B}))$ in their anticone; formally: $\forall C \in anticone(\hat{B}, G_u^{oracle}) : LAST_k(past(\hat{B})) \subseteq anticone(C, G_u^{oracle})$. Thus, if $\hat{B} \in BLUE_k(G_s^{pub})$, any block in $anticone(\hat{B})$ suffers an anticone that is larger than $k$ (it contains $LAST_k(past(\hat{B})) \cup {\hat{B}}$) and is therefore not in $BLUE_k(G_s^{pub})$. In particular, $B \notin BLUE_k(G_s^{pub})$.
+*Proof of Claim 1.* Let $B \in anticone(\hat{B})$. If $\hat{B} \notin BLUE_k(G_s^{pub})$ we're done. Assume therefore that $\hat{B} \in BLUE_k(G_s^{pub})$. Any block that was published before time $u - D$ belongs to $past(\hat{B})$. Any block that was created after $u + D$ by an honest node belongs to $future(\hat{B})$. As honest nodes did not create blocks in the interim, blocks in $anticone(\hat{B})$ can only belong to the attacker. 
+Now, since the attacher did not create new blocks while blocks in $LAST_k(past(\hat{B}))$ were created, all attacher blocks that were created before the interval $[u - T_1, u]$ and that do not belong to $past(\hat{B})$ (hence belong to $anticone(\hat{B})$) have all blocks in $LAST_k(past(\hat{B}))$ in their anticone; 
+formally: $\forall C \in anticone(\hat{B}, G_u^{oracle}) : LAST_k(past(\hat{B})) \subseteq anticone(C, G_u^{oracle})$. 
+Thus, if $\hat{B} \in BLUE_k(G_s^{pub})$, any block in $anticone(\hat{B})$ suffers an anticone that is larger than $k$ (it contains $LAST_k(past(\hat{B})) \cup {\hat{B}}$) and is therefore not in $BLUE_k(G_s^{pub})$. In particular, $B \notin BLUE_k(G_s^{pub})$.
+
+*断言 1 证明 * 假设$B \in anticone(\hat{B})$，如果已知$\hat{B} \notin BLUE_k(G_s^{pub})$。因此假设$\hat{B} \in BLUE_k(G_s^{pub})$。任何在$u - D$之前发布的块属于$past(\hat{B})$。任何在$u + D$之后由诚实节点创造的块属于$future(\hat{B})$。由于诚实的节点在此期间并未创建块，因此$ anticone（\ hat {B}）$中的块只能属于攻击者。
+现在，因为在创建$LAST_k(past(\hat{B}))$中的块时，附加器没有创建新块，所以在时间间隔$[u - T_1, u]$之前所有附加块被创建并且不属于$past(\hat{B})$的（因此属于$anticone(\hat{B})$）所有附加块，拥有所有在它们的反锥体中的$LAST_k(past(\hat{B}))$中的所有块；
+形式上：$\forall C \in anticone(\hat{B}, G_u^{oracle}) : LAST_k(past(\hat{B})) \subseteq anticone(C, G_u^{oracle})$。
+因此，如果$\hat{B} \in BLUE_k(G_s^{pub})$，任何在$anticone(\hat{B})$中的块容许一个大于$k$的反锥体(它由$LAST_k(past(\hat{B})) \cup {\hat{B}}$组成)，因此不在$BLUE_k(G_s^{pub})$中。尤其是，$B \notin BLUE_k(G_s^{pub})$。
+
+**Claim 2.** *The waiting time for the event $\varepsilon (t_0)$ upper bounds $\tau(t_0)$.*
+
+**断言2: ** *事件$\varepsilon (t_0)$的等待时间的上界为$\tau(t_0)$*
+
+*Proof of Claim 2.* The previous claim implies that a block $\widehat{B}$ that satisfies the first two conditions is an Hourglass block in $G_s^{pub}$. The third condition implies that $\widehat{B}$ forever remains in the chain, and in particular forever remains blue. It is thus an Hourglass block in all DAGs $G_s^{pub}(s \geq u)$.
+
+*定理 2 证明 * 之前的断言表明一个满足前两个条件的块$\widehat{B}$是在$G_s^{pub}$中的一个Hourglass块。第三个条件表明$\widehat{B}$永远在链中，尤其是永远是蓝色的。因此一个Hourglas块在所有的DAGs $G_s^{pub}(s \geq u)$中。
+
+**Claim 3.** *If the first two conditions in the definition of $\varepsilon (t_0)$ hold true then the third one holds true with a positive probability.
+
+**断言3: ** *如果$\varepsilon (t_0)$定义中的前两个条件成立，则第三个条件以正概率成立。
+
+*Proof of Claim 3.* Part I: We begin by assuming that the attacker did not publish any block in 􏰇
+the time interval 
