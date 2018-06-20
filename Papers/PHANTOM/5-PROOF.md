@@ -125,4 +125,53 @@ Now, since the attacher did not create new blocks while blocks in $LAST_k(past(\
 formally: $\forall C \in anticone(\hat{B}, G_u^{oracle}) : LAST_k(past(\hat{B})) \subseteq anticone(C, G_u^{oracle})$. 
 Thus, if $\hat{B} \in BLUE_k(G_s^{pub})$, any block in $anticone(\hat{B})$ suffers an anticone that is larger than $k$ (it contains $LAST_k(past(\hat{B})) \cup {\hat{B}}$) and is therefore not in $BLUE_k(G_s^{pub})$. In particular, $B \notin BLUE_k(G_s^{pub})$.
 
+*断言 1 证明：* 假设$B \in anticone(\hat{B})$，如果已知$\hat{B} \notin BLUE_k(G_s^{pub})$。因此假设$\hat{B} \in BLUE_k(G_s^{pub})$。任何在$u - D$之前发布的块属于$past(\hat{B})$。任何在$u + D$之后由诚实节点创造的块属于$future(\hat{B})$。由于诚实的节点在此期间并未创建块，因此$ anticone（\ hat {B}）$中的块只能属于攻击者。
+现在，因为在创建$LAST_k(past(\hat{B}))$中的块时，附加器没有创建新块，所以在时间间隔$[u - T_1, u]$之前所有附加块被创建并且不属于$past(\hat{B})$的（因此属于$anticone(\hat{B})$）所有附加块，拥有所有在它们的反锥体中的$LAST_k(past(\hat{B}))$中的所有块；
+形式上：$\forall C \in anticone(\hat{B}, G_u^{oracle}) : LAST_k(past(\hat{B})) \subseteq anticone(C, G_u^{oracle})$。
+因此，如果$\hat{B} \in BLUE_k(G_s^{pub})$，任何在$anticone(\hat{B})$中的块容许一个大于$k$的反锥体(它由$LAST_k(past(\hat{B})) \cup {\hat{B}}$组成)，因此不在$BLUE_k(G_s^{pub})$中。尤其是，$B \notin BLUE_k(G_s^{pub})$。
+
+
+**Claim 2.** *The waiting time for the event $\varepsilon (t_0)$ upper bounds $\tau(t_0)$.*
+
+**断言 2:** *事件$\varepsilon (t_0)$的等待时间的上界为$\tau(t_0)$*
+
+*Proof of Claim 2.* The previous claim implies that a block $\widehat{B}$ that satisfies the first two conditions is an Hourglass block in $G_s^{pub}$. The third condition implies that $\widehat{B}$ forever remains in the chain, and in particular forever remains blue. It is thus an Hourglass block in all DAGs $G_s^{pub}(s \geq u)$.
+
+*断言 2 证明：* 之前的断言表明一个满足前两个条件的块$\widehat{B}$是在$G_s^{pub}$中的一个Hourglass块。第三个条件表明$\widehat{B}$永远在链中，尤其是永远是蓝色的。因此一个Hourglas块在所有的DAGs $G_s^{pub}(s \geq u)$中。
+
+**Claim 3.** *If the first two conditions in the definition of $\varepsilon (t_0)$ hold true then the third one holds true with a positive probability.*
+
+**断言3:** *如果$\varepsilon (t_0)$定义中的前两个条件成立，则第三个条件以正概率成立.*
+
+*Proof of Claim 3.* Part I: We begin by assuming that the attacker did not publish any block in 􏰇the time interval $[0,u-D_max)$; formally, we assume that $\forall C \in  past(\widehat{B}):C\in honest$.
+
+*断言 3 证明：* 第一部分：我们首先假设攻击者在时间间隔$[0,u-D_max)$内没有发布任何块；形式上，我们假设为$\forall C \in  past(\widehat{B}):C\in honest$。
+
+Let us compare the score of the honest chain to that of any chain that excludes $\widehat(B)$􏰇. This gap is captured by the following definition: For a time $r > 0$, define
+
+让我们比较诚实链和任何排除$\widehat(B)$􏰇的链的得分。以下定义可以看出这一差距：对于时间$r > 0$，定义
+
+$X^{1}_r:=\max_{B:\widehat{B} \notin Chn(B)}\{score(Chn(B))\}$
+$X^{2}_r:=\max_{B:\widehat{B} \in Chn(B)}\{score(Chn(B))\}$
+$X_r:=X^{1}_r-X^{2}_r$
+
+Let us focus first on the evolution of the process $X_r$ between time 0 and time $u−T_1$. We refer to the lead $X_u−T_1$ ，that the attacker obtained at the end of this stage as “the premining gap”; see [8].
+
+让我们首先关注时间0到$u−T_1$之间的过程$X_r$的演变。我们指的是领先的$X_u−T_1$，攻击者在本阶段结束时获得作为“预排空隙”的$X_u−T_1$；参考【8】。
+
+Let $B^{r}_1$ be the argmax of $X^{1}_r$, and let $C^{r}_1$ be the latest block in $G^{pub}_r \cap BLUE_k(past(B^{r}_1))$, namely, the latest honest block which is blue in the attacker chain. 
+
+让$B^{r}_1$作为$X^{1}_r$argmax函数的变量，让$C^{r}_1$成为$G^{pub}_r \cap BLUE_k(past(B^{r}_1))$中最新的块，即，在攻击者链上的蓝色的最新的诚实块。
+
+Recall that for now we are assuming that all attacker blocks that were premined were kept secret until after time $u−D_max$. Observe that at most k blocks that were created by the attacker before $time(􏰀C^{r}_1)$􏰁 can be in $BLUE_k(past(B^{r}_1))$ and can contribute to the score of the attacker’s chain. 
+
+回想一下，现在我们假设所有被预设的攻击者块都保密，直到时间$u−D_max$之后。观察到在$time(􏰀C^{r}_1)$􏰁之前由攻击者创建的至多k个块可以在$BLUE_k(pst(B^{r}_1))$中，并且可以贡献得分给攻击者链条。
+
+Thus, between $time(􏰀C^{r}_1)$􏰁 and time $u−T_1-i.e.$, during the premining phase – the score of the attacker chain grows only via the contribution of attacker blocks, and therefore at a rate of $\alpha \cdot \beta$ at most.^{14}
+
+因此，在时间$time(􏰀C^{r}_1)$􏰁和$u−T_1-i.e.$期间，在预测阶段 - 攻击者链的得分只能通过攻击者块的贡献增加，因此最多以$\alpha \cdot \beta$的速率。
+
+^{14}Notice that our analysis does not assume that the attacker creates its blocks in a single chain. We only claim that the attacker’s highest scoring chain grows at a rate of α · λ at most, because every attacker block can increase the attacker’s highest scoring chain by 1 at most. Creating a single chain is indeed the optimal attack on the attacker side.
+
+
 
