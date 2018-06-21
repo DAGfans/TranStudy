@@ -171,7 +171,51 @@ Thus, between $time(􏰀C^{r}_1)$􏰁 and time $u−T_1-i.e.$, during the premin
 
 因此，在时间$time(􏰀C^{r}_1)$􏰁和$u−T_1-i.e.$期间，在预测阶段 - 攻击者链的得分只能通过攻击者块的贡献增加，因此最多以$\alpha \cdot \beta$的速率。
 
-^{14}Notice that our analysis does not assume that the attacker creates its blocks in a single chain. We only claim that the attacker’s highest scoring chain grows at a rate of α · λ at most, because every attacker block can increase the attacker’s highest scoring chain by 1 at most. Creating a single chain is indeed the optimal attack on the attacker side.
+^{14}Notice that our analysis does not assume that the attacker creates its blocks in a single chain. We only claim that the attacker’s highest scoring chain grows at a rate of $\alpha \cdot \beta$ at most, because every attacker block can increase the attacker’s highest scoring chain by 1 at most. Creating a single chain is indeed the optimal attack on the attacker side.
+
+^{14}注意我们的分析没有假设攻击者在单链上创建它的块。我们仅仅声明攻击者最高得分链最多以$\alpha \cdot \beta$的速率增长，因为每一个攻击者块最多能以1的速率增加攻击者最高得分链。创建单链确实是以攻击者角度的最佳攻击。
+
+Now, by the choice of $K(D_{max},\delta )$ (defined in 1), the probability of an arbitrary honest block $B$ having too large of an honest anticone is small:^{15}
+
+现在，通过$K(D_{max},\delta )$（在定义 1中）的选择，任意诚实块$B$具有太大的诚实反锥体的概率是小的：^{15}
+
+$\Pr_{B\sim arbitrary\ honest\ block\ in\  G^{pub}_t}\(|\overline{anticone_h}(B,G^{pub}_t)| > k(D_{max},\delta ))$
+
+This is because block creation follows a Poisson process, and because honest blocks that were created $D-{max}$ seconds before (after) $B$ belong to its past (future), hence are not in its anticone. Since any block that is blue in the honest chain contributes to its score, at any time interval, the score of the public chain grows at a rate of $(1-\delta)\cdot (1-\alpha )\cdot \lambda$ at least. And at most k honest blocks created in the premining stage contributed to the score of the attack chain.
+
+这是因为块创建遵循泊松过程,并且因为被创建于$B$之前（之后）$D-{max}$秒的诚实块属于它的过去（未来），因此不在它的反锥体中。因为诚实链上任何蓝色的块都有助于其得分，在任何时间间隔，公共链的得分至少以$(1-\delta)\cdot (1-\alpha )\cdot \lambda$的速率增长。最多k个诚实块创建在预期阶段对攻击链的得分做出贡献的链上。
+
+*Part III: From Part I and Part II* we conclude that the random process $X_r-k$ is upper bounded by the premining race analyzed in [8]. Therein it was shown that the probability distribution over $X_{u - T_1} - k$ (the process’s state at the end of the premining stage) is dominated by the
+stationary probability distribution $\pi$ of a reflecting random walk over the non-negative integers with a bias of $\frac{(1-\delta)\cdot (1-\alpha)}{1-\delta\cdot (1-\alpha )}$ towards negative infinity. The stationary distribution exists because $\alpha\leq 1/2\cdot (1-\delta) < (1-\alpha)\cdot (1-\delta)$.^{16}
+
+*第三部分: 来自 第一部分 和 第二部分*
+我们得出这样的结论：在[8]中分析的预期竞争是随机过程$X_r-k$的上限。其中显示超过$X_{u - T_1} - k$的概率分布（在预期阶段最后的进程阶段）占有主要地位，通过一个反向随机游走带有$\frac{(1-\delta)\cdot (1-\alpha)}{1-\delta\cdot (1-\alpha )}$到负无穷偏差的非负整数的平稳概率分布$\pi$。平稳概率分布存在因为$\alpha\leq 1/2\cdot (1-\delta) < (1-\alpha)\cdot (1-\delta)$。^{16}
+
+In particular, there is a positive probability that at time $u - T_1$ the premining gap, $X_u-T_1$ , was less than k, so that $X_u−T_1 - k < 0$.^{17} Between times $u - T_1$ and $u$ the honest network contributed additional $k + 1$ to the score of the public chain, namely, blocks $LAST_k(past(\widehat{B}))\cup \{\widehat{B}\}$. During the same time the score of any secret chain(s) did not increase at all, per the second condition in the definition of $\varepsilon (t_0)$. Thus, $X_u = X_u−T_1 - (k + 1)$. And by the first assumption, $X_u + D_{max} = X_u$. All in all, with some positive probability, $X_u + D_{max} < 0$.
+
+特别是，在时间$u - T_1$预先存在的差距有一个正的概率，$X_u-T_1$，少于k，因此$X_u−T_1 - k < 0$。^{17}在时间$u - T_1$和$u$之间，诚实网络为公共链得分贡献了额外的$k + 1$，即，块$LAST_k(past(\widehat{B}))\cup \{\widehat{B}\}$。在相同的时间内，任何秘密链的得分不再增加，根据定义中的第二个条件$\varepsilon (t_0)$。因此，$X_u = X_u−T_1 - (k + 1)$。根据第一个假设，$X_u + D_{max} = X_u$。总而言之，在一些正概率下，$X_u + D_{max} < 0$。
+
+*Part IV:* Let us turn to look at the evolution of $(X_r)_r \leq u+D_{max}$ at the second stage. Assume that $X_u + D_{max} < 0$.
+
+*第五部分：* 让我们来看看第二阶段$(X_r)_r \leq u+D_{max}$的演化。假设$X_u + D_{max} < 0$。
+
+In Claim 1 we saw that for any $r$ such that $\widehat{B} \in BLUE_k(G^{pub}_r)$􏰄, all blocks in $\widehat{B}$’s anticone are red in $G^pub_r$. This implies that, as long as $\widehat{B}$ is blue in the public DAG, only attacker blocks contribute to the score of the attacker’s chain: $\widehat{B} \in BLUE_k(G^{pub}_r) \Rightarrow \forall B \in anticone(\widehat{B}): BLUE_k(past(B))\setminus  future(\widehat{B}) = \not{0}$
+􏰇(indeed, note that all honest blocks created after time $u + D_{max}$ belong to $future(\widehat{B})􏰇$). Consequently, the attacker’s best chain grows at a rate of
+$\alpha \cdot \beta$ at most, as this interval ($[u+D_{max},\infty )$) as well, as long as $\widehat{B} \in BLUE_k(G^pub_r)$􏰄. We have already seen that at any time interval the honest chain’s score grows at a rate of $(1−\delta )·(1−\alpha )·\lambda$  at least.
+
+在断言1中，我们我们看到，对于任何$r$，例如$\widehat{B} \in BLUE_k(G^{pub}_r)$􏰄,所有在$\widehat{B}$的反锥体中的区块在$G^pub_r$中是红色的。这意味着，只要$\widehat{B}$在公共DAG中是蓝色的，仅仅攻击者块贡献攻击者链的得分：ibute to the score of the attacker’s chain: $\widehat{B} \in BLUE_k(G^{pub}_r) \Rightarrow \forall B \in anticone(\widehat{B}): BLUE_k(past(B))\setminus  future(\widehat{B}) = \not{0}$（实际上，注意在时间$u + D_{max}$之后创建的所有诚实区块属于$future(\widehat{B})􏰇$）。所以，攻击者的最优链最多以$\alpha \cdot \beta$的速率增长,和这个时间间隔($[u+D_{max},\infty )$)一样，只要$\widehat{B} \in BLUE_k(G^pub_r)$􏰄。我们已经看到在任何时间间隔内，诚实块的得分至少以$(1−\delta )·(1−\alpha )·\lambda$的速率增长。
+
+^{15}Below, $\overline{anticoneh}(B, G)$ denotes all blocks in $anticone(B, G)$ created by honest nodes.
+
+^{15}以下，$\overline{anticoneh}(B, G)$表示所有在$anticone(B, G)$中的块由诚实结点创建。
+
+^{16}Note that we have multiplied $(1−\alpha)$ by $(1−\delta)$ to account for the rare events where there was a burst of block creation events and where consequently some honest blocks did not contribute to the score of the public chain. Note on the other hand that blocks created by honest nodes too do not contribute to the attacker chain’s score, even if they are red in $G_{pub}^r$. This is because we argued that at most $k$ blocks that were created by the attacker before time􏰀 ($C^r_1$)􏰁 can be blue in $BLUE_k (past(B^r_1))$, and this is regardless of $C^r_1$’s status within $G_{pub}^r$ (we merely used the fact that $C^r_1$ was created by an honest node, we didn’t use the assumption that $C^r_1$ is blue in the honest chain). 
+
+^{16}注意我们已经把$(1−\alpha)$和$(1−\delta)$相乘来解释罕见的事件，如有一些块创建事件突然发生，因此一些诚实块没有贡献公共链的得分。注意，另一方面，由诚实结点创建的块也没有贡献攻击者链的得分，即使它们在$G_{pub}^r$是红色的。因为我们认为由攻击者在时间（$C^r_1$）之前创建的至多$k$块在$BLUE_k  (past(B^r_1))$中是蓝色的，并且这与$G_{pub}^r$中的$C^r_1$的状态无关（我们仅仅运用事实$C^r_1$在诚实链中是蓝色，我们不使用假设$C^r_1$在诚实链中是蓝色的）。
+
+^{17}In fact, this probability is decreasing logarithmically as $k$ increases.
+
+^{17}事实上，这个概率随着$k$增加而以对数递减。
 
 
 
