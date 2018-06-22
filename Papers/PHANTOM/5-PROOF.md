@@ -217,5 +217,17 @@ $\alpha \cdot \beta$ at most, as this interval ($[u+D_{max},\infty )$) as well, 
 
 ^{17}事实上，这个概率随着$k$增加而以对数递减。
 
+Thus, starting at time $u+D_{max}$, the race between the honest chain’s score and the attacker chain’s score can be modeled as a random walk over all integers with a bias of $\frac{(1-\delta )(1-\alpha )}{1-\delta\cdot (1-\alpha )}$ towards negative infinity.
+
+因此，在时间$u+D_{max}$时开始，在诚实链和攻击者链得分之间的竞争能建模为，一个随机遍历所有伴有$\frac{(1-\delta )(1-\alpha )}{1-\delta\cdot (1-\alpha )}$到负无穷偏差的整数。
+
+Since the random walk begins at the negative location $X_u+D_{max}$, this supposedly implies that with a positive probability the walk will never return to the origin: $Pr (\forall r\geq u+ D_{max} : X_r < 0) > 0$. This in turn implies that $\widehat{B}$􏰇 will forever remain a blue block (and a chain block for that matter). However, to complete the analysis correctly, some careful attention is required:
+
+因为随机遍历起始于负位置$X_u+D_{max}$，据推测，这意味着以正概率遍历将永远不会回到原点：$Pr (\forall r\geq u+ D_{max} : X_r < 0) > 0$。这轮流表明了$\widehat{B}$将永远保持蓝色（和在这种情况下仍是链块）。然而，为了正确地完成分析，需要特别注意：
+
+*Part V:* First, we must account for the fact that not all honest nodes observe all honest blocks immediately, i.e., that $G^v_r$ might be a proper subset of $G^{pub}_r$. This might give the attacker an advantage, as he can create blocks, reveal them immediately to honest nodes, and these blocks do not compete with honest blocks unseen yet by these nodes. This advantage can be accounted for by assuming that the race begins only after the attacker was given $D_{max}$ additional seconds to create blocks while the honest network sat idle; see [8]. This fact does not change our general conclusion that $Pr (\forall r\geq u+ D_{max} : X_r < 0) > 0$, e.g., because there is a positive probability that the attacker did not create any block during these $D_{max}$ additional seconds.
+
+*第五部分：*首先，我们必须解释，不是所有的诚实节点都可以立即发现诚实块，i.e.，$G^v_r$可能是$G^{pub}_r$的一个合适的子集。这可能给攻击者带来优势，因为他可以创建区块，立即把他们展示给诚实块，这些块不能和仍没有被这些节点发现的块竞争。这个优势能被解释，通过假设竞争仅在攻击者被给予$D_{max}$的额外秒数用来创建块而诚实网在闲置状态之后才开始：参考[8]。这个事实没有改变我们的一般结论 $Pr (\forall r\geq u+ D_{max} : X_r < 0) > 0$，e.g.，因为攻击者在这些$D_{max}$额外秒数的时间内没有创建任何块。
+
 
 
