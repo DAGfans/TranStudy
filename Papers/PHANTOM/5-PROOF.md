@@ -227,7 +227,40 @@ Since the random walk begins at the negative location $X_u+D_{max}$, this suppos
 
 *Part V:* First, we must account for the fact that not all honest nodes observe all honest blocks immediately, i.e., that $G^v_r$ might be a proper subset of $G^{pub}_r$. This might give the attacker an advantage, as he can create blocks, reveal them immediately to honest nodes, and these blocks do not compete with honest blocks unseen yet by these nodes. This advantage can be accounted for by assuming that the race begins only after the attacker was given $D_{max}$ additional seconds to create blocks while the honest network sat idle; see [8]. This fact does not change our general conclusion that $Pr (\forall r\geq u+ D_{max} : X_r < 0) > 0$, e.g., because there is a positive probability that the attacker did not create any block during these $D_{max}$ additional seconds.
 
-*第五部分：*首先，我们必须解释，不是所有的诚实节点都可以立即发现诚实块，i.e.，$G^v_r$可能是$G^{pub}_r$的一个合适的子集。这可能给攻击者带来优势，因为他可以创建区块，立即把他们展示给诚实块，这些块不能和仍没有被这些节点发现的块竞争。这个优势能被解释，通过假设竞争仅在攻击者被给予$D_{max}$的额外秒数用来创建块而诚实网在闲置状态之后才开始：参考[8]。这个事实没有改变我们的一般结论 $Pr (\forall r\geq u+ D_{max} : X_r < 0) > 0$，e.g.，因为攻击者在这些$D_{max}$额外秒数的时间内没有创建任何块。
+*第五部分：*首先，我们必须解释，不是所有的诚实节点都可以立即发现诚实块，i.e.，$G^v_r$可能是$G^{pub}_r$的一个合适的子集。这可能给攻击者带来优势，因为他可以创建区块，立即把他们展示给诚实块，这些块不能和仍没有被这些节点发现的块竞争。这个优势能被解释，通过假设竞争仅在攻击者被给予$D_{max}$的额外秒数用来创建块而诚实网在闲置状态之后才开始：参考[8]。这个事实没有改变我们的一般结论 $Pr(\forall r\geq u+ D_{max} : X_r < 0) > 0$，e.g.，因为攻击者在这些$D_{max}$额外秒数的时间内没有创建任何块。
 
+Secondly, observe that the honest chain grows according to a random process that is not necessarily Poisson. Fortunately, a result from [9] shows that nevertheless we can treat the block race as if the honest score grows according to a Poisson process, and that this assumption can only increase the value of $X_r$; it is thus a worst case analysis.
+
+第二，根据不一定是泊松分布的随机分布观察诚实链增长。幸运地，来自[9]中的结果表明虽然我们对待块竞争就好像诚实链根据泊松分布增长一样，并且这个假设仅可以增加$X_r$的价值；因此这是一个最坏的情况分析。
+
+*Part VI:* Finally, we alleviate our assumption that the attacker published no block during the premining phase $[0,u−D_{max})$. Instead, consider any attacker block $C$ that belongs to $past(􏰃\widegat{B})$􏰄. If $C\in BLUE_k(past(BB))$ then $C$ contributed to the score of the honest chain which passes through $\widehat{B}$􏰇 and maybe to the attacker chain as well, so its existence does not change the above analysis. Similarly, if $C\notin BLUE_k(past(BB))$, the fact that it was published has no consequence whatsoever on the score of the honest chain, and so we can ignore it and apply the same analysis as if it weren’t published.
+
+*第五部分：*最终，我们调整了我们的假设，即攻击者在预测阶段$[0,u−D_{max})$时没有发布任何块。代替的是，考虑任何属于$past(􏰃\widegat{B})$的攻击者块$C$。如果$C\in BLUE_k(past(BB))$，$C$贡献得分给通过$\widehat{B}$的诚实链，可能也贡献给攻击者链，因此它的存在不能改变以上的分析。相似地，如果$C\notin BLUE_k(past(BB))$，它发布的事实对诚实链的得分没有任何影响，因此我们能忽略它并且采用相同的分析就好像它没有被发布。
+
+**Claim 4.** *The waiting time for the event $\varepsilon (t_0)$ is finite. Moreover, it is upper bounded by a constant that does not depend on $t_0$.*
+
+**断言 4.** *事件$\varepsilon (t_0)$的等待时间是有限的。而且，它的上限由一个不依赖于$t_0$的常数决定。*
+
+*Proof of Claim 4.* Let $B$ be an arbitrary honest block created in $time(B)$. The probability that no other block was created in the interval $[time (B)-D_{max}, time (B)+D_{max}]$ is given by $e^{-2\cdot D_{max}\cdot \lambda }$. An arbitrary block $B$ satisfies the first condition in the definition of $\varepsilon (t_0)$ with a positive probability.
+
+*断言4 证明:* 令让$B$成为在$time(B)$中创建的任意诚实块。在时间间隔$[time (B)-D_{max}, time (B)+D_{max}]$内没有创建其他块的概率由$e^{-2\cdot D_{max}\cdot \lambda }$决定。随机块$B$在正概率下满足$\varepsilon (t_0)$的第一个条件。
+
+Given an arbitrary block $B$ satisfying the above condition, let $T_1$ be the creation time of the earliest block in $LAST_k(past (B))$. The probability that the attacker did not create any block in the interval $[u-T_1, u-D_{max}]$ is given by $((1-\alpha )\cdot (1-\delta ))^k$. In particular, given the first condition, the second one is satisfied with a positive probability.
+
+给定任意块$B$满足上述条件,让$T_1$是在$LAST_k(past (B))$中最早被创建块的创建时间。在时间间隔$[u-T_1, u-D_{max}]$内攻击者没有创建其他块的概率由$((1-\alpha )\cdot (1-\delta ))^k$决定。特别是，给定第一个条件，第二个条件满足正概率。
+
+Importantly, for any two blocks $B_1$ and $B_2$ created after $t_0$ and that satisfy $|time(B_1)-time(B_2)| > 4\cdot  D_{max}$, the satisfaction of the first condition with respect to $B_1$ is independent from its satisfaction with respect to $B_2$. Consequently, the expected waiting time for the occurrence of a block $\widehat{B}$􏰇 which satisfies the first two conditions in the definition of $\varepsilon (t_0)$ is finite (see, for instance, Chapter 10.11 in [10]). Moreover, while the precise expected time $\mathbb{E}[Hourglass(t_0)]$ may theoretically depend on t0, the above argument shows that $\mathbb{E}[Hourglass(t_0)]< const + 4 \cdot d$, where const does not depend on $t_0$.
+This completes the proof of Claim 4 and of Lemma 9.
+
+重要的是，对于任意两个块$B_1$和$B_2$在$t_0$后创建，并且满足$|time(B_1)-time(B_2)| > 4\cdot  D_{max}$，满足关于$B_1$的第一个条件与满足$B_2$是独立的。因此，满足$\varepsilon (t_0)$的定义中前两个条件的块出现的预期等待时间是有限的（参见，例如，章节10.11 [10]）。此外，尽管精确的预期时间$\mathbb{E}[Hourglass(t_0)]$在理论上可能取决于t0，但上述论证表明$\mathbb{E}[Hourglass(t_0)]< const + 4 \cdot d$，其中const不依赖于$t_0$。
+这完成了断言4和引理9的证明。
+
+Theorem 5 guarantees that the probability of reorg with respect to a given block $B$ diminishes: $Risk(B, t_1)\rightarrow 0$. However, it does not guarantee anything about the convergence rate, i.e., the waiting time for a $t_1$ that satisfies $Risk(B, t_1) <\varepsilon $, for some $\varepsilon > 0$.^{18} Following the analysis in the proof of Claim 4, the waiting time for an Hourglass block can be upper bounded by a constant in the order of magnitude of $O(e^{C\cdot D_{max}\cdot \lambda })$􏰁, for some $C > 0$; and after such a block is created,the analysis implies that $Risk(B,t_1)$ converges to 0 at an exponential rate, due to the random walk dynamic.
+
+定理5保证相对于给定区块$B$的重组概率减少：$Risk(B, t_1)\rightarrow 0$。然而，它并不能保证收敛速率，i.e.，对于$t_1$满足the waiting time for a $t_1$ that satisfies $Risk(B, t_1) <\varepsilon $的等待时间，对于$\varepsilon > 0$。^{18}。在断言4的证明分析中，沙漏块的等待时间的上界由一个在$O(e^{C\cdot D_{max}\cdot \lambda })$􏰁数量级的常数限制，对于$C > 0$；在这样一个块被创建之后，分析表明，由于随机遍历是动态的，$Risk(B,t_1)$以指数速率收敛到0。
+
+However, the analysis used in the proof is not tight. It relies on rather infrequent events which guarantee convergence in a straightforward way, namely, on the occurrence of Hourglass blocks. In practice the network is likely to converge much faster. Moreover, it can be shown that when there is no active attack, the convergence time is faster by orders-of-magnitude.
+
+然而，在证明中使用的分析并不严密。它依靠相当罕见的事件来保证以简单的方式进行收敛，即，出现沙漏块。实际上，网络可能会更快地收敛。此外，可以看出，当没有主动攻击时，收敛比数量级要快。
 
 
