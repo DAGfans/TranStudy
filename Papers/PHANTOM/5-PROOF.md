@@ -72,7 +72,7 @@ Fix $t_0$ and $B$, and let $\tau(t_0)$ be the first time after $t_0$ where an ho
 
 $$
 \tau(t_0) := min \{ u \geq t_0 : \exists \hat{B} \in G_u^{pub} \text{ such that } \hat{B} \in \cap_{r \geq s}Hourglass(G_r^{pub}) \} \hspace{1cm} (2)
-$$
+$$ 
 
 $\tau(t_0)$ is a random variable. By Lemma 9 it has finite expectation. In particular, $\lim\limits_{t_1 \to \infty} \Pr(\tau(t_0) > t_1) = 0$ (e.g., by Markov’s Inequality).
 
@@ -151,9 +151,9 @@ Let us compare the score of the honest chain to that of any chain that excludes 
 
 让我们比较诚实链和任何排除$\widehat(B)$􏰇的链的得分。以下定义可以看出这一差距：对于时间$r > 0$，定义
 
-  $X^{1}_r:=\max_{B:\widehat{B} \notin Chn(B)}\{score(Chn(B))\}$
-  $X^{2}_r:=\max_{B:\widehat{B} \in Chn(B)}\{score(Chn(B))\}$
-  $X_r:=X^{1}_r-X^{2}_r$
+     $X^{1}_r:=\max_{B:\widehat{B} \notin Chn(B)}\{score(Chn(B))\}$
+     $X^{2}_r:=\max_{B:\widehat{B} \in Chn(B)}\{score(Chn(B))\}$
+     $X_r:=X^{1}_r-X^{2}_r$
 
 Let us focus first on the evolution of the process $X_r$ between time 0 and time $u−T_1$. We refer to the lead $X_u−T_1$ ，that the attacker obtained at the end of this stage as “the premining gap”; see [8].
 
@@ -255,7 +255,7 @@ This completes the proof of Claim 4 and of Lemma 9.
 重要的是，对于任意两个块$B_1$和$B_2$在$t_0$后创建，并且满足$|time(B_1)-time(B_2)| > 4\cdot  D_{max}$，满足关于$B_1$的第一个条件与满足$B_2$是独立的。因此，满足$\varepsilon (t_0)$的定义中前两个条件的块出现的预期等待时间是有限的（参见，例如，章节10.11 [10]）。此外，尽管精确的预期时间$\mathbb{E}[Hourglass(t_0)]$在理论上可能取决于t0，但上述论证表明$\mathbb{E}[Hourglass(t_0)]< const + 4 \cdot d$，其中const不依赖于$t_0$。
 这完成了断言4和引理9的证明。
 
-Theorem 5 guarantees that the probability of reorg with respect to a given block $B$ diminishes: $Risk(B, t_1)\rightarrow 0$. However, it does not guarantee anything about the convergence rate, i.e., the waiting time for a $t_1$ that satisfies $Risk(B, t_1) <\varepsilon $, for some $\varepsilon > 0$.^{18} Following the analysis in the proof of Claim 4, the waiting time for an Hourglass block can be upper bounded by a constant in the order of magnitude of $O(e^{C\cdot D_{max}\cdot \lambda })$􏰁, for some $C > 0$; and after such a block is created,the analysis implies that $Risk(B,t_1)$ converges to 0 at an exponential rate, due to the random walk dynamic.
+Theorem 5 guarantees that the probability of reorg with respect to a given block $B$ diminishes: $Risk(B, t_1)\rightarrow 0$. However, it does not guarantee anything about the convergence rate, i.e., the waiting time for a $t_1$ that satisfies $Risk(B, t_1) <\varepsilon $, for some $\varepsilon > 0$.^{18} Following the analysis in the proof of Claim 4, the waiting time for an Hourglass block can be upper bounded by a constant in the order of magnitude of $O(e^{C\cdot D_{max}\cdot \lambda })$, for some $C > 0$; and after such a block is created,the analysis implies that $Risk(B,t_1)$ converges to 0 at an exponential rate, due to the random walk dynamic.
 
 定理5保证相对于给定区块$B$的重组概率减少：$Risk(B, t_1)\rightarrow 0$。然而，它并不能保证收敛速率，i.e.，对于$t_1$满足the waiting time for a $t_1$ that satisfies $Risk(B, t_1) <\varepsilon $的等待时间，对于$\varepsilon > 0$。^{18}。在断言4的证明分析中，沙漏块的等待时间的上界由一个在$O(e^{C\cdot D_{max}\cdot \lambda })$􏰁数量级的常数限制，对于$C > 0$；在这样一个块被创建之后，分析表明，由于随机遍历是动态的，$Risk(B,t_1)$以指数速率收敛到0。
 
