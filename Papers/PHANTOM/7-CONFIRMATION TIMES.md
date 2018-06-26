@@ -73,20 +73,20 @@ In summary, it is possible to achieve both fast confirmation times and Liveness 
 ##REFERENCES
 ##参考文献
 
-[1] Ittay Eyal, Adem Efe Gencer, Emin Gu ̈n Sirer, and Robbert Van Renesse. Bitcoin-ng: A scalable blockchain protocol. In 13th USENIX Symposium on Networked Systems Design and Implementation (NSDI 16), pages 45–59, 2016.
-[2] Michael R Garey and David S Johnson. Computers and intractability, volume 29. wh freeman New York, 2002.
-[3] Aggelos Kiayias and Giorgos Panagiotakos. On trees, chains and fast transactions in the blockchain. Cryptology
+>[1] Ittay Eyal, Adem Efe Gencer, Emin Gu ̈n Sirer, and Robbert Van Renesse. Bitcoin-ng: A scalable blockchain protocol. In 13th USENIX Symposium on Networked Systems Design and Implementation (NSDI 16), pages 45–59, 2016.
+>[2] Michael R Garey and David S Johnson. Computers and intractability, volume 29. wh freeman New York, 2002.
+>[3] Aggelos Kiayias and Giorgos Panagiotakos. On trees, chains and fast transactions in the blockchain. Cryptology
 ePrint Archive, Report 2016/545, 2016.
-[4] Eleftherios Kokoris Kogias, Philipp Jovanovic, Nicolas Gailly, Ismail Khoffi, Linus Gasser, and Bryan Ford.
+>[4] Eleftherios Kokoris Kogias, Philipp Jovanovic, Nicolas Gailly, Ismail Khoffi, Linus Gasser, and Bryan Ford.
 Enhancing bitcoin security and performance with strong consistency via collective signing. In 25th USENIX
 Security Symposium (USENIX Security 16), pages 279–296. USENIX Association, 2016.
-[5] Yoad Lewenberg, Yonatan Sompolinsky, and Aviv Zohar. Inclusive block chain protocols. In International
+>[5] Yoad Lewenberg, Yonatan Sompolinsky, and Aviv Zohar. Inclusive block chain protocols. In International
 Conference on Financial Cryptography and Data Security, pages 528–547. Springer, 2015.
-[6] Rafael Pass and Elaine Shi. Hybrid consensus: Efficient consensus in the permissionless model, 2016.
-[7] Joseph Poon and Thaddeus Dryja. The bitcoin lightning network: Scalable off-chain instant payments. Technical
+>[6] Rafael Pass and Elaine Shi. Hybrid consensus: Efficient consensus in the permissionless model, 2016.
+>[7] Joseph Poon and Thaddeus Dryja. The bitcoin lightning network: Scalable off-chain instant payments. Technical
 Report (draft), 2015.
-[8] Yonatan Sompolinsky, Yoad Lewenberg, and Aviv Zohar. Spectre: A fast and scalable cryptocurrency protocol.
+>[8] Yonatan Sompolinsky, Yoad Lewenberg, and Aviv Zohar. Spectre: A fast and scalable cryptocurrency protocol.
 IACR Cryptology ePrint Archive, 2016:1159, 2016.
-[9] Yonatan Sompolinsky and Aviv Zohar. Secure high-rate transaction processing in bitcoin. In International
+>[9] Yonatan Sompolinsky and Aviv Zohar. Secure high-rate transaction processing in bitcoin. In International
 Conference on Financial Cryptography and Data Security, pages 507–527. Springer, 2015.
-[10] David Williams. Probability with martingales. Cambridge university press, 1991.
+>[10] David Williams. Probability with martingales. Cambridge university press, 1991.
