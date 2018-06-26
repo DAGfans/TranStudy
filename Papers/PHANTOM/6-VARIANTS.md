@@ -1,5 +1,5 @@
 >* **Source：** [https://eprint.iacr.org/2018/104.pdf](https://eprint.iacr.org/2018/104.pdf)  
->* **TranStudy：** [https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM/6-VARIANTS.md](https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM/5-PROOF.md)
+>* **TranStudy：** [https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM/6-VARIANTS.md](https://github.com/DAGfans/TranStudy/edit/master/Papers/PHANTOM/6-VARIANTS.md)
 
 In Section 2 we described the PHANTOM’s greedy algorithm to mark blocks as blue or red (Algorithm 1). In fact, similar algorithms can provide similar guarantees. We describe several such variants below and explain the intuition behind them. All these variants can be thought of as greedy approximations to the Maximum $k$-cluster SubDAG problem described in Section 1.
 
