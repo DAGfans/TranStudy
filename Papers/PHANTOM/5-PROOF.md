@@ -167,9 +167,9 @@ Now, by the choice of $K(D_{max},\delta )$ (defined in 1), the probability of an
 
 $\Pr_{B\sim arbitrary\ honest\ block\ in\ G^{pub}_t}\(|\overline{anticone_h}(B,G^{pub}_t)| > k(D_{max},\delta ))$
 
-This is because block creation follows a Poisson process, and because honest blocks that were created $D-{max}$ seconds before (after) $B$ belong to its past (future), hence are not in its anticone. Since any block that is blue in the honest chain contributes to its score, at any time interval, the score of the public chain grows at a rate of $(1-\delta)\cdot (1-\alpha )\cdot \lambda$ at least. And at most k honest blocks created in the premining stage contributed to the score of the attack chain.
+This is because block creation follows a Poisson process, and because honest blocks that were created $D_{max}$ seconds before (after) $B$ belong to its past (future), hence are not in its anticone. Since any block that is blue in the honest chain contributes to its score, at any time interval, the score of the public chain grows at a rate of $(1-\delta)\cdot (1-\alpha )\cdot \lambda$ at least. And at most k honest blocks created in the premining stage contributed to the score of the attack chain.
 
-这是因为块创建遵循泊松过程,并且因为被创建于 $B$ 之前（之后） $D-{max}$ 秒的诚实块属于它的过去（未来），因此不在它的反锥体中。因为诚实链上任何蓝色的块都有助于其得分，在任何时间间隔，公共链的得分至少以 $(1-\delta)\cdot (1-\alpha )\cdot \lambda$ 的速率增长。最多k个诚实块创建在预期阶段对攻击链的得分做出贡献的链上。
+这是因为块创建遵循泊松过程,并且因为被创建于 $B$ 之前（之后） $D_{max}$ 秒的诚实块属于它的过去（未来），因此不在它的反锥体中。因为诚实链上任何蓝色的块都有助于其得分，在任何时间间隔，公共链的得分至少以 $(1-\delta)\cdot (1-\alpha )\cdot \lambda$ 的速率增长。最多k个诚实块创建在预期阶段对攻击链的得分做出贡献的链上。
 
 *Part III:* From Part I and Part II we conclude that the random process $X_r-k$ is upper bounded by the premining race analyzed in [8]. Therein it was shown that the probability distribution over $X_{u - T_1} - k$ (the process’s state at the end of the premining stage) is dominated by the stationary probability distribution $\pi$ of a reflecting random walk over the non-negative integers with a bias of $\frac{(1-\delta)\cdot (1-\alpha)}{1-\delta\cdot (1-\alpha )}$ towards negative infinity. The stationary distribution exists because $\alpha\leq 1/2\cdot (1-\delta) < (1-\alpha)\cdot (1-\delta)$ .^{16}
 
