@@ -35,7 +35,7 @@ In our original version of the colouring procedure, we chose the tip which has t
 
 7. >> **for** $C \in anticone(B)$ in some arbitrary order **do** 
 
-8. >>> **if**$|anticone(C) \cap S_B| \leq k$ **then**
+8. >>> **if** $|anticone(C) \cap S_B| \leq k$ **then**
 
 9. >>>> add C to $S_B$
 
@@ -47,7 +47,7 @@ Another variant over the previous algorithms is the procedure to mark more block
 *B.将块添加到贪婪选择出的蓝色集合*
 在选择最优末端和蓝色集合之后，先前算法的另一个变体是将更多块标记为蓝色的过程。在此之前，我们要求候选块在当前集合中承认一个至多为k的反锥体。相反，我们可以要求只在最初选择的蓝色集合内计算反锥体。因此，另一个变式将代替上面的8-9行
 
-8. >>> **if**$|anticone(C) \cap (BLUE_k(B) \cup {B})| \leq k$ **then**
+8. >>> **if** $|anticone(C) \cap (BLUE_k(B) \cup {B})| \leq k$ **then**
 
 9. >>>> add C to $S_B$
 
@@ -59,7 +59,7 @@ Finally, another viable alternative is to further relax the condition (in lines 
 
 最终，另一个可行的选择是进一步放宽条件（在8-9行中），只计算与产生的蓝色块的链相反的候选人B的反锥体，$Chn(past(B))\cup {B}$，$B$就是被选择的末端：
 
-8. >>> **if**$|anticone(C) \cap Chn(past(B))\cup {B}| \leq k$ **then**
+8. >>> **if** $|anticone(C) \cap Chn(past(B))\cup {B}| \leq k$ **then**
 
 9. >>>> add C to $S_B$
 
@@ -85,7 +85,7 @@ We now introduce another variant based on an iterative method common in combinat
 
 3. > **while** $\exists B \in BLUE_k(G)$  **with** $|anticone| \cap BLUE_k(G)|> k$ **do**
 
-4. >> $C \leftarrow ard_B max{|anticone(B)\cap BLUE_k(G)|}$(with arbitrary tie-breaking)
+4. >> $C \leftarrow ard_B\ max{|anticone(B)\cap BLUE_k(G)|}$(with arbitrary tie-breaking)
 
 5. >> remove $C$ from $BLUE_k(G)$
 
