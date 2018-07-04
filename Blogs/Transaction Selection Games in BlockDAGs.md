@@ -1,0 +1,49 @@
+# Transaction Selection Games in BlockDAGs
+
+_Consider a blockDAG network which mines 1 block per second, and an individual Miner A within it. How will Miner A know which transactions to embed in his next block? Obviously, he can fill his block with the highest-paying transactions, but then he faces the risk that these transactions simply duplicate the transactions that Miner B includes in his block, created at the same time in a different faction of the network. Miner A — and by symmetry Miner B — may thus consider being less greedy, selecting lower-paying fees, and avoiding the duplications, or “collisions”. In fact, this game is similar to the famous game of Chicken (aka Hawk–Dove Game), in which avoiding collisions is in the best interest of both parties. Interestingly, if we implement the Nash equilibrium strategy in the default mining client, an individual miner will not benefit from deviating, applying a more “Hawkish” strategy, and attempting to collect the highest-paying transactions. In this post we discuss how this affects a blockDAG’s throughput and quality of service for transaction confirmation._
+
+![](https://cdn-images-1.medium.com/max/1600/1*n3fhm8YmVLv12XhvYPdT0A.gif)
+
+### Background
+
+Since blockDAGs can operate at very high block creation rates, multiple blocks may be created in parallel in the network. Recall that all blocks in a blockDAG are included in the ledger, without being orphaned, and thus there is potential for a large throughput increase over Bitcoin. However, miners mining blocks in parallel to each other cannot directly coordinate with each other, and if they choose the same subset of transactions to include in their blocks, there would be many transaction collisions and throughput would be wasted (though confirmation times would still be significantly faster).
+
+### Incentives in transaction selection
+
+The  [Inclusive Blockchain Protocols](http://www.cs.huji.ac.il/~yoni_sompo/pubs/15/inclusive_full.pdf)  paper, presented at Financial Crypto 2015, highlights an important insight: miners are incentivized to avoid transaction collisions. A transaction fee is produced only once, and can be given only once (or split), even if the transaction is duplicated across multiple blocks. Assuming that the winner will be dictated by the ordering protocol applied on the DAG, each block has some probability of collecting the fee of a transaction embedded in it and some probability of losing it due to collisions. Miners are therefore incentivized to minimize collisions and hence increase the DAG’s utilization and throughput.
+
+The Inclusive authors go further to model this dynamic as a game of transaction selection. In the game, each miner needs to strategically decide which transactions to include in his next block. Interestingly, choosing the highest-paying transaction does not usually maximize the miner’s profit. The matrix below describes a simple game, as an example. It specifies the expected payoffs in the game where two miners need to choose one transaction for their next block, from a mempool of two transactions with different fees. Notice the resemblance to the game of  [Chicken](https://en.wikipedia.org/wiki/Chicken_%28game%29), where if one player commits to the more rewarding choice, the other is incentivized to sway and choose the less rewarding one.¹
+
+![](https://cdn-images-1.medium.com/max/1600/1*mrcOmZov5mwCXwhUkFf9lA.png)
+
+Miner1 and miner2 have tx1 and tx2 in their mempools. For the next transaction they decide to include, if they collide on the same transaction then they each only have a (roughly) 50% chance of getting the full transaction fee. They are thus incentivized to choose the transaction that the other does not choose — if the difference between the fees is not too large. However, they cannot coordinate their strategies.
+
+A player adopts a  _mixed strategy_  if he defines a probability distribution that assigns a likelihood to each of his possible actions in a game; thus, in this game, a miner’s mixed strategy is a probability distribution that defines how miners choose transactions to include in their next block. This game is described in detail in the Inclusive paper, where several solution concepts are analyzed, including the well known Nash equilibrium concept (see section 4.3). If Nash is played by all miners, then by definition no individual miner benefits from deviating. Practically, we can embed this strategy in our default mining client, which makes it easier to reason about how the equilibrium was reached.
+
+### Tradeoffs in transaction selection
+
+The throughput of a blockDAG is highly dependent on the strategy profile in this transaction selection game. For example, if each miner always chooses the  _k_  highest-fee transactions with probability 1 (where  _k_  = number of transactions per block), then parallel blocks are likely to contain many collisions, as miners of these blocks will choose the same subset of transactions from the mempool. In this case, the blockDAG would not enjoy any throughput improvement over a blockchain (though, again, confirmation times would still be much faster).
+
+On the other hand, if each miner chooses transactions uniformly from the mempool (above some small fee threshold), then there will be almost no collisions and throughput will be optimized. However, transactions will be served uniformly slowly, and those with higher fees will not be prioritized.
+
+More generally, the transaction selection strategy faces a tradeoff between high quality of service for confirmation times and high throughput. Furthermore, the chosen strategy depends on how cooperative miners are, and how much they expect to benefit from malicious deviation. For example, to achieve optimal throughput via the uniform selection strategy, miners have to almost entirely disregard fee differences, giving up on profit maximization.
+
+![](https://cdn-images-1.medium.com/max/1600/1*JsXW_H6Bh03jK-8joY5t1A.png)
+
+The graph above depicts the confirmation times of two different transaction selection strategies, which differ in the weight they give to the value of the fee. The orange curve represents a strategy that prioritizes high-fee transactions by assigning them higher inclusion probability in the next block. Those that are willing to pay the high fees will get confirmed fast, but there will be more collisions and the fee threshold to be selected from the mempool will be higher. The blue curve, in contrast, represents a more egalitarian strategy: it randomizes more uniformly over the mempool, assigns similar inclusion probability to transactions with medium-to-high fees, and therefore serves them roughly after the same waiting time. This more egalitarian strategy enjoys fewer collisions and higher throughput. However, urgent transactions might not be able to “buy” faster confirmation times with higher fees.
+
+Fortunately, the Inclusive authors show that the tradeoff is not severe — their Nash equilibrium solution achieves both high throughput and high quality of service levels. This solution assigns high probability to high-fee transactions, but these transactions are not selected with complete certainty, as some weight is given to lower-fee transactions. The authors ran simulations comparing the throughput of a blockDAG protocol with the Nash strategy profile to that of a non-inclusive longest-chain protocol. Though it does not reach optimal utilization, the blockDAG achieves high throughput (proportional to optimal throughput, in fact), while still maintaining the ability to prioritize high-paying users.
+
+![](https://cdn-images-1.medium.com/max/1600/1*caDZsrQT9KXVzxWUaTFigA.png)
+
+Simulation results from the  [Inclusive paper](http://www.cs.huji.ac.il/~yoni_sompo/pubs/15/inclusive_full.pdf)  (section 5.1): “We simulated a network with 100 identical players. The distance between each pair of players was a constant d = 1 second. We examined different block creation rates λ varying from 0 to 10 blocks per second. Block sizes were set to b = 50 transactions per block. The transaction arrival rate was 65 transactions per second, and their fees drawn uniformly from [0,1].”
+
+### Conclusion
+
+Protocol scalability is often measured in terms of throughput (transactions per second) and latency (confirmation times). While blockDAG protocols can achieve  [significantly faster confirmation times](https://blog.daglabs.com/confirmation-times-in-spectre-7f68fec0d997)  than blockchains, they typically face a tradeoff between quality of service for confirmation times and throughput, as demonstrated above. The tradeoff a blockDAG protocol takes depends on the behavior of miners when selecting transactions from their mempool to include in their next block. This behavior induces a non-trivial transaction selection game, in which miners are often incentivized to avoid duplications (or “collisions”), as these lower the chances of winning the fees. Still, transactions with high fees are selected by many miners, regardless of the collision risk, which allows for decent quality of service. Fortunately, these incentives imply that miners would naturally contribute and work towards higher utilization and throughput of the system, even when considering only their own self-interests.
+
+___________________________________________________________________
+
+#### Endnotes:
+
+¹ However, there is an important difference from Chicken: here, if both players collide on the more rewarding choice, it is better (from their perspective) than the scenario where both sway_ — _the social welfare (sum of players’ payoffs) of the bottom right cell is still higher than the upper left one. In Chicken, on the other hand, a collision is a disaster from the players’ perspective, and they would certainly prefer co-swaying over colliding.
