@@ -1,8 +1,10 @@
 >Source:https://blog.daglabs.com/transaction-selection-games-in-blockdags-602177f0f726
 
-#Transaction Selection Games in BlockDAGs
+Transaction Selection Games in BlockDAGs
+========================================
 
-#BlockDAG中的交易选择游戏
+BlockDAG中的交易选择游戏
+=====================
 
 *Consider a blockDAG network which mines 1 block per second, and an individual Miner A within it. How will Miner A know which transactions to embed in his next block? Obviously, he can fill his block with the highest-paying transactions, but then he faces the risk that these transactions simply duplicate the transactions that Miner B includes in his block, created at the same time in a different faction of the network. Miner A — and by symmetry Miner B — may thus consider being less greedy, selecting lower-paying fees, and avoiding the duplications, or “collisions”. In fact, this game is similar to the famous game of Chicken (aka Hawk–Dove Game), in which avoiding collisions is in the best interest of both parties. Interestingly, if we implement the Nash equilibrium strategy in the default mining client, an individual miner will not benefit from deviating, applying a more “Hawkish” strategy, and attempting to collect the highest-paying transactions. In this post we discuss how this affects a blockDAG’s throughput and quality of service for transaction confirmation.*
 
@@ -10,17 +12,17 @@
 
 ![1_n3fhm8ymvlv12xhvypdt0a](https://user-images.githubusercontent.com/39436379/42679444-8820eea2-86b4-11e8-92c5-f9dc41ff43b7.gif)
 
-##Background
+## Background
 
-##背景
+## 背景
 
 Since blockDAGs can operate at very high block creation rates, multiple blocks may be created in parallel in the network. Recall that all blocks in a blockDAG are included in the ledger, without being orphaned, and thus there is potential for a large throughput increase over Bitcoin. However, miners mining blocks in parallel to each other cannot directly coordinate with each other, and if they choose the same subset of transactions to include in their blocks, there would be many transaction collisions and throughput would be wasted (though confirmation times would still be significantly faster).
 
 由于blockDAG有非常高的出块率，因此可以在网络中并行创建多个块。回想一下，blockDAG中的所有块都包含在分类帐中，而不会成为孤块，因此有可能超过比特币而大量增加吞吐量。但是，矿工开采块彼此平行，不能直接相互协调，如果他们选择相同的交易子集包含在他们的块中，那么会有很多交易冲突，浪费吞吐量（虽然确认时间仍然会明显加快）。
 
-##Incentives in transaction selection
+## Incentives in transaction selection
 
-##交易选择中的激励
+## 交易选择中的激励
 
 The Inclusive Blockchain Protocols paper, presented at Financial Crypto 2015, highlights an important insight: miners are incentivized to avoid transaction collisions. A transaction fee is produced only once, and can be given only once (or split), even if the transaction is duplicated across multiple blocks. Assuming that the winner will be dictated by the ordering protocol applied on the DAG, each block has some probability of collecting the fee of a transaction embedded in it and some probability of losing it due to collisions. Miners are therefore incentivized to minimize collisions and hence increase the DAG’s utilization and throughput.
 
@@ -40,9 +42,8 @@ A player adopts a mixed strategy if he defines a probability distribution that a
 
 如果玩家定义了一个为游戏中的每个可能动作都分配了概率的概率分布，则玩家采用混合策略；因此，在这个游戏中，矿工的混合策略是一种概率分布，它定义了矿工如何选择要包含在下一个区块中的交易。这个游戏在论文中有详细描述，其中分析了几个解决方案，包括众所周知的纳什均衡概念（参见4.3节）。如果纳什均衡是由所有矿工参与的，那么根据定义，任何一个矿工都不会因偏离均衡而受益。实际上，我们可以将此策略嵌入到我们的默认挖矿客户端中，这样可以更容易地推断出均衡是如何实现的。
 
-##Tradeoffs in transaction selection
-
-**交易选择的权衡**
+## Tradeoffs in transaction selection
+## 交易选择的权衡
 
 The throughput of a blockDAG is highly dependent on the strategy profile in this transaction selection game. For example, if each miner always chooses the k highest-fee transactions with probability 1 (where k = number of transactions per block), then parallel blocks are likely to contain many collisions, as miners of these blocks will choose the same subset of transactions from the mempool. In this case, the blockDAG would not enjoy any throughput improvement over a blockchain (though, again, confirmation times would still be much faster).
 
@@ -71,9 +72,9 @@ Fortunately, the Inclusive authors show that the trade-off is not severe —�
 >Simulation results from the Inclusive paper (section 5.1): “We simulated a network with 100 identical players. The distance between each pair of players was a constant d = 1 second. We examined different block creation rates λ varying from 0 to 10 blocks per second. Block sizes were set to b = 50 transactions per block. The transaction arrival rate was 65 transactions per second, and their fees drawn uniformly from [0,1].”
 >包含性论文（第5.1节）的模拟结果：“我们模拟了一个拥有100个相同用户的网络。每对用户之间的时间间隔是（常数）d=1秒。我们检查了不同的块出块率λ，从每秒0个块到每秒10个块。块大小设置为每块b=50个交易。交易确认率为每秒65笔交易，其费用统一在[0,1]区间。
 
-##Conclusion
+## Conclusion
 
-##结论
+## 结论
 
 Protocol scalability is often measured in terms of throughput (transactions per second) and latency (confirmation times). While blockDAG protocols can achieve significantly faster confirmation times than blockchains, they typically face a tradeoff between quality of service for confirmation times and throughput, as demonstrated above. The tradeoff a blockDAG protocol takes depends on the behavior of miners when selecting transactions from their mempool to include in their next block. This behavior induces a non-trivial transaction selection game, in which miners are often incentivized to avoid duplications (or “collisions”), as these lower the chances of winning the fees. Still, transactions with high fees are selected by many miners, regardless of the collision risk, which allows for decent quality of service. Fortunately, these incentives imply that miners would naturally contribute and work towards higher utilization and throughput of the system, even when considering only their own self-interests.
 
