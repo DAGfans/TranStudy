@@ -1,14 +1,13 @@
 >Source:https://blog.daglabs.com/transaction-selection-games-in-blockdags-602177f0f726
 
-Transaction Selection Games in BlockDAGs
-========================================
 
-BlockDAG中的交易选择游戏
-=====================
+# Transaction Selection Games in BlockDAGs
+
+# BlockDAG中的交易选择游戏
 
 *Consider a blockDAG network which mines 1 block per second, and an individual Miner A within it. How will Miner A know which transactions to embed in his next block? Obviously, he can fill his block with the highest-paying transactions, but then he faces the risk that these transactions simply duplicate the transactions that Miner B includes in his block, created at the same time in a different faction of the network. Miner A — and by symmetry Miner B — may thus consider being less greedy, selecting lower-paying fees, and avoiding the duplications, or “collisions”. In fact, this game is similar to the famous game of Chicken (aka Hawk–Dove Game), in which avoiding collisions is in the best interest of both parties. Interestingly, if we implement the Nash equilibrium strategy in the default mining client, an individual miner will not benefit from deviating, applying a more “Hawkish” strategy, and attempting to collect the highest-paying transactions. In this post we discuss how this affects a blockDAG’s throughput and quality of service for transaction confirmation.*
 
-考虑一个blockDAG网络，它每秒挖掘1个块，并且在其中有一个矿工A。矿工A将如何知道在下一个区块中嵌入哪些交易？显然，他可以用最高手续费的交易填补他的块，但是他面临着这些交易只是复制矿工B在其区块中包含的交易的风险，交易同时在网络的不同阵营中创建。矿工A——以及对称矿工B——因此可以考虑减少贪婪，选择手续费较低的交易，避免重复或“冲突”。事实上，这个游戏类似于着名的胆小鬼博弈（又名Hawk-Dove Game），其中避免碰撞符合双方的最佳利益。有趣的是，如果我们在默认的挖矿客户端中实施纳什均衡策略，矿工不会因偏离均衡而受益，采用更“强硬”的策略，并试图收集手续费最高的交易。在这篇文章中，我们讨论了这会如何影响blockDAG的吞吐量和交易确认的服务质量。
+*考虑一个blockDAG网络，它每秒挖掘1个块，并且在其中有一个矿工A。矿工A将如何知道在下一个区块中嵌入哪些交易？显然，他可以用最高手续费的交易填补他的块，但是他面临着这些交易只是复制矿工B在其区块中包含的交易的风险，交易同时在网络的不同阵营中创建。矿工A——以及对称矿工B——因此可以考虑减少贪婪，选择手续费较低的交易，避免重复或“冲突”。事实上，这个游戏类似于着名的胆小鬼博弈（又名Hawk-Dove Game），其中避免碰撞符合双方的最佳利益。有趣的是，如果我们在默认的挖矿客户端中实施纳什均衡策略，矿工不会因偏离均衡而受益，采用更“强硬”的策略，并试图收集手续费最高的交易。在这篇文章中，我们讨论了这会如何影响blockDAG的吞吐量和交易确认的服务质量。*
 
 ![1_n3fhm8ymvlv12xhvypdt0a](https://user-images.githubusercontent.com/39436379/42679444-8820eea2-86b4-11e8-92c5-f9dc41ff43b7.gif)
 
