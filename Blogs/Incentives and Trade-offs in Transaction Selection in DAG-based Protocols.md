@@ -1,8 +1,8 @@
-> 文本 https://stanford2017.scalingbitcoin.org/transcript/stanford2017/incentives-tradeoffs-transaction-selection-in-dag-based-protocols
->
-> 视频 https://stanford2017.scalingbitcoin.org/presentations
-> PPT https://stanford2017.scalingbitcoin.org/stanford2017/Day2/Sompolinsky_SB4.pdf
+>文本 https://stanford2017.scalingbitcoin.org/transcript/stanford2017/incentives-tradeoffs-transaction-selection-in-dag-based-protocols
 
+>视频 https://stanford2017.scalingbitcoin.org/presentations
+
+>PPT https://stanford2017.scalingbitcoin.org/stanford2017/Day2/Sompolinsky_SB4.pdf
 
 #Incentives and Trade-offs in Transaction Selection in DAG-based Protocols
 
