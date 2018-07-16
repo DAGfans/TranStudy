@@ -4,9 +4,9 @@
 
 >PPT https://stanford2017.scalingbitcoin.org/stanford2017/Day2/Sompolinsky_SB4.pdf
 
-**Incentives and Trade-offs in Transaction Selection in DAG-based Protocols**
+# **Incentives and Trade-offs in Transaction Selection in DAG-based Protocols**
 
-**DAG协议中交易选择的激励和权衡**
+# **DAG协议中交易选择的激励和权衡**
 
 Yonatan Sompolinsky (The Hebrew University)
 Yonatan Sompolinsky (希伯来大学)
@@ -26,9 +26,9 @@ This talk will be focused on an idea that we develop in the Inclusive blockchain
 
 本次讨论会聚焦在我们2015研究的Inclusive的区块链论文上, 我们算是在回顾这些想法, 因为我们已经在去实现区块DAG的协议了.
 
-*Blockchain vs BlockDAG*
+## Blockchain vs BlockDAG
 
-*区块链 vs 区块链DAG*
+## 区块链 vs 区块链DAG
 
 The first difference is that in a chain you would maintain a single chain. But in a DAG you have an entire graph of blocks. In a chain, we ignore anything that is off-chain and any data that was not in the chain. In the DAG, you use all of this information, you harvest all information from all blocks. The third implication that in a chain paradigm you are trying to suppress throughput so that spontaneous forks are rare in the system. In a blockDAG system, forks are a common phenomena of the system and many forks are created in parallel.
 
@@ -40,9 +40,9 @@ scalability more security more fairness. But the fact that is it can be used to 
 
 正如你可以想象的, 这本质上是个信息的问题. 在链式模型中你会丢弃所有的离线信息. 而DAG会利用这个完整的信息来增强可扩容性, 安全性和公平性. 不过事实上, 可以利用这些信息并不代表所有的区块DAG会利用, 随便说个例子, 以太坊的GHOST就主要是用于增强公平性而非可扩容性.
 
-*Scaling up layer 1 using DAGs*
+## Scaling up layer 1 using DAGs
 
-*使用DAG扩展第1层*
+## 使用DAG扩展第1层
 
 The first step would be to speed up block rate. Instead of 1 block every 10 minutes or 1 block every 21 seconds, imagine 50 blocks per second or maybe more. That's step one. So we need spontaneous forks of the chain. The second step is to modifying the mining protocol where instead of extending a chain, you want to reference previous blocks and all the tips that it sees, and integrating the forks into one graph so that you have this massive cool graph which his directed acyclic graph. Seems so simple so far.
 
@@ -81,9 +81,9 @@ So here's the good news and perhaps the main thing I want to message to convey t
 所以这是好消息，也许是我想传达给你的主要内容。矿工们在某种程度上受到激励，以避免冲突和重复，并提供独特的交易和提高吞吐量。因此，这种对矿工天然的激励有助于系统的健全。原因是简单的。如果我们在同一系统中发生冲突，如果我们为我们的区块选择相同的交易，那么我们需要平分手续费，你将收取一半的手续费，而我将在其他部分收取另一半手续费，但我们不能支付两次费用。我们都在我们的块中加入了交易。我们中只有一个人会收取费用，或者我们会平分它，但我们将无法提取全部费用两次。因此，是存在激励来协调和避免冲突的。
 
 
-*Chicken game*
+## Chicken game
 
-*胆小鬼博弈*
+## 胆小鬼博弈
 
 And now we're headed to a more formal treatment of this problem. I hope the chicken game is known to most of you. It's a famous game to model conflicts. You have two parties driving towards each other and heading to collision. And the first one to swerve and chicken out is the chicken and the one to stay the course is the winner and daredevil.And of course, if either you chicken out then the other party wins. And if we both dare then there's a collision. The transaction selection game in blockDAG is quite similar. We have tx1, tx2 in the mem pool and one of the transactions is more expensive (tx1) let's say it pays 2 millibitcoins and tx2 pays 50% as much. So now we have to decide how to let numbers should be different I'd say tx1, 3 millibitcoin and tx2 would be 2 millibitcoin.If we both select tx1, the most high paying transaction, we will collide and need to divide the fee between us. But if we both select tx2, we need to divide a lower fee between us. So we need to coordinate and select the transactions. This would be the optimal setup.Strategies in this game is the important point you have in game theory. Pure strategies which is simply which transaction to select, and you have mixed strategies which is using randomness to select. In a mixed strategy setup I can toss a coin and then decide which transactions to select. In game theory, using randomness you can achieve much better results for all players. In practical terms, we are looking at setup in a DAG where miners will randomize over the mempool to select transactions. In bitcoin, a miner selects the top transactions. But in a DAG, the best thing for you to do is to randomize over the mempool according to some distribution and then use this to maximize your throughput.
 
@@ -94,9 +94,9 @@ block.
 
 我们如何解决胆小鬼博弈？在博弈论中，有几个方法。左上角的方法是对抗性的方法。你是一个挖矿池，你很偏执，你认为每个人都会破坏你的利润，他们希望你的收入下降。在这种情况下，你的安全解决方案是，你只是想保证自己对其他想要破坏我并降低利润的人做出最好的回应。这是充满对抗性的，不适合和谐的比特币社区，所以我们可能会考虑更多合作性的方法。利己方法是一个更常见的方法，与纳什均衡相似，每个团体都追求自己的利益，但不知何故，无形的手把我们带到了平衡之中，没有人从违规中获益。这是一个常见的概念。罗伯特·阿曼提出了一个有趣的均衡概念，他是希伯来大学的小说家。这是个协调的均衡，每个人都是利己的，但我们有一些协调的信号，而在挖矿过程中，信号可能是先前区块的随机值。也许我们可以使用上千个区块生成的随机数来更明智地选择交易到内存池。然后最乐观的是，每个人都只是为了系统的健康而参与。你可以设想下早期比特币的情景, 每个人唯一关心的就是最大限度地提高社区福利, 并且矿工也会去确认零手续费的交易。当时的激励措施较少。
 
-*Max social welfare*
+## Max social welfare
 
-*最大化社区福利*
+## 最大化社区福利
 
 We can visit several of these ideas but let's begin with max social welfare. This is the simplest and most optimistic. What would be the solution here? All the miners are cooperating, they just ask us, we don't know how they coordinate, there's a design mechanism undre which the DAG is utilized and we won't collide and the throughput is at maximum. The solution in this case is rather simple. The construction to the miners would be just select a transaction in random uniform distribution from your mempool, so let's say you have 6 transactions or thousands, you do this by tossing a fair coin between them until some threshold, and you accept all transactions uniformy. The threshold is what's the capacity of the DAG, you can't overcome this capacity, and it's very famous and simple result from queueing theory that says that you won't have any collisions in the system. The buckets of transactions would be sparse enough that collisions will be negligible. This setup of course is a bit naive. There's two catches.
 
@@ -106,9 +106,9 @@ This is strategically unstable. We're assuming that everyone is maximizing socia
 
 这在战略上是不稳定的。我们假设每个人都在最大化社区福利，但事实并非如此。这种方法本身存在一个问题，即它不允许对紧急事务进行差别服务。你无法按手续费确定交易的优先顺序。因此，我不能告诉矿工，我需要更快地完成交易并且我愿意支付更多手续费。因此，如果他们不按手续费选择交易，那么每个人都会在同一时间等待。有些交易永远不会被确认。你可以将此视为每个人都处于同一交通环境的高速公路。作为系统设计师，你真正想要实现的目标是什么？你想要的系统是人们愿意支付更多手续费拥有快车道。假设快车道需要付款，他们愿意支付更多费用以更快地到达目的地。然后你会得到这条曲线，说明你支付的越多，你就越快开始完成交易。所以这是你设计的系统所要参考的一个方面。
 
-*Other strategies*
+## Other strategies
 
-*其他策略*
+## 其他策略
 
 If you have high utilization of the DAG with collision avoidance, then you can't serve the express lane and can't have prioritized transactions. Because you need signal to miners to back off from expensive transactions so that they don't collide. And on the other extreme, if you allow for fast confirmation times, then you will inevitably suffer from collisions. So what you see here is simply the function of how long have the numbers of collisions of a transaction as a function of the of the of its waiting time.挖矿 Only transactions that allow themselves to wait a long time the buffer suffer no collisions. Transactions that want to be confirmed fast will suffer collisions and would need a higher fee.
 
@@ -128,9 +128,9 @@ We did a more modest goal-- namely, we computed the nash equilibrium for the sin
 
 <img width="1163" alt="2018-07-13 12 00 38" src="https://user-images.githubusercontent.com/39436379/42671781-7dc06fe8-8694-11e8-9185-d6a625d742fd.png">
 
-*Quality of service*
+## Quality of service
 
-*服务质量*
+## 服务质量
 
 Can we improve utilization a bit more? Another interesting graph we must talk about is the quality of service level. As I said, the problem with the maximum social welfare solution is that you can't prioritize transactions. Here the tall grey bars represent max social welfare strategy. Everyone waits the same time. And then the blue bars represent the nash equilibrium where you approve less transactions- only those that have 3 millibitcoin and those exact numbers do not matter of course, it's a dummy model. As you increase the fee, you wait less. We want this feature. We want high-paying transactions to wait less. And we have other strategies like exponential strategy. If everyone is greedy, then you would only approve a small set of transactions. This is a good illustration of the challenge.
 
@@ -138,17 +138,17 @@ Can we improve utilization a bit more? Another interesting graph we must talk ab
 
 <img width="1117" alt="2018-07-13 1 11 12" src="https://user-images.githubusercontent.com/39436379/42673489-45045aa2-869e-11e8-9e29-c01bd8a327d1.png">
 
-*Correlated equilibrium*
+## Correlated equilibrium
 
-*相关均衡*
+## 相关均衡
 
 Perhaps with coordination between miners we can achive better results than nash. We could use previous block's randomness. Preliminary results show that we are able to utilize the DAG better. Needs further investigation.
 
 也许通过矿工之间的协调，我们可以获得比纳什均衡更好的结果。我们可以使用前一个块的随机值。初步结果表明我们能够更好地利用DAG。需要进一步调查。
 
-*Scaling and incentives*
+## Scaling and incentives
 
-*扩展和激励*
+## 扩展和激励
 
 In bitcoin selfish mining is a known attack and deviation on the protocol. It's risky, it only works in a long term after two
 weeks at least. And so arguably the reason why we didn't see selfish mining until now or at least not in notable amounts was that playing with your mining node just to withhold your blocks and risk losing it all is too risky and miners wont engage in such behaior. Unforotunately in a DAG, mining from the mining protocol is much more available to you, you just need to select transactions in a certain way or hold your blocks for a few seconds. So if I am withholding my block for 2 bloks, that's not going to hurt me. It's a much more granular decision for how to optimize my mining, and the risks for the miner are less. The harm to the system is relatively marginal. Also lazy selfish mining is another concern- it might not have communication infrastructure either deliberately or by laziness and doesn't propagate blocks to the network. This pool might not lose too much profit and other miners might be harmed, this is an interesting topic for us so we're investigating it.
