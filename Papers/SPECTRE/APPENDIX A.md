@@ -54,17 +54,18 @@ These will usually vote in favour of x and will usually outnumber the attacker b
 在SPECTRE中，在y被隐瞒时由诚实节点创建的块，会向他们的未来集寻求它们的投票。
 这些通常会投票支持x，并且通常会超过y被隐瞒时创建的攻击者区块（预挖掘的一个例子出现在图3中）。
 
+<img width="504" alt="2018-07-17 12 00 53" src="https://user-images.githubusercontent.com/39436379/42798993-afa5d2f0-89c8-11e8-8649-06d39a78db29.png">
 
 Fig. 2: SPECTRE coincides with the longest-chain rule when it is applied to “simple” chains of blocks. 
 In the depicted DAG, the chain ending at block 8 is longer and would be selected in the longest chain protocol. 
 In SPECTRE each one of the blocks 5,6,7,8 precedes each of the blocks in 9,10,11. 
 Consider for instance blocks 6 and 10 and the pairwise vote that involves them. 
-Blocks 6-8 vote strongly 6 ≺ 10, as they see block 6 in their past but not block 10. 
-Block 5 is a weak voter, as it sees neither 6 nor 10 in its past, hence it votes as the majority of its future (thus voting 6 ≺ 10 as well). 
-For similar reasons, blocks 9-11 all vote 10 ≺ 6. 
+Blocks 6-8 vote strongly 6 ≺ 10, as they see block 6 in their past but not block 10. 
+Block 5 is a weak voter, as it sees neither 6 nor 10 in its past, hence it votes as the majority of its future (thus voting 6 ≺ 10 as well). 
+For similar reasons, blocks 9-11 all vote 10 ≺ 6. 
 Block 4, at the fork of the two chains, is a weak voters as well, as it sees neither 6 nor 10 in its past; it therefore votes according to the majority of future blocks. 
-As block 4 sees four votes in favour of 6 ≺ 10, and three votes in favour of 10 ≺ 6, it will vote in favour of 6 ≺ 10. 
-Blocks 1-3 similarly vote according to their future, and see an increasing number of votes for 6 ≺ 10, adding their own vote to the result. 
+As block 4 sees four votes in favour of 6 ≺ 10, and three votes in favour of 10 ≺ 6, it will vote in favour of 6 ≺ 10. 
+Blocks 1-3 similarly vote according to their future, and see an increasing number of votes for 6 ≺ 10, adding their own vote to the result. 
 Thus, the end result is that 6 precedes 10.
 
 图2：当SPECTRE应用于“简单”区块链时，SPECTRE与最长链规则相吻合。(译注: 简单这里指, 分支很少)
@@ -75,7 +76,7 @@ Thus, the end result is that 6 precedes 10.
 块5无法明确地投票，因为它过去集没有看到过6，也没有看到过10，所以它会根据其未来集中多数票来投票（因此也投票给6 ≺ 10） ）。
 由于类似的原因，9-11块都投了10 ≺ 6.
 区块4在两个链的分叉处，也无法明确投票, y因为它无法在其过去集中看到6和10;它因此会根据其将来集中的区块多数票来投票。
-因为区块4看到四票投给了6 ≺ 10, 还有三票投给了10  ≺ 6, 它会投票给6 ≺ 10.
+因为区块4看到四票投给了6 ≺ 10, 还有三票投给了10 ≺ 6, 它会投票给6 ≺ 10.
 类似地, 区块1-3根据它们的将来集投票，可以看到投给6 ≺ 10的票数越来越多，会将它们自己的票投给这个结果。
 因此，最终的结果是6比10靠前。
 
@@ -113,92 +114,40 @@ Fig. 3 depicts an (unsuccessful) double-spending attack. The attack is composed 
 **Phase I: Pre-mining.** 
 In phase I, the attacker begins building blocks and withholding them from the network. 
 The ﬁrst block that is constructed (named block y ) contains a transaction that will later conﬂict with the transaction sent to the honest nodes. 
-Blocks built by the attacker ideally form a chain, and due to the voting rules in SPECTRE, will all vote y ≺ x (blocks y ,13,14). 
+Blocks built by the attacker ideally form a chain, and due to the voting rules in SPECTRE, will all vote y ≺ x (blocks y ,13,14). 
 Blocks built by the honest node are unaware of y (and also of x that is yet to be created), and will eventually vote according to the majority of future votes. 
-During this phase, attacker blocks reference honest blocks that are built (in hopes of later convincing them to vote y ≺ x). 
+During this phase, attacker blocks reference honest blocks that are built (in hopes of later convincing them to vote y ≺ x). 
 After some time, the attacker transmits the transaction to the network, and proceeds to phase II.
 
 **阶段I：预挖** 
 在阶段I中，攻击者开始构建区块并组织它们进入网络, 。 
 构造的第一个块（名为块y）包含一个交易，稍后将与发送给诚实节点的交易冲突。 
-由攻击者构建的区块在理想的区块下会形成一个链，并且由于SPECTRE中的投票规则，它们都会投票 y ≺ x（块y，13,14）。 
+由攻击者构建的区块在理想的区块下会形成一个链，并且由于SPECTRE中的投票规则，它们都会投票 y ≺ x（块y，13,14）。 
 由诚实节点构建的块不知道y（还有尚未创建的x），并且最终将根据大多数未来投票进行投票。 
-在这个阶段，攻击者会阻止被创建诚实块（希望以后说服他们投票y ≺ x）。 
+在这个阶段，攻击者会阻止被创建诚实块（希望以后说服他们投票y ≺ x）。 
 一段时间后，攻击者将交易传输到网络，然后进入第二阶段。
 
-Transaction X is broadcast
-
-Attacker broadcasts blocks
-
-2 (X<Y)
-
-X (X<Y)
-
-6 (X<Y)
-
-8 (X<Y)
-
-10 (X<Y)
-
-4 (X<Y)
-
-12 (X<Y)
-
-1 (X<Y)
-
-3 (X<Y)
-
-5 (X<Y)
-
-15 (Y<X)
-
-7 (X<Y)
-
-9 (X<Y)
-
-11 (X<Y)
-
-Y (Y<X)
-
-13 (Y<X)
-
-14 (Y<X)
-
-16 (Y<X)
-
-17 (Y<X)
-
-18 (Y<X)
-
-19 (Y<X)
-
-Phase I: pre-mining
-
-Phase II: attack remains hidden until merchant accepts
-
-Phase III: race to overtake
-
-time
+<img width="1020" alt="2018-07-17 1 53 48" src="https://user-images.githubusercontent.com/39436379/42799088-fc3b613e-89c8-11e8-9595-121d6503b8e7.png">
 
 Fig. 3: An example of the voting procedure on a DAG in which a double-spending attack is (unsuccessfully) attempted. 
-Block x and blocks 6-8 vote strongly x ≺ y as they only see x in their past, and not y . 
-Similarly, block y and blocks 13-19 vote strongly y ≺ x. 
-In the DAG which is the past of block 11, each of the blocks 1-5 sees more x ≺ y voters in its future than y ≺ x voters, hence each of them votes x ≺ y . 
-Block 11 votes (as the virtual block of its past votes), according to the majority in its past, thus it too votes x ≺ y . 
+Block x and blocks 6-8 vote strongly x ≺ y as they only see x in their past, and not y . 
+Similarly, block y and blocks 13-19 vote strongly y ≺ x. 
+In the DAG which is the past of block 11, each of the blocks 1-5 sees more x ≺ y voters in its future than y ≺ x voters, hence each of them votes x ≺ y . 
+Block 11 votes (as the virtual block of its past votes), according to the majority in its past, thus it too votes x ≺ y . 
 A similar argument goes for the the vote of 11 and 12. 
-Finally, aggregating the vote of all blocks in the DAG, x got more votes hence x ≺ y .
+Finally, aggregating the vote of all blocks in the DAG, x got more votes hence x ≺ y .
 
 图3：DAG中投票程序的一个例子，其中尝试了双花攻击（未成功）。 
 块x和块6-8明确投票支持x ≺ y，因为他们只在它们的过去集合看到x，而不是y。 
 同样，区块y和区块13-19明确投票支持y ≺ X。 
-在块11的过去集形成的DAG中，块1-5中的每个块在各自的将来集中可以看到支持x ≺ y 的比 y ≺ x 更多，因此它们都投票支持x ≺ y。 
-区块11(可以看作是它过去集的虚拟块)根据它过去集的大多数来投票, 因此也会投票支持x ≺ y .
+在块11的过去集形成的DAG中，块1-5中的每个块在各自的将来集中可以看到支持x ≺ y 的比 y ≺ x 更多，因此它们都投票支持x ≺ y。 
+区块11(可以看作是它过去集的虚拟块)根据它过去集的大多数来投票, 因此也会投票支持x ≺ y .
 类似的思路也可以用于求得区块11和12的投票。
-最后，汇总DAG中所有块的投票，x得到更多的选票，因此x？ y。
+最后，汇总DAG中所有块的投票，x得到更多的选票，因此x < y。
 
 
 
-Notice that at the exact time that phase I ends, the attacker has more blocks above block 4 than honest nodes have, so it starts at an advantage: it will more easily sway the vote of block 4 towards y ≺ x (this advantage later disappears as honest nodes typically build blocks faster than the attacker).
+Notice that at the exact time that phase I ends, the attacker has more blocks above block 4 than honest nodes have, so it starts at an advantage: it will more easily sway the vote of block 4 towards y ≺ x (this advantage later disappears as honest nodes typically build blocks faster than the attacker).
 
 请注意，在阶段I结束的确切时间，攻击者比真实节点具有更多的块在块4上方，因此它从一个优点开始：它将更容易地将块4的投票移向y？ x（这种优势随后消失，因为诚实的节点通常比攻击者更快地构建块）。
 
@@ -219,10 +168,10 @@ Some small number of blocks (created before x propagated to the whole network �
 少量的块（在x传播到整个网络之前创建 - 在本例中为块5）没有引用x，因此将根据未来投票的结果进行投票。
 
 **Phase III: Race to overtake.** 
-Once x was -accepted by the victim, the attacker wishes to publish his secret blocks in hopes of causing his conﬂicting transaction in y to precede x. 
+Once x was accepted by the victim, the attacker wishes to publish his secret blocks in hopes of causing his conﬂicting transaction in y to precede x. 
 In this case, the transaction in x will be considered rejected, and the payment will be canceled (leaving the attacker with an item he did not pay for). 
 He publishes his secret chain (which from this point on is referenced by honest nodes), and continues to build upon it. 
-Blocks that he builds, again do not reference x, and so they vote y ≺ x, supporting his goal. 
+Blocks that he builds, again do not reference x, and so they vote y ≺ x, supporting his goal. 
 New honest nodes are for the ﬁrst time exposed to the conﬂicting transaction y , and thus vote according to the result in the sub-DAG in their past.
 
 **第三阶段：竞争以赶超。** 
@@ -254,7 +203,7 @@ The attack therefore depends heavily on successfully swaying the votes of blocks
 因此，攻击在很大程度上取决于成功地摇摆在x之前创建的块的投票（例如，块4）。
 
 It is important to note that an attacker that creates more blocks in expectation than the honest network will succeed in carrying out this attack. 
-The blocks voting y ≺ x would outnumber those who vote to the contrary. 
+The blocks voting y ≺ x would outnumber those who vote to the contrary. 
 Hence the 50% threshold in Theorem 3.
 
 值得注意的是，攻击者如果预期能比诚实网络创建更多的区块, 则可以成功实施这种攻击。 
@@ -288,53 +237,7 @@ Our analysis of SPECTRE shows that even in this case the merchants accept transa
 这可能会永久延迟对交易的接受。 
 我们对SPECTRE的分析表明，即使在这种情况下，商家也能快速（和安全地）接受交易。
 
-Present
-
-X (X<Y)
-
-3 (X<Y)
-
-5 (X<Y)
-
-7 (X<Y)
-
-9 (X<Y)
-
-2 (X<Y)
-
-11 (X<Y)
-
-1 (X<Y)
-
-4 (X<Y)
-
-6 (X<Y)
-
-8 (X<Y)
-
-10 (X<Y)
-
-12 (X<Y)
-
-13 (X<Y)
-
-14 (X<Y)
-
-15 (X<Y)
-
-16 (Y<X)
-
-Y (Y<X)
-
-17 (Y<X)
-
-18 (Y<X)
-
-Phase I: X gains confirmations, but attacker blocks ignore X.
-
-Projected Future attack. (double spend Y appears)
-
-time
+<img width="966" alt="2018-07-17 1 57 49" src="https://user-images.githubusercontent.com/39436379/42799194-71ffb6d6-89c9-11e8-82e0-24c8cef58642.png">
 
 Fig. 4: An example of the voting procedure on DAG in which an unsuccessful censorship attack is depicted. 
 The left side depicts the current state of the block DAG. 
@@ -347,7 +250,7 @@ Blocks 17-18 similarly vote strongly for y .
 Block 16 is indeed convinced to vote for y as more blocks in its future vote for y than for x. 
 Blocks 1, 12-15 vote for x. 
 They each see more votes in favour of x than votes in favour of y in their future. 
-Blocks 10-11 see more x ≺ y voters in their past when they make a recursive call.
+Blocks 10-11 see more x ≺ y voters in their past when they make a recursive call.
 
 图4：DAG的投票程序示例，其中描述了一次不成功的审查攻击。 
 左侧描绘了区块DAG的当前状态。 
