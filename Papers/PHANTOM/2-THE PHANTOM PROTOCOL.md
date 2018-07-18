@@ -14,9 +14,9 @@ PHANTOM包含以下三个步骤：
 with high probability, blocks that were mined honestly belong to this cluster and vice versa.
 > 2) We extend the DAG’s natural partial ordering to a full topological ordering in a way that favours blocks inside the selected cluster and penalizes those outside it.
 > 3) The order over blocks induces an order over transactions;
+
 transactions in the same block are ordered according to the order of their appearance in it.
-We iterate over all transactions in this order, and accept each one that is consistent (according to the underlying 
-Consistency notion) with those approved so far.
+We iterate over all transactions in this order, and accept each one that is consistent (according to the underlying Consistency notion) with those approved so far.
 The Consistency notion used in the last step depends on the specific application under consideration.
 For instance, with regards to the Payments application, a transaction is consistent with the history only if all of its inputs have been approved and no double spending transaction has been approved before.
 Our work is agnostic to the definition of the Consistency rule.
@@ -58,7 +58,8 @@ As a result, the set of honest blocks in B’s anticone – which we denote $ant
 
 In other words, the probability that an honest block B will suffer a large honest anticone is small:
 
-$Pr(|anticone_h(B)|>k)\in O(e^{-C\cdot k})$ , for some constant $C > 0$ (this stems from a bound on the Poisson distribution’s tail).
+$Pr(|anticone_h(B)|>k)\in O(e^{-C\cdot k})$ , 
+for some constant $C > 0$ (this stems from a bound on the Poisson distribution’s tail).
 
 We rely on this property and set PHANTOM’s parameter k such that the latter probability is smaller than δ , for some predeﬁned $\delta > 0$;
 
@@ -68,7 +69,8 @@ see discussion in Section 4.
 
 换句话说，一个诚实的块B会面临一个大的诚实的反锥体的可能性很小：
 
-对于某个常数$C> 0$, $Pr(|anticone_h(B)|>k)\in O(e^{-C\cdot k})$(这源于泊松分布尾部的边界)。
+对于某个常数$C> 0$, 
+$Pr(|anticone_h(B)|>k)\in O(e^{-C\cdot k})$(这源于泊松分布尾部的边界)。
 
 我们根据这个性质，并且设定PHANTOM的参数k，使得后者的概率小于某个预定义的大于0的δ;
 
@@ -82,9 +84,13 @@ Following this intuition, the set of honest blocks (save perhaps a fraction δ t
 
 (^2) 注意，与 anticone h(B)相比，对于任何块B,攻击者可以通过创建许多不引用B并且保密的块来很容易地增加 anticone(B)的大小以至于B不能引用它们。
 
-**Definition 1.** Given a DAG $G=(C,E)$ , a subset $S\subseteq C$ is called a k-cluster, if $\forall B\in S: |anticone(B)\cap S|\leq k$.
+**Definition 1.** Given a DAG $G=(C,E)$ , 
+a subset $S\subseteq C$ is called a k-cluster, 
+if $\forall B\in S: |anticone(B)\cap S|\leq k$.
 
-**定义1** 给定一个DAG $G =(C,E)$，如果 $\forall B \in S: |anticone(B)\cap S|\leq k$，则子集$S\subseteq C$被称为k-集群。
+**定义1** 给定一个DAG $G =(C,E)$，
+如果 $\forall B \in S: |anticone(B)\cap S|\leq k$，
+则子集$S\subseteq C$被称为k-集群。
 
 Note that the attacker can easily create k-clusters as well, e.g., by structuring his blocks in a single chain.
 
@@ -152,7 +158,8 @@ Thus, in an actual implementation of Algorithm 1, the sets $BLUE_k(B)$ will have
 
 因此，在算法1的实际实现中，集合$BLUE_k(B)$已经(通过之前的调用)被计算并被存储，并且将不需要重新计算它们。
 
-Intuitively, we first let the DAG inherit the colouring of its highest scoring tip, $B_{max}$, where the score of a block is defined as the number of blue blocks in its past: $score(B) :=|BLUE_k(past(B))|$.
+Intuitively, we first let the DAG inherit the colouring of its highest scoring tip, $B_{max}$, 
+where the score of a block is defined as the number of blue blocks in its past: $score(B) :=|BLUE_k(past(B))|$.
 
 Then, we proceed to colour blocks in $anticone(B_{max})$ in a way that preserves the k-cluster property.
 
@@ -166,7 +173,8 @@ They only differ in that, instead of searching for the maximal k-cluster, we are
 
 Thus, the reader should think of our algorithm (informally) as approximating the optimal solution to the Maximum k-cluster SubDAG problem.
 
-直觉上，我们首先让DAG继承其得分最高的末端($B_{max}$)的着色，其中一个块的得分被定义为过去的蓝色块的数量：$score(B) :=|BLUE_k(past(B))|$。
+直觉上，我们首先让DAG继承其得分最高的末端($B_{max}$)的着色，
+其中一个块的得分被定义为过去的蓝色块的数量：$score(B) :=|BLUE_k(past(B))|$。
 
 然后，我们继续以保留k-集群属性的方式给$anticone(B_{max})$着色。
 
@@ -180,7 +188,7 @@ Thus, the reader should think of our algorithm (informally) as approximating the
 
 因此，读者应该将我们的算法（非正式地）想象为近似最大k-集群SubDAG问题的最佳解决方案。
 
-![fig 3](https://user-images.githubusercontent.com/22833166/37557316-b6d343a4-2a3d-11e8-8ac2-e66eab0aab45.jpg)
+![1](https://user-images.githubusercontent.com/39436379/42873332-59d893d2-8ab1-11e8-8b58-a6cd76c45ed4.png)
 
 **Fig. 3:** An example of a blockDAG G and the operation of the greedy algorithm to construct its blue set $BLUE_k(B)$ set, under the parameter k= 3.
 
@@ -242,7 +250,7 @@ We demonstrate the operation of this algorithm in Figure 3.
 
 Another example appears in Figure 4.
 
-Note that the recursion halts because for any block $B\in G:|past(B)|<|G|$.
+Note that the recursion halts because for any block $B\in G:\|past(B)\|<\|G\|$.
 
 Let us specify the order in which blocks in $anticone(B_{max})$ should be visited, in line 8 of the algorithm.
 
@@ -256,7 +264,7 @@ in case of ties, the block with lowest hash ID is chosen.
 
 另一个例子出现在图4中。
 
-请注意，递归会因为任何块$B\in G:|past(B)|<|G|$而停止。
+请注意，递归会因为任何块$B\in G:\|past(B)\|<\|G\|$而停止。
 
 让我们在算法的第8行中指定应该被访问的$anticone(B_{max})$中块的顺序。
 
@@ -266,9 +274,9 @@ in case of ties, the block with lowest hash ID is chosen.
 
 在优先级相同的情况下，选择ID的散列值最小的块。
 
-(^5) This guarantees that a block cannot be popped out while a block in its past is still in the queue, since $C\in future(B) \Rightarrow |past(C)|>|past(B)|$.
+(^5) This guarantees that a block cannot be popped out while a block in its past is still in the queue, since $C\in future(B) \Rightarrow \|past(C)\|>\|past(B)\|$.
 
-(^5) 由于$C\in future(B) \Rightarrow |past(C)|>|past(B)|$，所以这确保了块在其过去的块仍然在队列中时不能弹出。
+(^5) 由于$C\in future(B) \Rightarrow \|past(C)\|>\|past(B)\|$，所以这确保了块在其过去的块仍然在队列中时不能弹出。
 
 **Remark.** Our choice of ordering via $topo\_queue$ is not inherently significant, and many alternative topological orderings can provide similar robustness properties.
 
@@ -376,7 +384,7 @@ In this way, blocks that were withheld by an attacker will not precede blocks th
 
 **Output:** $BLUE_k(G)$ – the dense-set of G
 
-1. **function** CALC-BLUE(G, k )
+1. **function** CALC-B L UE(G, k )
 
 2. > **if** $B == genesis$ **then**
 
@@ -386,13 +394,13 @@ In this way, blocks that were withheld by an attacker will not precede blocks th
 
 5. >> $BLUE_k(B) \leftarrow CALC-BLUE(past (B) , k)$
 
-6. > $B_{max} \leftarrow \arg max \{|BLUE_k(B)|:B\in tips(G)\}$ (and break ties arbitrarily)
+6. > $B_{max} \leftarrow \arg max \{\|BLUE_k(B)\|:B\in tips(G)\}$ (and break ties arbitrarily)
 
 7. >> $BLUE_k(G) \leftarrow BLUE_k(B_{max}) \cup \{B_{max} \}$
 
 8. >> **for** $B \in anticone (B_{max} )$ **do** in some topological ordering
 
-9. >>> **if** $|anticone (B) \cap BLUE_k(G)| \leq k$ **then**
+9. >>> **if** $\|anticone (B) \cap BLUE_k(G)\| \leq k$ **then**
 
 10. >>>> add B to $BLUE_k(G)$
 
@@ -458,7 +466,7 @@ In Section 5 we prove that robustness is indeed obtained, after some waiting tim
 
 考虑一个交易$tx\in B$，其中B是G的蓝色集合中的一个块。
 
-为了使tx无效，冲突交易$\bar{tx}$ 必须在它的顺序之前，因此必须嵌入在B之前的块$C\in anticone(B)$ ^6
+为了使tx无效，冲突交易$\bar{tx}$ 必须在它的顺序之前，因此必须嵌入在B之前的块$C\in anticone(B)$
 
 排序过程意味着，对于C先于B，它必须是蓝色块或过去的蓝色块。
 
@@ -467,7 +475,3 @@ In Section 5 we prove that robustness is indeed obtained, after some waiting tim
 因此，tx的接收者可以等待B周围的蓝色集合对重组变得足够强健后，然后批准tx。
 
 在第5节中，我们证明了在一段等待时间之后确实获得了鲁棒性。
-
-(^6) Or, $\bar{tx}$ can appear in B before tx, but this is not an interesting scenario.
-(^6) 或者， $\bar{tx}$可以在tx之前出现在B中，但这不是一个有趣的场景。
-
