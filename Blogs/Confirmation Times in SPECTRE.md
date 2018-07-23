@@ -192,7 +192,6 @@ D和$\ lambda$对确认时间的影响在下面的模拟结果中显示。
 >(left) Effect of delay D on confirmation times with $\ lambda  = 10$ blocks per second and $\ alpha = 0.25$. 
 >
 >延迟D对确认时间的影响,每秒$\ lambda =10$块和$\ alpha = 0.25$。
->
 >(right) Effect of block creation rate $\ lambda$ on waiting time with D = 5 seconds and $\ alpha = 0.25$. Images from Appendix B of the SPECTRE paper.   
 >(Note: as stated earlier, in some cases nodes may safely set $\ alpha$ as low as 0, speeding up confirmation times even further.)
 
@@ -203,17 +202,37 @@ D和$\ lambda$对确认时间的影响在下面的模拟结果中显示。
 
 ## SPECTRE中的弱活性
 
-SPECTRE is able to achieve fast confirmations by relaxing the Liveness property which, together with Safety, is traditionally required from consensus protocols. In this context, Safety means that a decision is not reversed w.h.p., and Liveness means that a decision is guaranteed to be made (preferably sooner rather than later). In SPECTRE, if two conflicting transactions are published at the same time or one soon after another, then neither transaction is guaranteed to be effectively irreversible and thus decided upon within a finite time. On the other hand, a published transaction with no near-published conflicts is guaranteed to become irreversible. The authors of SPECTRE call this property Weak Liveness.
+SPECTRE is able to achieve fast confirmations by relaxing the Liveness property which, together with Safety, is traditionally required from consensus protocols.   
+In this context, Safety means that a decision is not reversed w.h.p., and Liveness means that a decision is guaranteed to be made (preferably sooner rather than later).   
 
-通过调节活性，SPECTRE能够实现快速确认，从传统上来说，共识协议需要该属性与安全性。在这种情况下，安全意味着决定不会逆转w.h.p.，而活性意味着保证做出决定（最好是早点而不是晚点）。在SPECTRE中，如果两个冲突的交易同时发布或一个接一个地发布，那么这两个交易都不能保证有效不可逆转，因此在有限的时间内决定。另一方面，没有发布冲突的已发布交易将保证是不可逆转的。SPECTRE的作者将此属性称为弱活性。
+通过调节活性，SPECTRE能够实现快速确认，从传统上来说，共识协议需要该属性与安全性。  
+在这种情况下，安全意味着决定不会逆转w.h.p.，而活性意味着保证做出决定（最好是早点而不是晚点）。
 
-It is crucial to observe that this weakening does not harm the usability of the system for honest users. Honest users would never attempt to double spend a transaction right after they have published it, and so for such users the weakening of Liveness is non-consequential. Dishonest users, in contrast, might publish conflicting transactions; for these users Weak Liveness implies that both transactions might remain pending for an indefinite period of time.⁵ Importantly, recipients of these published conflicting transactions will immediately notice the double spend attempt and refrain from accepting either transaction as valid.
+In SPECTRE, if two conflicting transactions are published at the same time or one soon after another, then neither transaction is guaranteed to be effectively irreversible and thus decided upon within a finite time.   
+On the other hand, a published transaction with no near-published conflicts is guaranteed to become irreversible.   
+The authors of SPECTRE call this property Weak Liveness.
 
-至关重要的是要观察到这种削弱不会损害系统对诚实用户的可用性。诚实的用户永远不会尝试在发布交易后立即加倍交易，因此对于这些用户来说，活性的削弱是无关紧要的。相反，不诚实的用户可能会发布冲突的交易;对于这些用户而言，弱活动意味着两个交易可能会无限期地保持未决状态。⁵重要的是，这些发布的冲突交易的接收者将立即注意到双花尝试，并且不会接受任何一个交易并视为有效。
+在SPECTRE中，如果两个冲突的交易同时发布或一个接一个地发布，那么这两个交易都不能保证有效不可逆转，因此在有限的时间内决定。  
+另一方面，没有发布冲突的已发布交易将保证是不可逆转的。  
+SPECTRE的作者将此属性称为弱活性。
 
-Note that this argument applies only to a payments use case, for which SPECTRE is designed, in which the owner of the funds is the sole entity that can produce and sign such conflicting transactions. In contrast, in a smart contracts application, any user could potentially feed the contract with conflicting inputs; SPECTRE is less suited for this.
+It is crucial to observe that this weakening does not harm the usability of the system for honest users.   
+Honest users would never attempt to double spend a transaction right after they have published it, and so for such users the weakening of Liveness is non-consequential.   
+Dishonest users, in contrast, might publish conflicting transactions;   
+for these users Weak Liveness implies that both transactions might remain pending for an indefinite period of time.⁵   
+Importantly, recipients of these published conflicting transactions will immediately notice the double spend attempt and refrain from accepting either transaction as valid.
 
-请注意，此参数仅适用于SPECTRE的付款方案，其中资金所有者是可以生成和签署此类冲突交易的唯一实体。相反，在智能合约应用程序中，任何用户都可能使用冲突的输入来提供合约; SPECTRE不太适合这种情况。
+至关重要的是要观察到这种削弱不会损害系统对诚实用户的可用性。  
+诚实的用户永远不会尝试在发布交易后立即加倍交易，因此对于这些用户来说，活性的削弱是无关紧要的。  
+相反，不诚实的用户可能会发布冲突的交易;  
+对于这些用户而言，弱活动意味着两个交易可能会无限期地保持未决状态。⁵  
+重要的是，这些发布的冲突交易的接收者将立即注意到双花尝试，并且不会接受任何一个交易并视为有效。
+
+Note that this argument applies only to a payments use case, for which SPECTRE is designed, in which the owner of the funds is the sole entity that can produce and sign such conflicting transactions.   
+In contrast, in a smart contracts application, any user could potentially feed the contract with conflicting inputs; SPECTRE is less suited for this.
+
+请注意，此参数仅适用于SPECTRE的付款方案，其中资金所有者是可以生成和签署此类冲突交易的唯一实体。  
+相反，在智能合约应用程序中，任何用户都可能使用冲突的输入来提供合约; SPECTRE不太适合这种情况。
 
 In PHANTOM, some of these issues are dealt with in a new way, as we will discuss in future blog posts.
 
