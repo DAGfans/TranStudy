@@ -1,4 +1,5 @@
 > Source : https://blog.daglabs.com/confirmation-times-in-spectre-7f68fec0d997
+
 > TranStudy : https://github.com/DAGfans/TranStudy/blob/master/Blogs/Confirmation%20Times%20in%20SPECTRE.md
 
 # Confirmation Times in SPECTRE
