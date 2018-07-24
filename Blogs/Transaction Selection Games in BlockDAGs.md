@@ -1,5 +1,7 @@
 >Source:https://blog.daglabs.com/transaction-selection-games-in-blockdags-602177f0f726
 
+>TranStudy：https://github.com/DAGfans/TranStudy/edit/master/Blogs/Transaction%20Selection%20Games%20in%20BlockDAGs.md
+
 
 # Transaction Selection Games in BlockDAGs
 
