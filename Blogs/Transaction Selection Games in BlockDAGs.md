@@ -5,7 +5,7 @@
 
 # Transaction Selection Games in BlockDAGs
 
-# BlockDAG中的交易选择游戏
+# BlockDAG中的交易选择博弈
 
 *Consider a blockDAG network which mines 1 block per second, and an individual Miner A within it.   
 How will Miner A know which transactions to embed in his next block?   
