@@ -3,7 +3,7 @@
 > TranStudy : https://github.com/DAGfans/TranStudy/blob/master/Blogs/Confirmation%20Times%20in%20SPECTRE.md
 
 # Confirmation Times in SPECTRE
-# SPECTRESPECTRE中的交易确认时间
+# SPECTRE中的交易确认时间
 
 Since it solves the orphan rate problem, SPECTRE can operate at very high block rates, resulting in transaction confirmation times in mere seconds (see previous blog post).   
 Unlike Bitcoin, SPECTRE’s core protocol is agnostic to the network propagation delay;   
@@ -129,17 +129,17 @@ In contrast, a powerful attacker in Bitcoin can harm a huge number of payments b
 
 相比之下，比特币中强大的攻击者可以通过发布足够长的空块链来是大量支付受损。
 
-Consequently, sometimes $\ alpha$  can be set to be quite small in a blockDAG system, which significantly reduces confirmation times.   
+Consequently, sometimes $\alpha$  can be set to be quite small in a blockDAG system, which significantly reduces confirmation times.   
 
-因此，有时在blockDAG系统中$\ alpha$可以设置得非常小，这大大减少了确认时间。
+因此，有时在blockDAG系统中$\alpha$可以设置得非常小，这大大减少了确认时间。
 
 For instance, in the case of physical point-of-sale payments, it is unlikely that a large mining entity will bother to visit the point of sale and reverse the payment.   
 
 例如，在实际销售点支付的情况下，大型挖矿实体不太可能费心去访问销售点并撤销支付。
 
-Point-of-sale nodes may therefore justifiably set their $\ alpha$ to be small — maybe even 0 — allowing them to confirm transactions much faster.
+Point-of-sale nodes may therefore justifiably set their $\alpha$ to be small — maybe even 0 — allowing them to confirm transactions much faster.
 
-因此，销售点节点可以合理地将其$\ alpha$设置是小的 - 甚至可以为0  - 允许它们更快地确认交易。
+因此，销售点节点可以合理地将其$\alpha$设置是小的 - 甚至可以为0  - 允许它们更快地确认交易。
 
 ## Confirmation times, the SPECTRE case
 
@@ -181,26 +181,26 @@ Asymptotically, SPECTRE’s confirmation times are in
 
 ![1_ea_z18eack9wt9atnz8f5a](https://user-images.githubusercontent.com/39436379/42856903-dff75ce2-8a79-11e8-9b55-b26a5ce078d6.png)
 
-where $\lambda $ is the block creation rate.⁴   
+where $\lambda$ is the block creation rate.⁴   
 Under a range of normal network conditions, this yields confirmation times on the order of seconds.   
 When the network is healthy, nodes will tighten their upper bound on D and minimize this time.   
-The effects of D and $\ lambda$ on confirmation times are shown in the simulation results below.
+The effects of D and $\lambda$ on confirmation times are shown in the simulation results below.
 
-其中$\ lambda$是出块率。⁴  
+其中$\lambda$是出块率。⁴  
 在一组正常的网络状况下，这就产生了以秒为单位的确认时间。  
 当网络健康时，节点将缩小D的上限并使确认时间最小化。  
-D和$\ lambda$对确认时间的影响在下面的模拟结果中显示。
+D和$\lambda$对确认时间的影响在下面的模拟结果中显示。
 
 ![1_l1q7ctpfucygxzt-bg7t0q](https://user-images.githubusercontent.com/39436379/42856957-20e8d79e-8a7a-11e8-813d-2f44ad583f0c.png)
 
->(left) Effect of delay D on confirmation times with $\ lambda  = 10$ blocks per second and $\ alpha = 0.25$. 
+>(left) Effect of delay D on confirmation times with $\lambda = 10$ blocks per second and $\alpha = 0.25$. 
 >
->延迟D对确认时间的影响,每秒$\ lambda =10$块和$\ alpha = 0.25$。
->(right) Effect of block creation rate $\ lambda$ on waiting time with D = 5 seconds and $\ alpha = 0.25$. Images from Appendix B of the SPECTRE paper.   
->(Note: as stated earlier, in some cases nodes may safely set $\ alpha$ as low as 0, speeding up confirmation times even further.)
+>延迟D对确认时间的影响,每秒$\lambda =10$块和$\alpha = 0.25$。
+>(right) Effect of block creation rate $\lambda$ on waiting time with D = 5 seconds and $\alpha = 0.25$. Images from Appendix B of the SPECTRE paper.   
+>(Note: as stated earlier, in some cases nodes may safely set $\alpha$ as low as 0, speeding up confirmation times even further.)
 
->(右图)出块率$\ lambda$对等待时间的影响，D = 5秒且$\ alpha = 0.25$。图片来自SPECTRE论文附录B。  
->(注意：如前所述，在某些情况下，节点可以安全地将$\ alpha$设置为低至0，从而进一步加快确认时间。)
+>(右图)出块率$\lambda$对等待时间的影响，D = 5秒且$\alpha = 0.25$。图片来自SPECTRE论文附录B。  
+>(注意：如前所述，在某些情况下，节点可以安全地将$\alpha$设置为低至0，从而进一步加快确认时间。)
 
 ## Weak Liveness in SPECTRE
 
@@ -259,10 +259,8 @@ In PHANTOM, some of these issues are dealt with in a new way, as we will discuss
 
 ![1_yfwl27gldbihmdh8gmo9fw](https://user-images.githubusercontent.com/39436379/42867070-0810c00c-8aa1-11e8-9648-e4ea515edad1.png)
 
-双花的可能性可以大致表示为$\frac{\alpha }{1-\alpha }^{n-m-K}$,n是诚实块的数量，m是被隐藏/已显示的攻击者块的数量，K是在攻击阶段在边缘创建的块的数量，e.g.，没有通过我们试图防御的块的路径连接的块。渐渐地，m表现为$n*\frac{\alpha }{1-\alpha }$,
-K表现为泊松过程，其平均值与D成比例
-
-K behaves as a Poisson process with mean proportional to $D*\lambda$(写作：$C*D*\lambda$)。风险小于$\varepsilon$所需的诚实区块的数量是$O(\frac{ln(\varepsilon) }{ln(\alpha /(1-\alpha ))}*\frac{1-\alpha }{1-2\alpha }+C*D*\lambda)$.为了得到期望的确认时间，我们把这个块的数量与诚实矿工出块的期望时间，$\frac{1}{(1-\alpha )*\lambda }$，相乘。我们得到$O(\frac{ln(\varepsilon) }{ln(\alpha /(1-\alpha ))}*\frac{1}{(1-2\alpha)*\lambda  }+C*\frac{D}{1-\alpha })$,简化为$O(\frac{ln(\varepsilon) }{(1-2\alpha )*\lambda }+\frac{D}{1-\alpha })$。
+双花的可能性可以大致表示为$\left (  \frac{\alpha }{1-\alpha }\right )^{n-m-K}$,n是诚实块的数量，m是被隐藏/已显示的攻击者块的数量，K是在攻击阶段在边缘创建的块的数量，e.g.，没有通过我们试图防御的块的路径连接的块。渐渐地，m表现为$n*\frac{\alpha }{1-\alpha }$,
+K表现为泊松过程，其平均值与D成比例$D*\lambda$(写作：$C*D*\lambda$)。风险小于$\varepsilon$所需的诚实区块的数量是$O(\frac{ln(\varepsilon) }{ln(\alpha /(1-\alpha ))}*\frac{1-\alpha }{1-2\alpha }+C*D*\lambda)$.为了得到期望的确认时间，我们把这个块的数量与诚实矿工出块的期望时间，$\frac{1}{(1-\alpha )*\lambda }$，相乘。我们得到$O(\frac{ln(\varepsilon) }{ln(\alpha /(1-\alpha ))}*\frac{1}{(1-2\alpha)*\lambda  }+C*\frac{D}{1-\alpha })$,简化为$O(\frac{ln(\varepsilon) }{(1-2\alpha )*\lambda }+\frac{D}{1-\alpha })$。
 
 ⁵ Even this only happens under peculiar attacks coordinated by malicious miners.
 
