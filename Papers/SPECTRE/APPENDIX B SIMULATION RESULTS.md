@@ -49,26 +49,52 @@ For comparison, Bitcoin’s block creation rate of 1/600 implies waiting times t
 图6描绘了在延迟恒定为$d = 5$秒时,  多种出块率$\lambda$对应的接受时间。 
 图表重现了$\lambda$在我们的渐近界中的作用：加速块创建过程允许更快的接受时间。 相比之下，比特币的块创建率为1/600意味着等待时间更高（未绘制）。
 
-
-
 Fig. 6: The average time for a transaction to enter RobustTxO, assuming there’s no visible double-spend, for d = 5 seconds and $\alpha = 0.25$.
 
-Can an attacker delay acceptance? We now turn to demonstrate the effect of censorship attacks in which some dishonest nodes publish blocks that do not reference other miners’ blocks. Recall that the Weak Liveness property of SPECTRE (Proposition 3) guarantees fast acceptance of transactions that are not visibly double-spent, even in the presence of a censorship attack. However, such an attack still causes some delay in transaction acceptance, but this delay is minor for small attackers. In Fig. 7 we quantify this effect, by comparing the acceptance times in “peace days” to those under an active censorship attack. The parameters here are d = 5 seconds, $\lambda = 10$ blocks per second, and $\varepsilon = 0.01$. The results display a modest effect of the attack, and they show that in order to delay transaction acceptance by more than 5 to 10 seconds an attacker must possess a signiﬁcant share of the computational power in the network.
+图6：交易进入RobustTxO集的平均时间，假设没有可见的双花交易，d = 5秒且$\alpha = 0.25$。
+
+Can an attacker delay acceptance? We now turn to demonstrate the effect of censorship attacks in which some dishonest nodes publish blocks that do not reference other miners’ blocks. Recall that the Weak Liveness property of SPECTRE (Proposition 3) guarantees fast acceptance of transactions that are not visibly double-spent, even in the presence of a censorship attack. However, such an attack still causes some delay in transaction acceptance, but this delay is minor for small attackers. 
+
+攻击者可以延迟接受交易吗？我们现在转向展示审查攻击的影响，其中一些不诚实的节点发布不引用其他矿工块的块。回想一下，即使在存在审查攻击的情况下，SPECTER（命题3）的弱活性属性也能保证快速接受不明显双花的交易。但是，这种攻击仍会导致交易接受延迟，但对于小型攻击者来说这种延迟是微不足道的。
+
+In Fig. 7 we quantify this effect, by comparing the acceptance times in “peace days” to those under an active censorship attack. The parameters here are d = 5 seconds, $\lambda = 10$ blocks per second, and $\varepsilon = 0.01$. The results display a modest effect of the attack, and they show that in order to delay transaction acceptance by more than 5 to 10 seconds an attacker must possess a signiﬁcant share of the computational power in the network.
+
+在图7中，我们通过比较“和平日”中的接受时间与主动审查攻击下的接受时间来量化这种影响。这里的参数是d = 5秒，每秒$\ lambda =10$块，$\ varepsilon = 0.01$。结果显示了攻击的适度影响，并且它们表明，为了使交易接受延迟超过5到10秒，攻击者必须占有网络算力的重要份额。
 
 <img width="448" alt="2018-07-17 2 10 03" src="https://user-images.githubusercontent.com/39436379/42799635-24ed2a7a-89cb-11e8-9764-8aedf5b02364.png">
 
 Fig. 7: The average time for a transaction to enter RobustTxO, assuming there’s no visible double-spend, for $d = 5$ seconds, $\lambda = 10$ blocks per second, and $\varepsilon = 0.01$, in the presence and in the absence of a censorship attack.
 
+图7：交易进入RobustTxO集的平均时间，假设没有可见的双花交易，$d = 5$秒，$\lambda = 10$块，$\varepsilon = 0.01$，在存在和不存在的审查攻击的情况下。
+
 How does $\varepsilon$ decrease for various sizes of the attacker? Once an honest node $\varepsilon$-accepts a transaction, there’s still a small risk ($\varepsilon$) that it would eventually be rejected. We show that the probability of this event vanishes quickly, even for an extremely capable attacker (e.g., with $\alpha = 0.4$ of the hashrate). This is illustrated in Fig. 8, assuming $d = 5$ seconds and $\lambda = 10$ blocks per second (notice that the y-axis is in log scale).
 
-How tight is our security analysis? The analysis on which Alg. 3 relies makes several worst-case assumptions in order to bound the probability of a successful attack, e.g., that the attacker can broadcast blocks to and receive blocks from all nodes without any delay (see Appendix E, mainly Lemmas 14 and 20). Accordingly, the analysis is not tight, and in reality attacks are in fact less likely to succeed. In Fig. 9, we depict the comparison between the analytical bound and two different empirical simulations. In these simulations we explicitly generate blocks for the attacker and simulate the optimal double-spending attack. We repeat the experiment 10,000 times for each point in the graph, and measure the empirical success rate. The simulations assume two types of attackers: a worst-case attacker that is able to transmit and receive blocks with no delays, and a more realistic attacker that is connected to other nodes with typical delays. We compared the fraction of successful attacks under these setups to the analytical risk calculated by SPECTRE’s policy (Alg. 7).
+对于各种规模的攻击者，$\varepsilon$如何降低？一旦诚实的节点$\varepsilon$接受了一笔交易，那么它最终将被拒绝的风险很小（$\varepsilon$）。我们表明，即使对于一个非常有能力的攻击者（例如，使用$\alpha = 0.4$的哈希值），此事件的概率也会很快消失。这在图8中示出，假设$d = 5$秒并且$\lambda = 10$每秒块（注意y轴是对数刻度）。
+
+How tight is our security analysis? The analysis on which Alg. 3 relies makes several worst-case assumptions in order to bound the probability of a successful attack, e.g., that the attacker can broadcast blocks to and receive blocks from all nodes without any delay (see Appendix E, mainly Lemmas 14 and 20). 
+
+我们的安全分析有多严谨？算法3的分析依赖于做出几个最坏情况假设以限制攻击成功的概率，例如，攻击者可以毫无延迟地向所有节点广播块和接收块（参见附录E，主要是Lemmas 14和20）。
+
+Accordingly, the analysis is not tight, and in reality attacks are in fact less likely to succeed. In Fig. 9, we depict the comparison between the analytical bound and two different empirical simulations. In these simulations we explicitly generate blocks for the attacker and simulate the optimal double-spending attack. We repeat the experiment 10,000 times for each point in the graph, and measure the empirical success rate. 
+
+因此，分析并不严谨，在现实中，攻击实际上不太可能成功。在图9中，我们描绘了分析界限和两种不同的经验模拟实验之间的比较。在这些模拟中，我们显式地生成攻击者的块，并模拟最优的双花攻击。我们对图中的每个点重复实验10,000次，并测量经验成功率。
+
+The simulations assume two types of attackers: a worst-case attacker that is able to transmit and receive blocks with no delays, and a more realistic attacker that is connected to other nodes with typical delays. We compared the fraction of successful attacks under these setups to the analytical risk calculated by SPECTRE’s policy (Alg. 7).
+
+模拟假设有两种类型的攻击者：能够发送和接收没有延迟的块的最坏情况的攻击者，和接到具有典型延迟的其他节点的更现实的攻击者。我们将这些设置下成功攻击的比例与SPECTER策略计算的分析风险进行了比较（算法7）。
 
 The results show that the risk considered by SPECTRE’s RiskTxAccept indeed upper bounds the actual risk, and that transactions are even safer than we guarantee formally.
+
+结果表明，SPECTER的RiskTxAccept考虑的风险确实是实际风险的上限，这些交易甚至比我们一般保证的交易更安全。
 
 <img width="433" alt="2018-07-17 2 26 21" src="https://user-images.githubusercontent.com/39436379/42800213-70a62c30-89cd-11e8-9743-bc9ad5438d83.png">
 
 Fig. 8: The probability of a successful double-spending attack, as a function of the waiting time before acceptance, under $d = 5$ seconds and $\lambda = 10$ blocks per second, for $\alpha$ = 0.1, 0.25, and 0.4. The probability here is the result of the calculation performed by Alg.3.
 
+图8：成功的双花攻击的概率，作为接受前等待时间的函数，在$d = 5$秒和每秒$\lambda = 10$块之间，$\ alpha$= 0.1， 0.25和0.4。这里的概率是算法3计算的结果。
+
 <img width="424" alt="2018-07-17 2 27 17" src="https://user-images.githubusercontent.com/39436379/42800227-890b1560-89cd-11e8-842e-ca4eef626419.png">
 
 Fig. 9: The analytical vs. empirical probabilities of a successful double-spending attack, as a function of the waiting time before acceptance, under $d = 5$ seconds, $\lambda = 10$, and $\alpha = 0.25$.
+
+图9：成功的双花攻击的分析与经验概率，作为接受前等待时间的函数，在$d = 5$秒，$\lambda = 10$和$\alpha = 0.25$。
