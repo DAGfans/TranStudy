@@ -1,5 +1,4 @@
-> Source : https://blog.daglabs.com/confirmation-times-in-spectre-7f68fec0d997
-
+> Source : https://blog.daglabs.com/confirmation-times-in-spectre-7f68fec0d997  
 > TranStudy : https://github.com/DAGfans/TranStudy/blob/master/Blogs/Confirmation%20Times%20in%20SPECTRE.md
 
 # Confirmation Times in SPECTRE
@@ -11,14 +10,14 @@ some upper bound on the propagation delay must be assumed, but this assumption i
 
 因为SPECTRE解决了孤块率问题，因此SPECTRE可以以非常高出块率运行，从而在几秒钟内完成交易确认（参见上一篇博客文章）。  
 与比特币不同，SPECTRE的核心协议与网络传播延迟无关；  
-必须假设传播延迟有某个上限，但是这个假设是在确定交易安全时由每个节点在本地进行的情况下作出的。
+必须假设传播延迟有某个上限，但是这个假设是由每个节点在确定交易安全时在本地作出的。
 
 Nodes that misestimate the propagation delay will hurt their own performance alone.   
 This upper bound assumption can be adjusted locally as network conditions change, which allows SPECTRE to be responsive¹ to network conditions and achieve optimally fast confirmation times during healthy periods.   
 In contrast, Bitcoin’s measure of ten-minute block times is carved in stone.
   
 错误估计传播延迟的节点会降低自己的性能。  
-当网络条件发生变化时，可以在本地调整此上限假设，这使得SPECTRE能够适应¹网络状况并在网络状况良好期间实现最佳的快速确认时间。  
+当网络条件发生变化时，可以在本地调整此上限假设，这使得SPECTRE能够适应¹网络状况并在网络状况良好期间达到最佳的快速确认时间。  
 相比之下，比特币的十分钟出块时间的参数是固定不变的。
 
 ## Reorgs in Bitcoin and blockDAGs
@@ -33,7 +32,7 @@ whereas large reorganizations are likely to be caused by attackers with sufficie
 在比特币中，如果节点发现一条新链从当前主链中排除了某些块,并且新链比节点的当前主链长，则被该节点观察的主链将进行重组。  
 节点将切换到此新链，被排除的块将成为孤块。  
 链的轻微重组（如果发生的话）可能是由网络异步性引起的，  
-而大型重组很可能是由挖掘能力足以超越主链的攻击者引起的，或者是由网络中的某些灾难性分裂引起的。
+而大型重组很可能是由挖矿能力足以超越主链的攻击者引起的，或者是由网络中的某些灾难性分裂引起的。
 
 ![1_jkfjdohkk7xciwh3qle6pg](https://user-images.githubusercontent.com/39436379/42804972-1cd179ba-89dd-11e8-8d6f-4642f463d3ed.png)
 
@@ -73,11 +72,11 @@ This requires publishing a block with a transaction that conflicts with tx, and 
 
 In Bitcoin, the confirmation time of a transaction is the time it takes for the transaction to become effectively irreversible, which is equivalent to waiting until the block containing the transaction is protected against orphanization from reorgs.
 
-在比特币中，交易的确认时间是交易变得有效且不可逆转所需的时间，这相当于直到包含交易的块被保护免于重排造成的孤块化所需要的等待时间。
+在比特币中，交易的确认时间是交易变得有效且不可逆转所需的时间，这相当于直到包含交易的块被保护免于被重组造成的孤块化所需要的等待时间。
    
 Nodes set their own threshold for how few confirmations they are willing to accept before recognizing a payment as irreversible.
 
-在支付被确认为不可逆转的之前，节点设置了他们愿意接受的确认数量。
+在支付被确认为不可逆转之前，节点设置了他们愿意接受的确认数量的门槛。
    
 To that end, each node must estimate the likelihood of a chain reorg;   
 this is done by locally setting two parameters:
@@ -96,7 +95,7 @@ A typical Bitcoin client will consider a transaction confirmed only once it is s
 This default number is based on an attacker size of 10% and a risk of <0.1%.²
 
 一个典型的比特币客户端认为只有在六个块深度的交易才能被确认  
-（这是60分钟是平均确认时间！）。  
+（这个60分钟是平均确认时间！）。  
 此默认数字基于攻击者比例大小为10％和风险<0.1％。²
 
 Similarly, a node in a blockDAG system must locally set some parameters in order to estimate the robustness of its current ordering of the DAG.   
@@ -104,8 +103,8 @@ In addition to the parameters $\varepsilon$ and $\alpha$ needed for confirming t
 Assumptions on the network propagation delay are essential when characterizing consensus protocols.   
 
 类似地，blockDAG系统中的节点必须在本地设置一些参数，以便估计其当前DAG排序的稳健性。  
-除了确认比特币交易所需的参数$\varepsilon$和$\alpha$之外，该节点还指定了网络延迟的假设(值)D。  
-在表示共识协议的特征时，对网络传播延迟的假设是必不可少的。
+除了确认比特币交易所需的参数$\varepsilon$和$\alpha$之外，该节点还指定了网络延迟的假设值D。  
+在表示共识协议的特性时，对网络传播延迟的假设是必不可少的。
 
 The nature of this assumption may differ across protocols, e.g., where in the protocol it is made, whether it is part of consensus, and what harm is done when it is violated and for how long.   
 The Bitcoin protocol, for instance, operates under the (rather conservative) ten-minute upper bound on the network delay.³
@@ -119,15 +118,15 @@ The Bitcoin protocol, for instance, operates under the (rather conservative) ten
 
 An interesting implication of having no orphans in a blockDAG system is that reorgs affect only conflicting transactions, and so transactions with no visible conflicts remain unaffected.   
 
-在blockDAG系统中没有孤块的一个有趣的含义是，重组只影响冲突的交易，因此没有可见冲突的交易不会受到影响。
+在blockDAG系统中没有孤块的一个有趣的含义是，重组只影响冲突的交易，因此在没有可见冲突的交易的情况下不会受到影响。
 
 In particular, a double-spending attacker must engage directly with its victims, broadcasting a conflicting transaction for each transaction it aims at reversing.   
 
-特别是，双花的攻击者必须直接与受害者接触，为旨在扭转链的每笔交易广播与其冲突的交易。
+特别是，双花的攻击者必须直接攻击受害者，针对每笔试图推翻的交易广播一条冲突的交易。
 
 In contrast, a powerful attacker in Bitcoin can harm a huge number of payments by publishing a sufficiently long chain of empty blocks.
 
-相比之下，比特币中强大的攻击者可以通过发布足够长的空块链来是大量支付受损。
+相比之下，比特币中强大的攻击者可以通过发布足够长的空块链来损坏大量的交易。
 
 Consequently, sometimes $\alpha$  can be set to be quite small in a blockDAG system, which significantly reduces confirmation times.   
 
@@ -139,7 +138,7 @@ For instance, in the case of physical point-of-sale payments, it is unlikely tha
 
 Point-of-sale nodes may therefore justifiably set their $\alpha$ to be small — maybe even 0 — allowing them to confirm transactions much faster.
 
-因此，销售点节点可以合理地将其$\alpha$设置是小的 - 甚至可以为0  - 允许它们更快地确认交易。
+因此，销售点节点可以合理地将其$\alpha$设置得很小 - 甚至可以为0  - 以允许它们更快地确认交易。
 
 ## Confirmation times, the SPECTRE case
 
@@ -147,7 +146,7 @@ Point-of-sale nodes may therefore justifiably set their $\alpha$ to be small �
 
 In SPECTRE, the assignment of D is local to the node running the protocol; there does not need to be agreement.
 
-在SPECTRE中，对于运行该协议的节点D的分配是局部的；不需要是一致的。  
+在SPECTRE中，对于运行该协议的节点而言D的值是本地的；不需要是一致的。  
    
 This also does not need to be a correct estimate, as knowledge of network propagation delays is tricky and dynamic. 
 
@@ -163,7 +162,7 @@ Unlike in Bitcoin, each node in SPECTRE solely bears the consequences of its cho
 
 A paranoid node that significantly overestimates D will hurt itself by waiting too long to recognize that a transaction is irreversible, and a negligent node that significantly underestimates D will hurt itself by prematurely accepting transactions. 
 
-一个明显过高估计D的偏执节点会因为等待太长时间，而无法识别交易是不可逆转的而损害自身，而一个明显低估D的疏忽节点会因过早接受交易而损害自身。
+一个明显过高估计D的偏执节点会因为等待太长时间才认识到交易是不可逆转的而损害自身，而一个明显低估D的疏忽节点会因过早接受交易而损害自身。
 
 However, nodes may change their choice of D as they wish, e.g., if their former choice is overly inaccurate or if network conditions change — and they can do so without coordinating with the rest of the network.
 
@@ -210,14 +209,14 @@ SPECTRE is able to achieve fast confirmations by relaxing the Liveness property 
 In this context, Safety means that a decision is not reversed w.h.p., and Liveness means that a decision is guaranteed to be made (preferably sooner rather than later).   
 
 通过调节活性，SPECTRE能够实现快速确认，从传统上来说，共识协议需要该属性与安全性。  
-在这种情况下，安全意味着决定不会逆转w.h.p.，而活性意味着保证做出决定（最好是早点而不是晚点）。
+在这种情况下，安全意味着在很高的概率下决定不会被逆转，而活性意味着保证可以做出决定的（最好是早点而不是晚点）。
 
 In SPECTRE, if two conflicting transactions are published at the same time or one soon after another, then neither transaction is guaranteed to be effectively irreversible and thus decided upon within a finite time.   
 On the other hand, a published transaction with no near-published conflicts is guaranteed to become irreversible.   
 The authors of SPECTRE call this property Weak Liveness.
 
-在SPECTRE中，如果两个冲突的交易同时发布或一个接一个地发布，那么这两个交易都不能保证有效不可逆转，因此在有限的时间内决定。  
-另一方面，没有发布冲突的已发布交易将保证是不可逆转的。  
+在SPECTRE中，如果两个冲突的交易同时发布或一个紧接一个地发布，那么这两个交易都不能保证有效不可逆转，因此不能在有限的时间内决定。  
+另一方面，一个已经发布的交易只要没有紧接着发布的冲突交易是可以被保证不能被推翻的。  
 SPECTRE的作者将此属性称为弱活性。
 
 It is crucial to observe that this weakening does not harm the usability of the system for honest users.   
@@ -227,7 +226,7 @@ for these users Weak Liveness implies that both transactions might remain pendin
 Importantly, recipients of these published conflicting transactions will immediately notice the double spend attempt and refrain from accepting either transaction as valid.
 
 至关重要的是要观察到这种削弱不会损害系统对诚实用户的可用性。  
-诚实的用户永远不会尝试在发布交易后立即加倍交易，因此对于这些用户来说，活性的削弱是无关紧要的。  
+诚实的用户永远不会尝试在发布交易后立即双花交易，因此对于这些用户来说，活性的削弱是无关紧要的。  
 相反，不诚实的用户可能会发布冲突的交易;  
 对于这些用户而言，弱活动意味着两个交易可能会无限期地保持未决状态。⁵  
 重要的是，这些发布的冲突交易的接收者将立即注意到双花尝试，并且不会接受任何一个交易并视为有效。
@@ -235,7 +234,7 @@ Importantly, recipients of these published conflicting transactions will immedia
 Note that this argument applies only to a payments use case, for which SPECTRE is designed, in which the owner of the funds is the sole entity that can produce and sign such conflicting transactions.   
 In contrast, in a smart contracts application, any user could potentially feed the contract with conflicting inputs; SPECTRE is less suited for this.
 
-请注意，此参数仅适用于SPECTRE的付款方案，其中资金所有者是可以生成和签署此类冲突交易的唯一实体。  
+请注意，此参数仅适用于SPECTRE的支付方案，其中资金所有者是可以生成和签署此类冲突交易的唯一实体。  
 相反，在智能合约应用程序中，任何用户都可能使用冲突的输入来提供合约; SPECTRE不太适合这种情况。
 
 In PHANTOM, some of these issues are dealt with in a new way, as we will discuss in future blog posts.
@@ -251,7 +250,7 @@ In PHANTOM, some of these issues are dealt with in a new way, as we will discuss
 
 ³ Technically, the estimate of ten minutes is more subtle: it is an assumption that the probability of a Poisson process with mean interval of ten minutes producing two events within an interval shorter than D is negligible.
 
-³ 从技术上讲，十分钟的估计更为微妙：假设平均间隔为十分钟的泊松过程在短于D的区间内产生两个事件的概率可以忽略不计。
+³ 从技术上讲，十分钟的估计更为微妙：假设平均间隔为十分钟的泊松分布过程在短于D的区间内产生两个事件的概率可以忽略不计。
 
 ⁴ Derivation of the asymptotic bound (LaTeX’d for math formatting):
 
@@ -259,9 +258,9 @@ In PHANTOM, some of these issues are dealt with in a new way, as we will discuss
 
 ![1_yfwl27gldbihmdh8gmo9fw](https://user-images.githubusercontent.com/39436379/42867070-0810c00c-8aa1-11e8-9648-e4ea515edad1.png)
 
-双花的可能性可以大致表示为$\left (  \frac{\alpha }{1-\alpha }\right )^{n-m-K}$,n是诚实块的数量，m是被隐藏/已显示的攻击者块的数量，K是在攻击阶段在边缘创建的块的数量，e.g.，没有通过我们试图防御的块的路径连接的块。渐渐地，m表现为$n*\frac{\alpha }{1-\alpha }$,
-K表现为泊松过程，其平均值与D成比例$D*\lambda$(写作：$C*D*\lambda$)。风险小于$\varepsilon$所需的诚实区块的数量是$O(\frac{ln(\varepsilon) }{ln(\alpha /(1-\alpha ))}*\frac{1-\alpha }{1-2\alpha }+C*D*\lambda)$.为了得到期望的确认时间，我们把这个块的数量与诚实矿工出块的期望时间，$\frac{1}{(1-\alpha )*\lambda }$，相乘。我们得到$O(\frac{ln(\varepsilon) }{ln(\alpha /(1-\alpha ))}*\frac{1}{(1-2\alpha)*\lambda  }+C*\frac{D}{1-\alpha })$,简化为$O(\frac{ln(\varepsilon) }{(1-2\alpha )*\lambda }+\frac{D}{1-\alpha })$。
+双花的可能性可以大致表示为$\left (  \frac{\alpha }{1-\alpha }\right )^{n-m-K}$,n是诚实块的数量，m是被隐藏/已显示的攻击者块的数量，K是在两个攻击阶段边界处创建的块的数量，例如，没有连接到我们试图防御的块的路径上的块。渐渐地，m表现为$n*\frac{\alpha }{1-\alpha }$,
+K表现为泊松分布过程，其平均值与D成比例$D*\lambda$(写作：$C*D*\lambda$)。风险小于$\varepsilon$所需的诚实区块的数量是$O(\frac{ln(\varepsilon) }{ln(\alpha /(1-\alpha ))}*\frac{1-\alpha }{1-2\alpha }+C*D*\lambda)$.为了得到期望的确认时间，我们把这个块的数量与诚实矿工出块的期望时间，$\frac{1}{(1-\alpha )*\lambda }$，相乘。我们得到$O(\frac{ln(\varepsilon) }{ln(\alpha /(1-\alpha ))}*\frac{1}{(1-2\alpha)*\lambda  }+C*\frac{D}{1-\alpha })$,简化为$O(\frac{ln(\varepsilon) }{(1-2\alpha )*\lambda }+\frac{D}{1-\alpha })$。
 
 ⁵ Even this only happens under peculiar attacks coordinated by malicious miners.
 
-⁵ 即使这只发生在恶意的合作矿工的特殊攻击下。
+⁵ 即使这只发生在恶意的矿工合谋的特殊攻击下。
