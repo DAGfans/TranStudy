@@ -7,23 +7,23 @@
 
 We now turn to prove that the order converges, and that an attacker (with less than 50%) is unable to cause reorgs. We restate the theorem from Section 3:
 
-我们现在来证明顺序会收敛，以及攻击者（少于50%）无法导致重排序。我们将第3节的定理再复述一遍：
+我们现在来证明顺序会收敛，以及攻击者（少于50%）无法导致重组。我们将第3节的定理再复述一遍：
 
-**Theorem 5**(PHANTOM scales)._Given a block creation rate $\lambda > 0, \delta > 0$ , and $D_{max} > 0$ , if $D_{max}$ is equal to or greater than the network’s propagation delay diameter $D$ , then the security threshold of PHANTOM, parameterized with $k(D_{max} , \delta)$ , is at least $1/2 \cdot (1-\delta )$ .
+**Theorem 5**(PHANTOM scales). Given a block creation rate $\lambda > 0, \delta > 0$ , and $D_{max} > 0$ , if $D_{max}$ is equal to or greater than the network’s propagation delay diameter $D$ , then the security threshold of PHANTOM, parameterized with $k(D_{max} , \delta)$ , is at least $1/2 \cdot (1-\delta )$ .
 
-**定理5**(PHANTOM 可扩容)_给定区块创建率 $\lambda > 0, \delta > 0$ 且 $D_{max} > 0$ ，如果 $D_{max}$ 大于或等于网络的传播延迟直径 $D$ ，则作为 $k(D_{max} , \delta)$ 参数的 PHANTOM 的安全阈值至少为 $1/2 \cdot (1-\delta )$ .
+**定理5**(PHANTOM 可扩容)  给定出块率 $\lambda > 0, \delta > 0$ 且 $D_{max} > 0$ ，如果 $D_{max}$ 大于或等于网络的传播延迟直径 $D$ ，则以 $k(D_{max} , \delta)$ 参数化表示的 PHANTOM 的安全阈值至少为 $1/2 \cdot (1-\delta )$ .
 
 Our proof relies on the following lemma, which states that if some block B has the property that its anticone contains no blue blocks, then all blue blocks in its past precede all blocks outside its past. We call this the Hourglass property:
 
-我们的证明依赖下面的引理。该引理说的是，若某个区块 B 的反锥体内没有蓝色区块，则其过去集中的所有蓝色区块在其过去集以外的蓝色区块之前。我们把这称为沙漏特性：
+我们的证明依赖下面的引理。该引理说的是，若某个区块 B 的反锥体内没有蓝色区块，则其过去集中所有蓝色块都在其过去集之外的所有块之前。我们把这称为沙漏特性：
 
-**Lemma 7.**_If for some $\hat{B} \in G$ , $BLUE_k(G) \cap anticone(\hat{B}) = \emptyset$ , then $\forall B \in past(\hat{B}) \cap BLUE_k(G)$ and $\forall C \notin past(\hat{B})$ , $B \prec_G C$ . We then write $\hat{B} \in Hourglass(G)$ .
+**Lemma 7.** If for some $\hat{B} \in G$ , $BLUE_k(G) \cap anticone(\hat{B}) = \emptyset$ , then $\forall B \in past(\hat{B}) \cap BLUE_k(G)$ and $\forall C \notin past(\hat{B})$ , $B \prec_G C$ . We then write $\hat{B} \in Hourglass(G)$ .
 
-**引理7：**_如果对于某个 $\hat{B} \in G$ , $BLUE_k(G) \cap anticone(\hat{B}) = \emptyset$ , 那么 $\forall B \in past(\hat{B}) \cap BLUE_k(G)$ 并且 $\forall C \notin past(\hat{B})$ , $B \prec_G C$ . 我们写作 $\hat{B} \in Hourglass(G)$ .（译注：Hourglass 在英文中的意思即是“沙漏”。根据该引理， $G$ 的蓝色区块一定在 $\hat{B}$ 的过去集、将来集和 $\hat{B}$ 自身当中。具体原因见下面引理7的证明部分。因此所有的蓝色区块组成的形状就像一个沙漏，而 $\hat{B}\$ 就是沙漏中间直径最小的两头相连的孔径。故将 $\hat{B}$ 称为沙漏区块。引理7换句话说，即沙漏区块的过去集里的蓝色区块在排序时一定在沙漏区块过去集以外的区块之前。）
+**引理7：** 如果对于某个 $\hat{B} \in G$ , $BLUE_k(G) \cap anticone(\hat{B}) = \emptyset$ , 那么 $\forall B \in past(\hat{B}) \cap BLUE_k(G)$ 并且 $\forall C \notin past(\hat{B})$ , $B \prec_G C$ . 我们写作 $\hat{B} \in Hourglass(G)$ .（译注：Hourglass 在英文中的意思即是“沙漏”。根据该引理， $G$ 的蓝色区块一定在 $\hat{B}$ 的过去集、将来集和 $\hat{B}$ 自身当中。具体原因见下面引理7的证明部分。因此所有的蓝色区块组成的形状就像一个沙漏，而 $\hat{B}\$ 就是沙漏中间直径最小的两头相连的孔径。故将 $\hat{B}$ 称为沙漏区块。引理7换句话说，即沙漏区块的过去集里的蓝色区块在排序时一定在沙漏区块过去集以外的区块之前。）
 
-**Fig. 4:**An example of a DAG with an Hourglass block $K$ . Here, the delay parameter is $k = 3$ . As in Figure 3, the small circle near each block represents its score. The colouring of the DAG was done according to Algorithm 1. The greedily selected chain of blocks of highest score is marked with light-blue filling (note that this chain is not the longest one). Block $K$ has the property that all blue blocks are either in $K$ ’s past or in its future (in addition to $K$ itself). It is thus an Hourglass block.
+**Fig. 4:** An example of a DAG with an Hourglass block $K$ . Here, the delay parameter is $k = 3$ . As in Figure 3, the small circle near each block represents its score. The colouring of the DAG was done according to Algorithm 1. The greedily selected chain of blocks of highest score is marked with light-blue filling (note that this chain is not the longest one). Block $K$ has the property that all blue blocks are either in $K$ ’s past or in its future (in addition to $K$ itself). It is thus an Hourglass block.
 
-**图4：**含有一个沙漏区块 $K$ 的 DAG 的例子。在这里，延迟参数是 $k = 3$ 。和图3一样，每个区块旁边的小圆圈代表它的得分。我们依据算法1对 DAG 着色。由贪婪算法选出的最高得分的区块组成的链被标为浅蓝填充色（注意这条链并不是最长的链）。区块 $K$ 具有这样的性质：所有的蓝色区块要么在 $K$ 的过去集中，要么在其将来集中（除了 $K$ 自己）。因此它是一个沙漏区块。
+**图4：** 含有一个沙漏区块 $K$ 的 DAG 的例子。在这里，延迟参数是 $k = 3$ 。和图3一样，每个区块旁边的小圆圈代表它的得分。我们依据算法1对 DAG 着色。由贪婪算法选出的最高得分的区块组成的链被标为浅蓝填充色（注意这条链并不是最长的链）。区块 $K$ 具有这样的性质：所有的蓝色区块要么在 $K$ 的过去集中，要么在其将来集中（除了 $K$ 自己）。因此它是一个沙漏区块。
 
 译注：在图4里，区块 M 的得分是9；然而我们看到在 M 的过去集中却只有8个区块（即创世区块、B、C、D、F、I、J 和 K）被标注为蓝色。这并不是图有误。实际上当我们描述一个区块是否蓝色的时候，必须要先假设现在是站在哪个区块的视角来回答这个问题。回顾一下文章第2节中的步骤1和图3所描述的蓝色区块的选择算法。图4所标注的蓝色区块集记为 $BLUE_k(G)$ ，这等同于图中添加一个不存在的区块 V，然后让 M、R、U 作为 V 的父亲，最后从 V 的视角进行红蓝标注的结果。**每个区块的得分是在该区块刚发布连入图的时候，从该区块本身的视角进行红蓝标注之后，该区块过去集中蓝色区块的数量。文章对于这一点并没有描述得很清楚，这是译者在 DAGlabs 的 Slack 频道讨论后得知的结果。原话是：“Aviv & Yonatan 's algorithm is an iteration procedure, when you check $M$ you must stand on $M$ 's viewpoint, that means $L$ is also blue on $M$ 's viewpoint. Same for $H, N, Q, S, T, U$ .”。**从图4的拓扑结构，我们可以推断，当 M 发布的时候，图中只有 L 和 K 两个末端区块（tip），E 的孩子和 K 的孩子都还没发布出来（注意区块发布的时候一定会连接图里面所有的末端区块）。这个时候，从 M 的角度看，L 是蓝色的，于是 M 的过去集中的蓝色区块就包括了创世区块、B、C、D、F、I、J、K 和 L 九个区块。因此 M 的得分为9。
 
@@ -77,9 +77,9 @@ Assume that such a $\tau(t_0)$ arrives, i.e., that a block $\hat{B}$ is created 
 
 假设这样的一个 $\tau(t_0)$ 出现了，也就是有一个区块 $\hat{B}$ 被创建并且永远保持为一个沙漏区块。接着，根据引理8， $past(\hat{B})$ 里面所有区块之前的顺序都永不改变，并且尤其是 $B$ 和其它任意一个区块 $C$ 之间的顺序都永不改变。于是， $Risk(B, \tau(t_0) = 0$ 。因此， $\lim\limits_{t_1 \to \infty} \Pr(\tau(t_0) > t_1) = 0$ 意味着 $\lim\limits_{t_1 \to \infty} Risk(B, t_1) = 0$ 。 $\hspace{5mm}\square$
 
-**Lemma 9.**Let $t_0 \geq 0$ . The expected waiting time for $\tau(t_0)$ (defined in (2)) is finite, and moreover is upper bounded by a constant that does not depend on $t_0$ ._
+**Lemma 9.** Let $t_0 \geq 0$ . The expected waiting time for $\tau(t_0)$ (defined in (2)) is finite, and moreover is upper bounded by a constant that does not depend on $t_0$ ._
 
-**引理9：**假设 $t_0 \geq 0$ 。 $\tau(t_0)$ 的期望等待时间（在（2）中定义）是有限的，并且其上限是一个不依赖 $t_0$ 的常数。
+**引理9：** 假设 $t_0 \geq 0$ 。 $\tau(t_0)$ 的期望等待时间（在（2）中定义）是有限的，并且其上限是一个不依赖 $t_0$ 的常数。
 
 Proof. Let $\varepsilon(t_0)$ denote the event defined by the following conditions:
 
@@ -219,9 +219,9 @@ Part VI: Finally, we alleviate our assumption that the attacker published no blo
 
 第六部分： 最终，我们调整了我们的假设，即攻击者在预测阶段 $[0,u−D_{max})$ 时没有发布任何块。代替的是，考虑任何属于 $past(\widehat{B})$ 的攻击者块 $C$ 。如果 $C\in BLUE_k(past(BB))$ ， $C$ 贡献得分给通过 $\widehat{B}$ 的诚实链，可能也贡献给攻击者链，因此它的存在不能改变以上的分析。相似地，如果 $C\notin BLUE_k(past(BB))$ ，它发布的事实对诚实链的得分没有任何影响，因此我们能忽略它并且采用相同的分析就好像它没有被发布。
 
-**Claim 4.**The waiting time for the event $\varepsilon (t_0)$ is finite. Moreover, it is upper bounded by a constant that does not depend on $t_0$.
+**Claim 4.** The waiting time for the event $\varepsilon (t_0)$ is finite. Moreover, it is upper bounded by a constant that does not depend on $t_0$.
 
-**断言 4.**事件 $\varepsilon (t_0)$ 的等待时间是有限的。而且，它的上限由一个不依赖于 $t_0$ 的常数决定。_
+**断言 4.** 事件 $\varepsilon (t_0)$ 的等待时间是有限的。而且，它的上限由一个不依赖于 $t_0$ 的常数决定。_
 
 _Proof of Claim 4._Let $B$ be an arbitrary honest block created in $time(B)$ . The probability that no other block was created in the interval $[time (B)-D_{max}, time (B)+{max}]$ is given by $e^{-2\cdot D_{max}\cdot \lambda }$ . An arbitrary block $B$ satisfies the first condition in the definition of $\varepsilon (t_0)$ with a positive probability.
 
