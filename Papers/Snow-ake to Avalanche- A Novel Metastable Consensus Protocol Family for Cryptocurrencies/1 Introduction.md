@@ -1,9 +1,9 @@
 ## 1 Introduction
 ## 1 介绍
 
-Achieving agreement among a set of distributed hosts lies at the core of countless applications, ranging from Internet-scale services that serve billions of people [12, 30] to cryptocurrencies worth billions of dollars [1].
+Achieving agreement among a set of distributed hosts lies at the core of countless applications, ranging from Internet-scale services that serve billions of people [12, 30] to cryptocurrencies worth billions of dollars [1].  
 在一组分布式主机之间达成协议是无数应用程序的核心，从为数十亿人[12,30]提供服务的互联网模式服务到价值数十亿美元的加密货币[1]。   
-To date, there have been two main families of solutions to this problem.   
+To date, there have been two main families of solutions to this problem.     
 到目前为止，已经有两种主要的解决方案来解决这个问题。
 Traditional consensus protocols rely on all-to-all communication to ensure that all correct nodes reach the same decisions with absolute certainty.   
 传统的共识协议依赖于所有节点间通信，以确保所有正确的节点可以绝对确定地实现相同的决策。
