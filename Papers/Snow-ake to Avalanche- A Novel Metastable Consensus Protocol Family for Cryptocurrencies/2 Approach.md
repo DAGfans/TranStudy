@@ -1,16 +1,19 @@
-## 2 Approach
+## 2 Approach 
+## 2 方法
 
-We start with a non-Byzantine protocol, Slush, and progressively build up Snowflake, Snowball and Avalanche, all based on the same common metastable mechanism.
-Though we provide definitions for the protocols, we defer their formal analysis and proofs of their properties to the next section.
-
-Overall, this protocol family achieves its properties by humbly cheating in three different ways. 
-First, taking inspiration from Bitcoin, we adopt a safety guarantee that is probabilistic. 
-This probabilistic guarantee is indistinguishable from traditional safety guarantees in practice, since appropriately small choices of $\epsilon $ can render consensus failure practically infeasible, less frequent than CPU miscomputations or hash collisions. 
-Second, instead of a single replicated state machine (RSM) model, where the system determines a sequence of totally-ordered trans- actions $T_0$, $T_1$, $T_2$, ...issued by any client, 
-we adopt a parallel consensus model with authenticated clients, where each client interacts independently with its own RSMs and optionally transfers ownership of its RSM to another client. 
-The system establishes only a partial order between dependent transactions. 
-Finally, we provide no liveness guarantee for misbehaving clients, but ensure that well-behaved clients will eventually be serviced. 
-These techniques, in conjunction, enable the system to nevertheless implement a useful Bitcoin-like cryptocurrency, with drastically better performance and scalability.
+We start with a non-Byzantine protocol, Slush, and progressively build up Snowflake, Snowball and Avalanche, all based on the same common metastable mechanism.  
+我们从一个非拜占庭协议Slush开始，逐步建立雪花，雪球和雪崩，所有都基于相同的常见亚稳态机制。   
+Though we provide definitions for the protocols, we defer their formal analysis and proofs of their properties to the next section.  
+虽然我们提供了协议的定义，但我们将协议形式的分析和协议属性的证明推迟到下一部分介绍。
+Overall, this protocol family achieves its properties by humbly cheating in three different ways.
+总体而言，该协议系列以三种不同的方式通过卑鄙地作弊行为来表现其特性。   
+First, taking inspiration from Bitcoin, we adopt a safety guarantee that is probabilistic.   
+首先，在比特币的启示下，我们采用了一定概率的安全保证。   
+This probabilistic guarantee is indistinguishable from traditional safety guarantees in practice, since appropriately small choices of $\epsilon $ can render consensus failure practically infeasible, less frequent than CPU miscomputations or hash collisions.   
+这种概率保证在实践中与传统的安全保证无法区分，因为选择适当小的$\epsilon $会使共识失败在事实上是不可行，会使CPU错误计算或散列冲突更加频繁。   
+Second, instead of a single replicated state machine (RSM) model, where the system determines a sequence of totally-ordered transactions $T0$, $T1$， $T2$, ...issued by any client,   
+其次，代替系统确认由任何客户发出完全有序的交易序列$T0$, $T1$， $T2$, ...的单个复制状态机(RSM)模型的是， we adopt a parallel consensus model with authenticated clients, where each client interacts independently with its own RSMs and optionally transfers ownership of its RSM to another client. 我们采用经过身份验证的客户端的并行共识模型，其中每个客户端使用自己的 RSM 独立 交互，并可选择将其 RSM 的所有权转移到另一个客户端。 The system establishes only a partial order between dependent transactions.
+系统仅在从属事务之间建立偏序。 Finally, we provide no liveness guarantee for misbehaving clients, but ensure that well-behaved clients will eventually be serviced. 最后，我们不会为行为不端的客户􏰀供实时保障，但要确保最终为良好的客户􏰀供服务。 These techniques, in conjunction, enable the system to nevertheless implement a useful Bitcoin-like cryptocurrency, with drastically better performance and scalability. 这些技术结合在一起，使系统能够实现像比特币一样的有用的加密货币，并具有极佳的性 能和可扩展性。
 
 2.1 Model, Goals, Threat Model
 
