@@ -20,7 +20,7 @@ This paper explores an alternative mechanism for the formation of the block chai
 Our modiﬁcation allows the inclusion of transactions from conﬂicting blocks. 
 We thus create an incentive for nodes to attempt and include diﬀerent transactions, and thereby increase throughput.
 
-本文探讨了形成区块链的另一种机制，当块大小较大或经出块率较高时，该机制更适合此类协议。
+本文探讨了形成区块链的另一种机制，当块大小较大或出块率较高时，该机制更适合此类协议。
 我们的改进允许包含冲突块中的交易。
 因此，我们激励节点尽可能打包不同的交易，从而提高吞吐量。
 
@@ -38,7 +38,7 @@ Ethereum on the other hand uses a diﬀerent selection strategy which is a varia
 
 ## 冲突和区块链的结构
 每种协议都要求在每个节点上复制区块链，并有助于节点就所有“帐户”的状态达成共识。
-每个区块链中的块都包含其前驱块的标识符（加密散列），以及根据其所延伸的区块链表示的账本状态而保持一致的一组交易。
+每个区块链中的块都包含其前区块的标识符（加密散列），以及根据其所延伸的区块链表示的账本状态而保持一致的一组交易。
 为了避免在交易接受时造成垄断，所有节点都可以创建区块。
 为了创建一个区块，一个节点（也称为矿工）必须解决一个巨大计算量的工作量证明问题（工作量证明计算本质上是猜测一个密码散列函数的输入，只有一定概率才会猜测成功）。
 一旦区块被创建出来，其将被分发到网络的其余部分。
@@ -52,7 +52,7 @@ The chain selection rule can be exploited by a malicious node to reverse a payme
 The attacker can attempt to build a secret chain of blocks which does not contain the transaction and later, if its chain is long enough, replace the main chain, thereby reversing the payment.
 
 恶意节点可以利用链选择规则来逆转支付，这种攻击称为双花。
-攻击者可以尝试构建一个不包含交易的秘密区块链，然后，如果其链足够长，则更换主链，从而推翻该笔支付。
+攻击者可以尝试构建一条不包含交易的秘密区块链，然后，如果该链足够长，则更换主链，从而推翻该笔支付。
 
 Previous work [6, 12] has shown that with increasing block sizes (or equivalently with increasing block creation rates), more stale (oﬀ-chain) blocks are created.
 This, in turn, leads to several problems: First, the security of the protocol against malicious attacks suﬀers.
@@ -76,7 +76,7 @@ Our suggested modiﬁcation aims to provide an additional improvement, and works
 > <sup>3</sup> For the sake of brevity, we do not go into the details of GHOST or of its Ethereum variant, except where speciﬁcally relevant.
 
 确实，以太坊采用的链选择协议是正是专门为在这些高吞吐量设定中提供更强的安全保证而设计的[13]，但其他问题（例如高出块率时的奖励分配不均或由于排除区块导致的吞吐量损失）尚未改进。（译注：GHOST协议只有主链上的区块即链上区块才会得到奖励，虽然因为提高了出块率会有一定吞吐量和确认时间的提升，但是还是存在大量的非主链即链下区块的浪费，其次由于只有主链区块才能得到奖励，对于同样付出了很大工作量的链下区块而言也是不公平的）
-我们提议旨在进一步改进，从而能与GHOST（以太坊使用的变体），或者标准最长链协议以及实际上选择任何“主链”的协议配合使用。<sup>3</sup>
+我们提议旨在进一步改进协议，从而能与GHOST（以太坊使用的变体），或者标准最长链协议以及实际上选择任何“主链”的协议配合使用。<sup>3</sup>
 > <sup>3</sup> 为简洁起见，除非特别相关，否则我们不讨论GHOST或其以太坊变体的细节。
 
 The Block DAG, and inclusive protocols 
@@ -87,13 +87,14 @@ Such payments are granted only if the transaction was not previously included in
 
 ## Block DAG和Inclusive协议
 我们建议将区块链重组为有向无环图（DAG）结构，该结构允许将所有块的交易都包含在日志中。
-我们使用“包容性”规则来实现此目的，该规则从DAG中选择一条主链，然后选择性地将链下区块的内容合并到日志中，前提是它们不与先前包含的内容冲突。
-Inclusive协议的一个重要的特点是，它向包含交易的区块的创建者奖励已接受交易的费用，即使该区块本身不属于主链。
+我们使用“包容”的规则来实现此目的，该规则从DAG中选择一条主链，然后选择性地将链下区块的内容合并到日志中，前提是它们不与先前包含的内容冲突。
+Inclusive协议的一个重要的特点是，它奖励给包含交易的区块的创建者已接受交易的手续费，即使该区块本身不属于主链。
 仅当交易先前未包含在链中时该奖励才有效，并且对于发布太慢的区块降低此类奖励。
 
 Analysis of such strategies is far from simple.
 We employ several game theoretic tools and consider several solution concepts making diﬀerent assumptions on the nodes (that they are proﬁt maximizers, cooperative, greedy-myopic, or even paranoid and play safety-level strategies).
 In all solution concepts one clear trend emerges: nodes play probabilistically to minimize collisions, and do not choose only the highest fee transactions that would ﬁt into their block.
+
 对此类策略的分析一点也不简单。
 我们采用了几种博弈论工具，并考察了几种在节点上做出不同假设的解决方案概念（它们是利益最大化者，合作者，贪婪投机者甚至偏执狂者，并测试了多种安全级别的策略）。
 在所有解决方案概念中，都出现了一个明确的趋势：节点会以随机选取交易的方式最大程度地减少冲突，而不是仅选择适合其区块的最高费用的交易。
@@ -103,7 +104,7 @@ We show that this strategy, which lowers the costs of double-spend attacks, can 
 We additionally consider a new attack scenario (which has not been analyzed in previous work) in which an attacker creates a public fork in the chain in order to delay transaction acceptance by nodes.
 > <sup>4</sup> This is guaranteed only if the attacker has less than 50% of the computational power in the network.
 
-我们建议的一个潜在负面影响是，尝试双花的攻击者可能会发布在失败尝试中生成的区块，并且仍会收取这些区块手续费。
+我们提议的一个潜在负面影响是，尝试双花的攻击者可以发布在失败尝试中生成的区块，并且仍会收取这些区块手续费。
 我们发现，尽管这种策略可以降低双花攻击的成本，但是可以通过等待稍长的最终交易接受的时间来轻松缓解，因为攻击者的成本随着等待时间的增加而显着增加。<sup>4</sup>
 我们还考虑了一种新的攻击场景（在先前的工作中没有进行过分析），在这种场景下，攻击者在链中创建了一个公开的分叉，以延迟节点接受交易的时间。(译注：这就是一种存活性攻击, 不以推翻交易为目的，而是让链无法正常工作为目的)
 > <sup>4</sup> 仅当攻击者的网络计算能力不到50％时，才能保证这一点。
@@ -130,7 +131,7 @@ We consider both security against double-spend attempts, as well as attackers th
 
 1. 我们使用有向无环结构组成区块图，其中每个区块引用了多个前驱区块，以将所有块的内容合并到日志中（过去已经提出了类似的结构，但不包括链下的内容）。
 
-2. 我们提供了新协议下节点之间费用竞争的博弈模型。
+2. 我们提供了新协议下节点之间竞争的博弈模型。
 
 3. 我们根据几种博弈论的解决方案概念和假设对博弈进行了分析，并表明在每种情况下，节点都会从更大范围的交易中随机选择交易。
 这是提高协议性能的关键。
