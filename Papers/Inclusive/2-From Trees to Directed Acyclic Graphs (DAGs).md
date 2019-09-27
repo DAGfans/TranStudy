@@ -43,13 +43,13 @@ Thus, this modiﬁcation is quite natural.
 > <sup> 5 </sup> GHOST已经在使用DAG了（尽管出于不同的原因），以太坊的区块当前引用了父区块以及“叔块”（与父区块共享同一父区块的区块）。
 因此，这种修改是很自然的。（译注：按照GHOST原本的设定，区块只会有单一父亲，所以会形成一颗树，但是Ethereum的变种中因为区块会同时引用叔块，则代表有多个父区块，此时已经是DAG了）
 
-Formally, we denote by BDAG the set of all directed acyclic block graphs G = (V, E) with vertices V (blocks) and directed edges E, where each B ∈ V has in addition an order ≺B over all its outgoing edges.
+Formally, we denote by BDAG the set of all directed acyclic block graphs G = (V, E) with vertices V (blocks) and directed edges E, where each B ∈ V has in addition an order ≺<sub>B</sub> over all its outgoing edges.
 In our setup, an edge goes from a block to its parent, thus childless vertices (“leaves”) are those with no incoming edges.
 Graphs in BDAG are required to have a unique maximal vertex, “the genesis block”.
 We further denote by sub(B, G) the subgraph that includes all blocks in G reachable from B.
 
 
-形式上，我们用BDAG表示所有有向无环图G =（V，E）的集合，其顶点为V（块），有向边为E，其中每个B∈V相对其输出边来说都存在≺B的顺序。（译注：即B的顺序比其所有的后代都优先）
+形式上，我们用BDAG表示所有有向无环图G =（V，E）的集合，其顶点为V（区块），有向边为E，其中每个B∈V的输出边代表的顺序用≺<sub>B</sub>表示。（译注：即B的顺序比其所有的父区块都落后）
 在我们的设定中，边从区块指向其父顶点，因此无子顶点（“叶顶点”）是没有传入边的。
 BDAG的图中必须具有唯一的最大顶点，即“创世块”。
 我们后面用sub（B，G）表示包含从B可达的G中所有块的子图。
@@ -60,8 +60,7 @@ The order ≺<sub>B</sub> is assumed to agree with F, in the sense that if A is 
 
 基础链选择规则F用于确定DAG中的主链（例如，最长链或GHOST）。
 规则F是从区块图到区块链的映射，因此对于任何G∈BDAG，F（G）是G中的最大（即不可扩展）链。
-假定≺<sub>B</sub> 也遵守F规则，如果A是B的父区块之一且A∈F（sub（B，G）），则A是≺<sub>B</sub>顺序中最靠前的。
-
+假定≺<sub>B</sub> 也遵守F规则，如果A是B的父区块之一且A∈F（sub（B，G）），则A是≺<sub>B</sub>顺序中最靠前的。（译注：即如果某个区块的父区块在主链上，则该父亲是所有父亲中顺序最优先的）
 
 ## 2.1 Exploiting the DAG Structure—The Inclusive Protocol
 ## 2.1 开发DAG结构-Inclusive协议
