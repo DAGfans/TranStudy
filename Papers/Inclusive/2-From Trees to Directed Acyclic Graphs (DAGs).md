@@ -5,11 +5,9 @@ We now begin to describe our proposed changes to the protocol.
 We start with a structural change to the blocks that will enable further modiﬁcations.
 In the current Bitcoin protocol, every block points at a single parent (via the parent’s hash), and due to natural (or malicious) forks in the network, the blocks form a tree.
 
-
-现在我们开始描述对协议的建议更改。
-我们从对块的结构更改开始，以实现进一步的修改。
-在当前的比特币协议中，每个块都指向单个父节点（通过父节点的哈希），并且由于网络中的自然（或恶意）分支，这些块形成了一棵树。
-
+现在我们开始描述对协议建议的更改。
+我们从对区块的结构改动开始，以实现进一步的修改。
+在当前的比特币协议中，每个区块都指向单个父区块（通过父节点的散列），并且由于网络中的自然（或恶意）分叉，这些块形成了一棵树。
 
 We propose, instead, the node creating the block would list all childless blocks that it was aware of.
 Surely, this added information does not hurt; it is simple to trace each of the references and see which one leads, for example, to the longest chain.
@@ -17,21 +15,15 @@ We thus obtain a directed acyclic graph (DAG) in which each block references a s
 We assume that when block C references B, C’s creator knows all of B’s predecessors (it can request them).
 The information that can be extracted from a block’s reference list is suﬃcient to simulate the underlying chain selection rule: we can simulate the longest-chain rule, for example, by recursively selecting in each block a single link—the one leading to the longest chain.
 
-
-我们建议，创建块的节点将列出它知道的所有无子块。
-当然，这些增加的信息不会对您造成伤害。
-跟踪每个引用并查看哪个引用（例如指向最长的链）很简单。
-因此，我们获得了有向无环图（DAG），其中每个块都引用了先前块的子集。
-我们假设，当块C引用B时，C的创建者知道B的所有前任（可以请求他们）。
-可以从块的引用列表中提取的信息足以模拟基本的链选择规则：例如，我们可以通过在每个块中递归选择单个链接（导致最长链的链接）来模拟最长链规则。
-
+相反，我们建议，创建区块的节点将列出它知道的所有无子区块。
+当然，这些增加的信息不会产生副作用；跟踪每个引用并查看哪个引用指向最长的链是很简单的。。
+因此，我们得到一个有向无环图(DAG)，其中每个块都引用了先前块的子集。
+我们假设，当块C引用B时，C的创建者知道B的所有祖先区块（可以请求他们）。
+从区块的引用列表中提取的信息足以模拟基本的链选择规则：例如，我们可以通过在每个块中递归选择出指向最长链一条链来模拟最长链规则。（译注：即父区块中选择难度最大区块， 然后再从该区块的父亲中选择难度最大的，依次类推直到创世区块，选出区块链则为最长链）
 
 The provision of this additional information amounts to a “direct revelation mechanism”: Instead of instructing nodes to select the chain they extend, we simply ask them to report all possible choices, and other nodes can simulate their choice, just as they would have made it (the term direct revelation is borrowed from economics where it is widely used in mechanism design [10]).
 
-
-提供这些附加信息就构成了“直接启示机制”：我们没有指示节点选择它们扩展的链，而是仅要求它们报告所有可能的选择，而其他节点可以像模拟选择那样模拟它们的选择。
-它（直接启示一词是从经济学中借用的，它在机制设计中被广泛使用[10]）。
-
+提供这些附加信息就构成了“直接启示机制”：我们没有指示节点选择它们扩展的链，而是仅要求它们报告所有可能的选择，而其他节点可以模拟它们的选择（直接启示一词是从经济学中借用的，它在机制设计中被广泛使用[10]）。(译注：这里的意思是你因为拥有完整的信息，则你可以通过算法推导出最长链，而非因为信息缺失，无法推导出最长链，只能指导节点哪条是最长链)
 
 In fact, any chain selection protocol can be simulated in this manner, as the references provide all information needed to determine the choice that the block creator would have made when extending the chain.
 The only issue that needs to be handled is tie breaking (as in the case of conﬂicting chains of equal length).
@@ -42,17 +34,14 @@ Note that nodes are only required to list the childless nodes in the DAG; there 
 > <sup>5</sup> DAGs are already required by GHOST (although for diﬀerent reasons), and Ethereum’s blocks currently reference parent blocks as well as “uncles” (blocks that share the same parent as their parent).
 Thus, this modiﬁcation is quite natural.
 
-
-实际上，可以以这种方式模拟任何链选择协议，因为参考文献提供了确定在扩展链时区块创建者将做出的选择所需的所有信息。
-唯一需要处理的问题是打领带（如冲突等长链的情况）。
-为此，我们要求节点以某种顺序列出对其他块的引用，然后将其用于断开联系。
-请注意，仅要求节点列出DAG中的无子节点。
-无需列出其他节点，因为只需通过链接即可访问其他节点。
+实际上，可以以这种方式模拟任何链选择协议，因为引用提供了确定在扩展链时区块创建者将做出的选择所需的所有信息。
+唯一需要处理的问题是解决平局（如冲突等长链的情况）。
+为此，我们要求节点以某种顺序列出对其他块的引用，然后将其用于解决平局。
+请注意，仅要求节点列出DAG中的无子区块；无需列出其他区块，因为只需通过引用即可访问其他区块。
 <SUP>5</SUP>
 
-> <sup> 5 </sup> GHOST已经需要DAG（尽管出于各种原因），以太坊的区块当前引用了父区块以及“叔叔”（与父区块共享同一父区块的区块）。
-因此，这种修改是很自然的。
-
+> <sup> 5 </sup> GHOST已经在使用DAG了（尽管出于不同的原因），以太坊的区块当前引用了父区块以及“叔块”（与父区块共享同一父区块的区块）。
+因此，这种修改是很自然的。（译注：按照GHOST原本的设定，区块只会有单一父亲，所以会形成一颗树，但是Ethereum的变种中因为区块会同时引用叔块，则代表有多个父区块，此时已经是DAG了）
 
 Formally, we denote by BDAG the set of all directed acyclic block graphs G = (V, E) with vertices V (blocks) and directed edges E, where each B ∈ V has in addition an order ≺B over all its outgoing edges.
 In our setup, an edge goes from a block to its parent, thus childless vertices (“leaves”) are those with no incoming edges.
@@ -60,30 +49,22 @@ Graphs in BDAG are required to have a unique maximal vertex, “the genesis bloc
 We further denote by sub(B, G) the subgraph that includes all blocks in G reachable from B.
 
 
-形式上，我们用BDAG表示所有有向无环框图G =（V，E）的集合，其顶点为V（块），有向边缘为E，其中每个B∈V在其所有输出边缘上的阶数为。
-在我们的设置中，边从块到其父，因此无子顶点（“叶”）是没有传入边的顶点。
-BDAG中的图形必须具有唯一的最大顶点，即“创世块”。
-我们进一步用sub（B，G）表示包含从B可达的G中所有块的子图。
+形式上，我们用BDAG表示所有有向无环图G =（V，E）的集合，其顶点为V（块），有向边为E，其中每个B∈V相对其输出边来说都存在≺B的顺序。（译注：即B的顺序比其所有的后代都优先）
+在我们的设定中，边从区块指向其父顶点，因此无子顶点（“叶顶点”）是没有传入边的。
+BDAG的图中必须具有唯一的最大顶点，即“创世块”。
+我们后面用sub（B，G）表示包含从B可达的G中所有块的子图。
 
-
-An underlying chain selection rule F is used to decide on the main chain in the DAG (e.
-g.
-, longest-chain or GHOST).
-The rule F is a mapping from block DAGs to block chains such that for any G ∈ BDAG, F(G) is a maximal (i.
-e.
-, non-extendable) chain in G.
+An underlying chain selection rule F is used to decide on the main chain in the DAG (e.g., longest-chain or GHOST).
+The rule F is a mapping from block DAGs to block chains such that for any G ∈ BDAG, F(G) is a maximal (i.e., non-extendable) chain in G.
 The order ≺<sub>B</sub> is assumed to agree with F, in the sense that if A is one of B’s parents and A ∈ F(sub(B, G)), then A is ﬁrst in the order ≺<sub>B</sub> .
 
-
 基础链选择规则F用于确定DAG中的主链（例如，最长链或GHOST）。
-规则F是从块DAG到块链的映射，因此对于任何G∈BDAG，F（G）是G中的最大（即不可扩展）链。
-假定≺B与F一致 如果A是B的父母之一且A∈F（sub（B，G）），则A的顺序为≺<sub>B</sub>。
+规则F是从区块图到区块链的映射，因此对于任何G∈BDAG，F（G）是G中的最大（即不可扩展）链。
+假定≺<sub>B</sub> 也遵守F规则，如果A是B的父区块之一且A∈F（sub（B，G）），则A是≺<sub>B</sub>顺序中最靠前的。
 
 
-## 2.
-1 Exploiting the DAG Structure—The Inclusive Protocol
-## 2.
-1开发DAG结构-包容性协议
+## 2.1 Exploiting the DAG Structure—The Inclusive Protocol
+## 2.1 开发DAG结构-Inclusive协议
 
 We deﬁne Inclusive-F, the “Inclusive” version of the chain selection rule F, which incorporates non-conﬂicting oﬀ-chain transactions into a given blocks accepted transaction set.
 Intuitively, a block B uses a postorder traversal on the block DAG to form a linear order on all blocks.
@@ -160,10 +141,8 @@ Its output is the set of transactions it approves.
 
 ### Algorithm 1.
 Inclusive-F(G, B, T)
-Input: a DAG G, a block B with pointers to predecessors (B 1 , .
-.
-.
-, B m ) (ordered according to ≺<sub>B</sub> ), <sup>7</sup> and a set of previously conﬁrmed transactions T.
+
+Input: a DAG G, a block B with pointers to predecessors (B 1 , ..., B m ) (ordered according to ≺<sub>B</sub> ), <sup>7</sup> and a set of previously conﬁrmed transactions T.
 
 
 > <sup>7</sup> If B is the genesis block, which has no predecessors, m = 0.
@@ -287,14 +266,12 @@ title="\gamma _0 (c) =\left\{\begin{matrix} 1 & 0\leq c\leq 3\\ \frac{10-c}{7} &
 γ<sub>0</sub> grants a full reward to blocks which are adequately synchronized with the main chain (γ<sub>0</sub> (c) = 1 for c ≤ 3), on the one hand, and pays no reward at all to blocks that were left “unseen” by the main chain for too long, on the other hand (γ<sub>0</sub> (c) = 0 for c ≥ 10); in the mid-range, a block is given some fraction of the transaction rewards (γ<sub>0</sub> (c) = (10−c)/7 for 3 < c < 10).
 
 
-一方面，γ<sub> 0 </ sub>向与主链充分同步的块（γ<sub> 0 </sub>（c）= 1，c≤3）授予完全奖励，并且 另一方面，对于由主链“看不见”太长时间的块完全不给予任何奖励（对于c≥10，γ<sub> 0 </sub>（c）= 0）； 在中间范围内，一个区块被给予一定比例的交易奖励（对于3<c<10，γ<sub>0</sub>(c)=（10-c）/ 7）。
+一方面，γ<sub> 0 </sub>向与主链充分同步的块（γ<sub> 0 </sub>（c）= 1，c≤3）授予完全奖励，并且 另一方面，对于由主链“看不见”太长时间的块完全不给予任何奖励（对于c≥10，γ<sub> 0 </sub>（c）= 0）； 在中间范围内，一个区块被给予一定比例的交易奖励（对于3<c<10，γ<sub>0</sub>(c)=（10-c）/ 7）。
 
 
 ### Money Creation 
 In addition to fees, Bitcoin and other cryptocurrencies use the block creation process to create and distribute new coins.
-Newly minted coins can also be awarded to oﬀ-chain blocks in a similar fashion to transaction fees, i.
-e.
-, in amounts that decrease for blocks that were not quickly included in the main chain.
+Newly minted coins can also be awarded to oﬀ-chain blocks in a similar fashion to transaction fees, i.e., in amounts that decrease for blocks that were not quickly included in the main chain.
 A block’s reward can therefore be set as a fraction γ(c(A)) of the full reward on the chain.
 <sup>9</sup>  As our primary focus is on the choice of transactions
 
@@ -318,7 +295,7 @@ to include in the block, we assume for simplicity from this point on, that no mo
 Now that we have deﬁned the Inclusive protocol, we begin to analyze its implications.
 
 
-现在我们已经定义了包容性协议，我们开始分析其含义。
+现在我们已经定义了Inclusive协议，我们开始分析其含义。
 
 
 # References
