@@ -1,4 +1,7 @@
+> Source: https://www.cs.huji.ac.il/~yoni_sompo/pubs/15/inclusive_full.pdf
+
 # 1 Introduction
+# 1 介绍 
 
 Bitcoin, a decentralized digital currency system [9], uses at its core a distributed data structure known as the block chain—a log containing all transactions conducted with the currency. 
 Several other distributed systems, such as Ethereum, a general distributed applications platform, have extended Bitcoin’s functionality, yet still rely on a similar block chain to synchronize information between nodes.
