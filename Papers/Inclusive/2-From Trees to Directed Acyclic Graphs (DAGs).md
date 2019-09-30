@@ -1,3 +1,5 @@
+> Source: https://www.cs.huji.ac.il/~yoni_sompo/pubs/15/inclusive_full.pdf
+
 # 2 From Trees to Directed Acyclic Graphs (DAGs)
 # 2 从树到有向无环图(DAG)
 
@@ -127,7 +129,7 @@ Input: a DAG G, a block B with pointers to predecessors (B<sub>1</sub> , ..., B<
 > <sup>7</sup> If B is the genesis block, which has no predecessors, m = 0.
 
 输入: DAG G； 区块B, 指向前驱区块B(<sub>1</sub> , ..., B<sub>m</sub>)，它们之间用≺<sub>B</sub>排序 <sup>7</sup>; 和之前已确认的交易集合T
-> <sup>7</sup> 如果B是创世区块，则m=0.
+> <sup>7</sup> 如果B是创世区块，则m=0.
 
 1. >  IF visited(B) RETURN T // 如果B以及访问则返回T
 2. >  SET visited(B):=True // 标记B已访问
@@ -164,7 +166,7 @@ Since both in longest-chain and GHOST blocks that are buried deep in the main ch
 
 该协议的一个重要特性是，一旦交易被G的某个主链区块B接受，只要B保留在G的主链中，该交易就会保留在任何B的扩展块的接受集中。
 这是因为未来的主链区块会首先将之前的主链块确认过的交易包含在它们的确认交易集中。
-由于埋在主链深处的最长链区块和GHOST区块变得越来越不可能被替换，因此包含在其Inclusive版本中的交易具有相同的安全保证。(译注：这里的意思是Inclusive协议虽然针对的是区块图，但是通过Inclusive-F算法生成主链，这个问题可以转化成为区块链的共识问题，所以可以有最长链规则一样的安全性)
+由于埋在主链深处的最长链区块和GHOST区块变得越来越不可能被替换，因此包含在其Inclusive版本中的交易具有相同的安全保证。(译注：这里的意思是Inclusive协议虽然针对的是区块图，但是通过Inclusive-F算法生成主链，这个问题可以转化成为区块链的共识问题，所以可以有最长链规则一样的安全性)
 
 ### Fees and Rewards
 Each transaction awards a fee to the creator of the ﬁrst block that included it in the set T.
@@ -244,6 +246,7 @@ As our primary focus is on the choice of transactions to include in the block, w
 > <sup> 9 </sup>可以通过类似于难度整的过程来自动调整总共的区块奖励，以维持所需的铸币速率.
 
 Now that we have deﬁned the Inclusive protocol, we begin to analyze its implications.
+
 现在我们已经定义了Inclusive协议，开始分析其含义。
 
 # References

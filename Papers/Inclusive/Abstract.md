@@ -1,10 +1,17 @@
+> Source: https://www.cs.huji.ac.il/~yoni_sompo/pubs/15/inclusive_full.pdf
+
 # Inclusive Block Chain Protocols
+# Inclusive 区块链协议 
 
-Yoad Lewenberg 1 , Yonatan Sompolinsky 1 , and Aviv Zohar 1,2
+Yoad Lewenberg<sup>1</sup> , Yonatan Sompolinsky<sup>1</sup>, and Aviv Zohar<sup>1,2</sup>
 
-1
+<sup>1</sup> The School of Engineering and Computer Science,
 
-The School of Engineering and Computer Science, The Hebrew University of Jerusalem, Israel 2 Microsoft Research, Herzliya, Israel {yoadlew,yoni sompo,avivz}@cs.huji.ac.il
+The Hebrew University of Jerusalem, Israel 
+
+<sup>2</sup> Microsoft Research, Herzliya, Israel 
+
+{yoadlew,yoni sompo,avivz}@cs.huji.ac.il
 
 ## Abstract. 
 Distributed cryptographic protocols such as Bitcoin and Ethereum use a data structure known as the block chain to synchronize a global log of events between nodes in their network. 
@@ -12,11 +19,11 @@ Blocks, which are batches of updates to the log, reference the parent they are e
 Previous research has shown that the mechanics of the block chain and block propagation are constrained: if blocks are created at a high rate compared to their propagation time in the network, many conﬂicting blocks are created and performance suffers greatly. 
 As a result of the low block creation rate required to keep the system within safe parameters, transactions take long to securely conﬁrm, and their throughput is greatly limited.
 
+## 摘要 
 诸如比特币和以太坊之类的分布式密码协议使用称为区块链的数据结构来同步其网络中节点之间事件的全局日志。 
 区块是对日志的批量更新，区块通过引用父节点将链不断延伸，因此形成了链式结构。 
 先前的研究表明，区块链和区块传播的机制受到限制：如果与网络中的传播时间相比，以较高的速率创建区块，则会创建许多冲突的区块，并且性能会大大降低。 
 由于将系统保持在安全参数范围内所需的块创建率较低，因此交易需要很长时间才能安全确认，并且其吞吐量受到极大限制。
-
 
 We propose an alternative structure to the chain that allows for operation at much higher rates. 
 Our structure consists of a directed acyclic graph of blocks (the block DAG). 
