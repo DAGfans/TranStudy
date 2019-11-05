@@ -6,26 +6,56 @@ We introduce a hash-based dynamic accumulator with no trusted setup or manager r
 Introduced in [6], accumulators are compact representations of a set, to which elements can be added and proven.
 Our accumulator uses a forest of perfect Merkle trees [7] and extends the work of [8] to allow eﬃcient removals of elements from the accumulator, reducing the total number of leaves in the forest when deletions occur.
 
+接下来我们会介绍一个没有信任设置或管理器要求的基于哈希的动态累加器。
+累加器是在[6]中引入的，它能以紧凑的方式表示一个集合，
+并可以向集合中添加元素和证明元素在集合中是否存在。
+我们的累加器则使用了完美默克尔树[7]组成的森林，
+并扩展了[8]的工作，使得从累加器中删除元素的操作更高效，
+减少了删除时森林中的叶子总数。
+
 Additions are computable without any data beyond the accumulator and the element to be added, and deletions are computable with an inclusion proof of the data to be deleted.
+
+添加操作不会涉及累加器和需要添加的元素以外的数据，
+删除操作则需要证明待删除元素被包含在累加器中。
 
 The design of the accumulator is a forest of perfect binary hash trees.
 The representation of the accumulator which must be stored includes: the number of elements stored, and the root of every tree in the forest.
 
+我们将累加器设计为完美二叉哈希树组成的一个森林。
+累加器必须存储的数据包括：已存储的元素数目以及森林中每棵树的根。
+
 To update the accumulator, Add(), Delete() and Verify() functions are deﬁned, which each operate on single elements.
 Batched operations, where multiple elements are added or removed at the same time can speed up operations and reduce the sizes of proofs.
 
+为了更新累加器，我们定义了Add()，Delete()和Verify()函数用于操作单个元素。
+批处理操作（同时添加或删除多个元素）可以加快操作速度并减小证明的大小。
+
 ## 4.1 Logical structure of the binary forest
+
+## 4.1 二叉森林的逻辑结构
 
 We arrange the elements of the accumulator into a forest of perfect binary trees with the largest tree on the left and smallest on the right.
 This arrangement allows for a more intuitive visualization of trees merging and splitting when needed.
 Row operations are also possible where elements can move between sub-trees.
 
- As the trees in the forest are always perfect, they hold 2 h leaves, where h is the height of the tree.
+我们将累加器的元素排列成由完美二叉树组成的一个森林，其中最大的树在左侧，最小的树在右侧。
+这种排列可以在需要时更直观地将树的合并和分裂可视化。
+当我们在子树之间移动元素时，还可以进行行操作。
+
+ As the trees in the forest are always perfect, they hold 2<sup>h</sup> leaves, where h is the height of the tree.
 Any natural number of leaves can be organized into a forest of perfect binary trees, just as any natural number can be represented by a sum of powers of two.
 This relation provides a convenient shortcut: the number of trees in the accumulator is the number of 1-bits in the binary representation of the number of leaves.
 The heights of those trees is the bit-position of the 1-bits in that representation.
 For example, a forest with 133 leaves would have 3 trees: a height 7 tree, a height 2 tree, and a height 0 tree.
 This is quickly visible by looking at the binary representation of the number 133: 10000101.
+
+由于森林中的树都是完美的，因此它们都拥有2<sup>h</sup>个叶子，其中h是树的高度。
+任意自然数数量的叶子都可以组织成完美的二叉树森林，就像任何自然数可以由2的乘方之和表示。
+这种关系提供了一个方便快捷的思路：累加器中树的数量就是叶子数量的二进制表示形式中1的个数。
+这些树的高度就是叶子数量二进制表示形式中相应的1的比特位置。
+例如，一个有133片叶子的森林会有3棵树：
+一棵高度为7的树，一棵高度为2的树和一棵高度为0的树。
+通过查看数字133：10000101的二进制表示，可以很快看到这一点。
 
 Any set of leaves can be grouped into binary trees using this method.
 In all cases, it is possible to add one more leaf to the forest knowing only the roots of each tree.
@@ -33,56 +63,85 @@ In the 133 leaf example, adding an extra leaf would result in 134 leaves, with a
 The 0-height tree (which itself is a leaf) would combine with the newly added leaf to create a 1-height tree with 2 leaves.
 A further addition to 135 would then create a 0-height tree with the additional leaf.
 
+可以使用此方法将任意一堆叶子按组划分为多棵二叉树。
+无论在什么情况下，都可以向森林中添加一片叶子，而只需知道每棵树的根。
+在133片叶子的示例中，添加一个额外的叶子将得到134片叶子，二进制表示为10000110。
+高度为0的树（其本身就是一片叶子）将与新添加的叶子结合，创建出高度为1的树，其中新树含有2片叶子。
+然后，再加一得到135的话将会又创建一棵高度为0的树，新树本身就是新添加的叶子。
+
 ## 4.2 Adding and removing elements
+
+## 4.2 添加和删除元素
 
 We describe here how to add or remove a single element, which suﬃces for all operations as these algorithms can be invoked many times to add or remove many elements.
 In the case of removing elements, batching many removals into a single operation can signiﬁcantly reduce CPU usage.
 The batch operation is described with examples in the appendix.
 
+现在描述如何添加或删除单个元素。通过多次调用这两个操作可以添加或删除多个元素。
+在删除元素的情况下，将多个删除项合并到一个操作中批量处理可以显著减少CPU使用率。
+本文附录通过示例描述了如何执行批处理操作。
+
 The Parent() function, used below, is the typical concatenate and hash function from Merkle trees; we append the height within the tree to prevent attacks such as in [9].
 To simplify the pseudocode, this height argument is left out of the Parent() function call, as well as the left / right information in DeleteOne(), which can be obtained from the proof argument.
+
+下面使用的Parent()函数是默克尔树中使用的典型的拼接哈希函数；
+我们将树的高度记树中以防止诸如[9]中的攻击。
+为了简化伪代码，我们会高度参数从Parent()函数调用中去除，
+另外也会将左/右信息（可从证明参数中获得）从DeleteOne()函数调用中去除。
 
 We represent the accumulator’s Merkle forest roots as an array of hashes, which can include empty hashes.
 acc[n] is the root at index n, or ∅ if that index is unpopulated (if there is no tree of that height).
 
+我们将累加器的默克尔森林的根表示为一个哈希数组，其中可能包含空哈希。
+acc[n]是第n个位置的根【译注：也就是高度为n的树的根】，
+如果该位置未填充（即如果没有该高度的树），则为∅。
+
 ### **Algorithm 1** AddOne
 
-```vb
-# add a leaf to the accumulator .
-1: function AddOne(acc, leaf) 
-# n is initially the leaf to add .
-2:  n ← leaf 
-# height is initially 0 .
-3:  h ← 0 
-# r is the lowest root .
-4:  r ← acc[h] 
-# loop until an empty root
-5:  while r =6 ∅ do 
-6:      n ← Parent(r, n) 
+### **算法1** AddOne
+
+```
+1: function AddOne(acc, leaf)  # add a leaf to the accumulator
+                               # 往累加器添加一片叶子
+2:  n ← leaf  # n is initially the leaf to add
+              # n一开始是待添加的叶子
+3:  h ← 0  # height is initially 0
+           # 高度一开始是0
+4:  r ← acc[h]  # r is the lowest root
+                # r一开始是最低的根
+5:  while r != ∅ do  # loop until an empty root
+                     # 一直循环到根为空为止
+6:      n ← Parent(r, n)  # 【译注：为r和n创建一个共同的父亲，并将该父亲赋值给n】
 7:      acc[h] ← ∅ 
 8:      h ← h + 1 
-9:  r ← acc[h] 
+9:      r ← acc[h] 
 10: acc[h] ← n 
 11: return acc
 ```
-
-.
 
 AddOne() takes in the accumulator roots and an element to add.
 It continues to compute parents until it encounters the ﬁrst unpopulated space in the accumulator array, at which point it stores the output of the ﬁnal parent function and returns a new list of hashes.
 This new list can have one more populated hash (in the case where index 0 was empty), the same number, or fewer, down to a single element.
 
+AddOne()接受累加器的根数组和要添加的元素。
+它持续创建父亲，直到遇到累加器数组中的第一个未填充的位置，
+然后将最后一个Parent()函数的输出存储到未填充的位置并返回一个新的哈希列表。
+这个新列表可以包含一个以上被填充的哈希（在索引0为空的情况下），
+或者相同或更少的数目，少至只有单个元素。
+
 ### **Algorithm 2** DeleteOne
 
-```vb
-# Delete leaf from the accumulator 
-1: function DeleteOne(acc, proof) .
+### **算法2** DeleteOne
+
+```
+1: function DeleteOne(acc, proof)  # Delete leaf from the accumulator 
+                                   # 从累加器删除叶子
 2:  n ← ∅ 
 3:  h ← 0 
-# Iterate over each proof element 
-4:  while h < len(proof) do 
-5:      p ← proof[h] .
-6:       if n =6 ∅ then 
+4:  while h < len(proof) do  # Iterate over each proof element 
+                             # 遍历每个证明元素
+5:      p ← proof[h] 
+6:      if n != ∅ then 
 7:          n ← Parent(p, n) 
 8:      else if acc[h] = ∅ then 
 9:          acc[h] ← p 
@@ -90,14 +149,25 @@ This new list can have one more populated hash (in the case where index 0 was em
 11:         n ← Parent(p, acc[h]) 
 12:         acc[h] ← ∅ 
 13:     h ← h + 1 
-14:     acc[h] ← n 
-15:     return acc
+14:  acc[h] ← n 
+15:  return acc
 ```
 
 DeleteOne() takes in the accumulator roots and an inclusion proof of the element to be deleted.
 The inclusion proof is also a list of hashes, along with a position index indicating which proof elements are right and which are left Parent() arguments.
 As in AddOne(), it begins with the smallest trees in the array, moving to larger trees, increasing height at each step.
 The loop runs through every element of the proof, consuming a proof element at every step, and returning a modiﬁed array of roots when done.
+
+DeleteOne()接受累加器里的根以及要删除的元素的包含证明。
+包含证明也是一个哈希表，另外还携带一个位置索引。
+该位置索引指示哪些证明元素会放在右边
+【译注：即哪些证明元素会被DeleteOne()第9行设为累加器里的根】，
+哪些会放在左边成为Parent()的参数。
+【译注：证明数组中位置小于该索引的元素都将成为累加器的根，
+位置大于等于该索引的元素将成为累加器的元素。
+在算法2中该索引并未出现，但生产环境的代码应该用该索引验证证明的有效性。】
+与AddOne()一样，它以数组中最小的树开始，然后移动到更大的树，并在每一步增加高度。
+while循环遍历证明里的每个元素，在每个步骤中消耗一个证明元素，并在完成后返回修改后的根数组。
 
 There are two distinct phases of the ascending loop: breaking and hashing.
 The deleted node can either be replaced with a tree root if one exists, or if one doesn’t the sibling of the deleted node (the proof node) is promoted into a tree itself.
