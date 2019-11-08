@@ -1,7 +1,11 @@
 > Source: https://eprint.iacr.org/2019/611.pdf
 # 5 Performance and Optimizations
 
+# 5 性能和优化
+
 ## 5.1 Reducing proof length
+
+## 5.1 减少证明长度
 
 While a single inclusion proof will be of log(n) size, we can send multiple simultaneous proofs in less space than sending each proof individually.
 The size reduction depends on the proximity of the leaves to be proven.
@@ -12,12 +16,39 @@ Proof branches are provided only up to the point where they intersect an already
 We can save even more space by omitting hashes that will be computed by the veriﬁer; parent hashes can be omitted if both child hashes are contained in the proof.
 In the extreme case, the proof for all the leaves in a tree is just the leaves themselves, as all intermediate hashes can be computed from the leaves.
 
+尽管一份包含证明的大小为log(n)，但与每次只发送一份证明相比，
+同时发送多份证明可以节省更多的空间。
+能节省多少空间取决于要证明的叶子的接近程度。
+这里有两个极端的例子：
+如果两个叶子在不同的树中，则它们的证明不会重叠，因此需要两个完整的证明。
+但是，如果叶子相邻，则只需要一份证明，不需额外开销即可获得第二份证明。
+同时发送多份证明时，我们只需发送一个稀疏的森林，
+而不是有多少个叶子要证明就要发送多少个证明分支。
+这个森林虽然稀疏，但足以覆盖所有要证明的叶子。
+提供一个证明分支时，
+只需要提供从叶子到该分支与其它已提供的分支相交的部分。
+通过省略校验器会生成的哈希，我们可以节省更多空间。
+如果两个子哈希都包含在证明中，则可以省略父哈希。
+在极端情况下，树中所有叶子的证明都仅仅是叶子本身，
+因为所有中间哈希值都可以通过叶子计算出来。
+
 In Bitcoin, transactions are aggregated into blocks in order to be conﬁrmed via proof-of-work.
 When compact state nodes propagate blocks, the existence of all UTXOs spent in the block (every input in the block) can be proven with a sparse forest.
 In cases where single transactions are being sent, a sparse forest proving all inputs within a transaction can be sent along with the transaction.
 To save bandwidth at the cost of some memory and complexity, clients can maintain their own sparse forest in memory.
 When sending a transaction, nodes send only the positions of the UTXOs consumed.
 Receiving clients then respond with a proof request, indicating which nodes in the forest are needed to get up to an intersection with nodes it already has in memory.
+
+在比特币中，交易被汇总为区块，以便通过工作量证明进行确认。
+当紧凑状态节点传播区块时，
+可以用稀疏森林证明在区块中花费的所有UTXO（区块里的每个输入）的有效性。
+在发送单笔交易的情况下，可以将证明交易内所有输入的稀疏森林与该交易一起发送。
+客户端可以在内存中维护自己的稀疏森林，这样虽然会占用一些内存，
+并加大了计算的复杂性，但却可以节省带宽。
+发送交易时，节点只需要发送被花费的UTXO的位置。
+客户端接收到交易后以含有证明的请求进行响应，该请求会告诉对方，
+还需要哪些森林里的节点才能与客户端内存中已经存在的森林节点相交，
+从而形成一份完整的证明。
 
 ## 5.2 Short trees
 
