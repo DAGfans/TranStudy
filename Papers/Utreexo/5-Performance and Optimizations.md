@@ -347,37 +347,94 @@ We hope to bring this overhead down in the future with improved caching techniqu
 
 ## 5.6 Hardening against collision attacks
 
+## 5.6 抵抗碰撞攻击
+
 In addition to better caching techniques, another promising method to reduce proof sizes is to reduce the length of individual hash outputs.
 At ﬁrst glance, truncating hashes may seem unsafe, but Bitcoin oﬀers a unique environment which can help mitigate collision attacks on reduced length hashes.
 
+除了改进缓存技术外，
+还有一种可以有效减少证明大小的方法是缩短单个哈希输出的长度。
+乍一看，截断的哈希似乎是不安全的，
+但是比特币提供了一个独特的环境，
+可以在哈希长度缩短后帮助抵抗碰撞攻击。
+
 As an attacker (especially a miner) has signiﬁcant control over the accumulator’s Merkle forest, one might expect that a collision-resistant hash function is required to prevent the attacker from creating invalid proofs (inclusion proofs for elements not previously added).
 In Bitcoin’s case, however, we can make collision attacks infeasible, such that an attacker would instead need to perform a second preimage attack.
+
+由于攻击者（尤其是矿工）对累加器的默克尔森林拥有很大的控制权，
+因此人们可能觉得需要一种抗碰撞的哈希函数来防止攻击者创建无效的证明（未添加元素的包含证明）。
+但是，在比特币的场景下，我们可以使碰撞攻击变得不可行，
+从而使攻击者被迫执行第二次原像攻击。
+【译注：原像攻击是指给定一个哈希h，找到一条消息m使得hash(m) = m。
+第二次原像攻击是指给定一个固定的消息m1，找到一个不同的消息m2，
+使得hash(m2) = hash(m1)。】
 
 We assume an attacker who also is able to mine a block, and thus inﬂuence a number of leaf insertions, their positions, and the data they contain.
 The simplest attack would be to create TXOs txo and txo' , where h(txo) = h(txo' ).
 txo is an output from a valid transaction which all nodes on the network will conﬁrm, while txo' is a made-up output of a million bitcoins that is not part of any valid transaction.
 The attacker can then provide an inclusion proof for txo' , and spend the million bitcoins even though only txo has been inserted into the accumulator.
 
+我们假设攻击者也能够挖出一个区块，
+从而影响大量叶子的插入、它们的位置以及其中包含的数据。
+最简单的攻击是创建TXO txo和txo'，其中h(txo) = h(txo')。
+txo是有效交易的输出，网络上的所有节点都将确认该交易，
+而txo'是一百万个比特币的虚构输出，不属于任何有效交易。
+然后，攻击者可以提供txo'的包含证明，
+并且即使只有txo被插入累加器，也可以花费那一百万个比特币。
+
 As the attacker is able to freely create both txo and txo' , the attacker can mount a collision attack, which takes on the order of 2<sup>n/2</sup> computations, where n is the bit-length of the hash output.
 If we can restrict the attacker’s ability to create either side of the collision (the hash being inserted or the hash being falsely proven) this attack is no longer feasable.
+
+由于攻击者可以自由创建txo和txo'，
+因此攻击者发起的碰撞攻击大约需要进行2<sup>n/2</sup>次计算，
+其中n是哈希输出的位长。
+如果我们可以限制攻击者在任意一侧（被插入的哈希或提供错误证明的哈希）创建碰撞的能力，
+那么这种攻击就不再可行。
 
 To prevent such an attack, we require that the data inserted into the accumulator be not just the hash of a TXO, which is controllable by the attacker, but instead the concatenation of the TXO data with the block hash in which the TXO is conﬁrmed.
 The attacker does not know the block hash before the TXO is conﬁrmed, and it is not alterable by the attacker after conﬁrmation (without signiﬁcant cost).
 Veriﬁers, when inserting into the accumulator, perform this concatenation themselves after checking the proof of work of the block.
 Inclusion proofs contain this block hash data so that the leaf hash value can be correctly computed.
 
-This additional data thwarts collision attacks as the attacker needs to ﬁnd a block (which currently takes more than 2 70 hash operations) to create a single txo.
+为防止此类攻击，
+我们要求插入到累加器中的数据不仅是攻击者可以控制的TXO哈希，
+还应是TXO数据与确认TXO的区块哈希的拼接。
+攻击者在TXO被确认之前不知道区块哈希，并且在确认之后，
+攻击者无法更改（在不花费巨大成本的前提下）该哈希。
+验证者在插入累加器时，在检查区块的工作量证明之后自行执行此拼接。
+包含证明会包含此区块哈希数据，以便可以正确计算叶子的哈希值。
+
+This additional data thwarts collision attacks as the attacker needs to ﬁnd a block (which currently takes more than 2<sup>70</sup> hash operations) to create a single txo.
 txo' can still be iterated through rapidly, as the attacker can use any previously computed block hash in their proof of txo' .
 The number of operations required to mount a collision attack when attempts on one side are more diﬃcult can be computed by
 
-<img src="https://latex.codecogs.com/svg.latex?s%3D2%5E%7B%5Cfrac%7Bd&plus;n%7D%7B2%7D%7D">
+由于攻击者需要找到一个区块（当前需要执行2<sup>70</sup>多个哈希操作）来创建一个txo，
+所以这些额外的数据阻止了碰撞攻击。
+当然，攻击者仍然可以快速多次尝试创建txo'，
+因为攻击者可以在txo'的证明中使用任何先前计算的区块哈希。
+不过当其中一侧的尝试变得更加困难时，发起碰撞攻击所需的操作次数就会变为：
+
+<div align="center">
+<img src="https://latex.codecogs.com/svg.latex?s%3D2%5E%7B%5Cfrac%7Bd&plus;n%7D%7B2%7D%7D" title="s = 2^\frac{d+n}{2}" />
+</div>
 
 where d is the diﬃculty exponent, n is the size of the hash output in bits, and s is the resulting security against collisions.
 For collision attacks on 256-bit hashes, with 2<sup>70</sup> work required on one side, this would give 2<sup>163</sup> operations for a collision.
 
+其中d是难度系数，n是哈希输出的大小（以位为单位），s是由此产生的防碰撞安全性。
+如果一个256位的哈希进行碰撞攻击，
+并且其中一侧需要进行2<sup>70</sup>次尝试，
+那就需要进行2<sup>163</sup>【译注：即2<sup>(256+70)/2</sup>】次碰撞操作。
+
 A second preimage attack, where txo is ﬁxed and txo' alone can be iterated through, would seem to need 2<sup>256</sup> operations to succeed.
 However, the attacker doesn’t need to collide with txo, but can in fact collide with any leaf present in the accumulator.
-This means the attack gets easier as the accumulator becomes larger; for 2<sup>32</sup> elements, the attack takes 2<sup>192</sup.> attempts.
+This means the attack gets easier as the accumulator becomes larger; for 2<sup>32</sup> elements, the attack takes 2<sup>192</sup> attempts.
+
+第二次原像攻击（txo固定，只能更改txo'）似乎需要2<sup>256</sup>次操作才能成功。
+但是，实际上攻击者并不需要和txo碰撞，
+而是可以与累加器中存在的任何叶子碰撞。
+这意味着随着累加器的增大，攻击会变得更加容易。
+对于2<sup>32</sup>个元素，攻击需要2<sup>192</sup>次尝试。
 
 The security gain from mitigating collision attacks can be used to decrease the proof size by truncating the output length of all hashes computed.
 For a 2<sup>128</sup> security parameter, and an anticipated UTXO set size of 2<sup>32</sup> or fewer, we estimate that hash outputs of 186 bits would suﬃce.
@@ -386,12 +443,39 @@ However, if the UTXO set increases, security could be degraded as second preimag
 Once hashes are truncated, it’s not possible to retroactively increase the output size, and instead the accumulator would need to be rebuilt from scratch with larger hash outputs.
 Additionally, the proof-of-work required to create a block in Bitcoin can decrease, which would also erode the protection from collisions the block hash provides.
 
+碰撞攻击减轻之后，
+我们在生成哈希时就可以缩短哈希的输出长度，
+从而减少证明的大小。
+如果安全参数为2<sup>128</sup>，
+并且预期的UTXO集大小为2<sup>32</sup>或更小，
+那么186位的哈希输出应该就足够了。
+这样可以将证明大小减少27％，复杂度是最小的。
+但是如果UTXO集变大，
+那么由于第二次原像攻击变得更容易发动，
+安全性可能就会降低。
+一旦哈希被截断，那就无法逆向恢复输出的大小，
+取而代之的是需要从头开始使用更大的哈希输出来重建累加器。
+此外，在比特币中创建区块所需的工作量证明会减少，
+这也会削弱区块哈希提供的碰撞保护。
+
 Further protection from untargeted second preimage attacks may be gained by also committing to the leaf’s position in the leaf data.
 In this case the leaves would be of the form h(txo||blockHash||position), where position is the integer index of the leaf position.
 This would require the attacker to select a single leaf to target for colliding instead of allowing the attacker to collide with any leaf in the forest.
 However, this technique is not applicable to our construction as leaves within the forest move due to deletions, and thus the position data salted into the hash will generally diﬀer from the leaf position when the leaf is removed.
 The complexity of tracking leaf movements seems to overwhelm any savings from this technique, but we mention this idea as a diﬀerent accumulator construction, possibly closer to that in [8] may allow for ﬁxed leaf positions and shorter proofs while still being secure.
 
+还可以通过确保叶子在叶子数据中的位置来增强对未定向二次原像攻击的防护。
+在这种情况下，叶子采用h(txo || blockHash || position)的形式，
+其中position是叶子位置的整数索引。
+这可以使攻击者被迫选择一个叶子作为碰撞目标，
+而不是允许攻击者与森林中的任何叶子碰撞。
+但是，该技术不适用于本文，
+因为森林中的叶子会由于删除操作而移动，
+反映到哈希中的位置数据通常会与删除操作发生前的叶子位置不同。
+而跟踪叶子移动的复杂性很高，可能会使本文的技术无法节省任何开销。
+不过我们可以把这种想法当作一种不同的累加器。
+这种思路可能更接近[8]中的设计，
+[8]的设计可以固定叶子位置并缩短证明长度，同时仍保持安全性。
 
 # Reference
 [8] Leonid Reyzin and Sophia Yakoubov. Eﬃcient asynchronous accumulators for distributed pki. Cryptology ePrint Archive, Report 2015/718, 2015. https://eprint.iacr.org/2015/718.
