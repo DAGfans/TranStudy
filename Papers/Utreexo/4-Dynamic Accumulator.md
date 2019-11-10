@@ -184,13 +184,13 @@ while循环遍历证明里的每个元素，在每个步骤中消耗一个证明
 因此累加器中应该有3棵默克尔树，分别在根数组的位置3、2、1上；位置0的根为空；如下。
 
 ```
-             H(ABCDEFGH)                    H(IJKL)         H(MN)    ∅
-            /          \                   /      \        /    \
-      H(ABCD)           H(EFGH)         H(IJ)      H(KJ)  H(M) H(N)
-     /      \           /      \        /   \     /    \
-  H(AB)     H(CD)     H(EF)    H(GH)   H(I) H(J) H(K) H(J)
- /   \     /    \    /   \    /    \
-H(A) H(B) H(C) H(D) H(E) H(F) H(G) H(H)
+             H(ABCDEFGH)               
+            /          \               
+      H(ABCD)           H(EFGH)              H(IJKL)       
+     /      \           /      \            /      \       
+  H(AB)     H(CD)     H(EF)    H(GH)     H(IJ)      H(KJ)     H(MN)    
+ /   \     /    \    /   \    /    \     /   \     /    \    /    \
+H(A) H(B) H(C) H(D) H(E) H(F) H(G) H(H) H(I) H(J) H(K) H(J) H(M) H(N) ∅
 ```
 
 初始传入DeleteOne()的acc数组是{∅, H(MN), H(IJKL), H(ABCDEFGH)}。
@@ -211,13 +211,13 @@ acc[h] = acc[0] = ∅。因此执行DeleteOne()的第9行，acc[h] ← p。
 累加器变成如下图的临时状态。
 
 ```
-             H(ABCDEFGH)                    H(IJKL)         H(MN)    H(C)
-            /          \                   /      \        /    \
-      H(ABCD)           H(EFGH)         H(IJ)      H(KJ)  H(M) H(N)
-     /      \           /      \        /   \     /    \
-  H(AB)     H(CD)     H(EF)    H(GH)   H(I) H(J) H(K) H(J)
- /   \     /    \    /   \    /    \
-H(A) H(B) H(C) H(D) H(E) H(F) H(G) H(H)
+             H(ABCDEFGH)              
+            /          \              
+      H(ABCD)           H(EFGH)              H(IJKL)      
+     /      \           /      \            /      \      
+  H(AB)     H(CD)     H(EF)    H(GH)     H(IJ)      H(KJ)     H(MN)   
+ /   \     /    \    /   \    /    \     /   \     /    \    /    \
+H(A) H(B) H(C) H(D) H(E) H(F) H(G) H(H) H(I) H(J) H(K) H(J) H(M) H(N) H(C)
 ```
 
 接着while循环进入第二次迭代。此时h = 1，n = ∅，p = proof[h] = proof[1] = H(AB)，
@@ -235,13 +235,13 @@ acc[h] ← ∅。于是我们创建一个新的父亲节点H(ABMN)并赋值给n�
 累加器变成如下图的临时状态。
 
 ```
-             H(ABCDEFGH)                    H(IJKL)         ∅    H(C)
-            /          \                   /      \       
-      H(ABCD)           H(EFGH)         H(IJ)      H(KJ)  
-     /      \           /      \        /   \     /    \
-  H(AB)     H(CD)     H(EF)    H(GH)   H(I) H(J) H(K) H(J)
- /   \     /    \    /   \    /    \
-H(A) H(B) H(C) H(D) H(E) H(F) H(G) H(H)
+             H(ABCDEFGH)               
+            /          \               
+      H(ABCD)           H(EFGH)              H(IJKL)         
+     /      \           /      \            /      \       
+  H(AB)     H(CD)     H(EF)    H(GH)     H(IJ)      H(KJ)   ∅    
+ /   \     /    \    /   \    /    \     /   \     /    \
+H(A) H(B) H(C) H(D) H(E) H(F) H(G) H(H) H(I) H(J) H(K) H(J)    H(C)
 ```
 
 接着while循环进入第三次迭代。此时h = 2，n = H(ABMN)，p = proof[h] = proof[2] = H(EFGH)。
@@ -265,13 +265,13 @@ H(E) H(F) H(G) H(H) H(A) H(B) H(M) H(N)
 于是累加器最终状态如下图。
 
 ```
-             H(EFGHABMN)                    H(IJKL)         ∅    H(C)
-            /          \                   /      \       
-      H(EFGH)           H(ABMN)         H(IJ)      H(KJ)  
-     /      \           /      \        /   \     /    \
-  H(EF)     H(GH)     H(AB)    H(MN)   H(I) H(J) H(K) H(J)
- /   \     /    \    /   \    /    \
-H(E) H(F) H(G) H(H) H(A) H(B) H(M) H(N)
+             H(EFGHABMN)               
+            /          \               
+      H(EFGH)           H(ABMN)              H(IJKL)         
+     /      \           /      \            /      \       
+  H(EF)     H(GH)     H(AB)    H(MN)     H(IJ)      H(KJ)   ∅
+ /   \     /    \    /   \    /    \     /   \     /    \
+H(E) H(F) H(G) H(H) H(A) H(B) H(M) H(N) H(I) H(J) H(K) H(J)     H(C)
 ```
 
 acc变为{H(C), ∅, H(IJKL), H(EFGHABMN)}。
