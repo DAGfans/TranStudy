@@ -1,5 +1,8 @@
 > Source: https://eprint.iacr.org/2019/611.pdf
+
 # 6 Conclusion
+
+# 6 结论
 
 We have introduced a hash-based dynamic accumulator and architecture for using this accumulator in the Bitcoin network.
  Nodes using the accumulator need only store a logarithmically sized representation of the UTXO set, greatly reducing storage space and disk seek times.
@@ -7,10 +10,29 @@ We have introduced a hash-based dynamic accumulator and architecture for using t
 
 # Acknowledgments
 
+我们介绍了基于哈希的动态累加器和体系结构，
+目的是将该累加器应用于比特币网络。
+使用累加器的服务器节点存储UTXO集所用的内存空间可以缩小至对数级别，
+从而大大减少了存储空间和磁盘查找时间。
+相应的代价是需要从网络额外下载包含证明，
+但是通过证明的聚合和缓存，
+我们可以将增加的下载流量保持在可控范围。
+
+# 致谢
+
 Thanks to Neha Narula and Cory Fields for discussion without which this paper would not have happened.
  Thanks to Pieter Wuille for discussions about the applicability of other accumulator designs and the diﬃculties of bridge nodes (as well as coining the term).
  Thanks to Sophia Yakoubov for discussing her work which can be extended and applied here.
  Thanks to Kalle Alm for discussion about caching strategies, Dan Cline for suggesting optimal caching strategies, and Peter Malamud Smith for comments and feedback.
+
+感谢Neha Narula和Cory Fields的讨论，
+否则这篇文章就写不出来。
+感谢Pieter Wuille讨论了其他累加器设计的适用性和桥节点的难点（以及创造了该术语）。
+感谢Sophia Yakoubov分享了她的成果，
+使我们可以在本文扩展和应用她的成果。
+感谢Kalle Alm关于缓存策略的讨论，
+感谢Dan Cline提出最佳缓存策略的建议，
+以及Peter Malamud Smith的评论和反馈。
 
 # References
 [1] Satoshi Nakamoto. Bitcoin: A peer-to-peer electronic cash system.
