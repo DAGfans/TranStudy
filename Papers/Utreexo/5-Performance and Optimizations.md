@@ -364,9 +364,9 @@ In Bitcoin’s case, however, we can make collision attacks infeasible, such tha
 由于攻击者（尤其是矿工）对累加器的默克尔森林拥有很大的控制权，
 因此人们可能觉得需要一种抗碰撞的哈希函数来防止攻击者创建无效的证明（未添加元素的包含证明）。
 但是，在比特币的场景下，我们可以使碰撞攻击变得不可行，
-从而使攻击者被迫执行第二次原像攻击。
-【译注：原像攻击是指给定一个哈希h，找到一条消息m使得hash(m) = m。
-第二次原像攻击是指给定一个固定的消息m1，找到一个不同的消息m2，
+从而使攻击者被迫执行次原像攻击。
+【译注：原像攻击是指给定一个哈希h，找到一条消息m使得hash(m) = h。
+次原像攻击是指给定一个固定的消息m1，找到一个不同的消息m2，
 使得hash(m2) = hash(m1)。】
 
 We assume an attacker who also is able to mine a block, and thus inﬂuence a number of leaf insertions, their positions, and the data they contain.
@@ -381,6 +381,7 @@ txo是有效交易的输出，网络上的所有节点都将确认该交易，
 而txo'是一百万个比特币的虚构输出，不属于任何有效交易。
 然后，攻击者可以提供txo'的包含证明，
 并且即使只有txo被插入累加器，也可以花费那一百万个比特币。
+【译注：这里之所以是TxO而不是UTxO， 是因为要创造了新的交易，必然存在UTXO变成TXO，但是累加器此时并没有更新，所以新生成的TXO对于累加器还是UTXO，是可以验证的。】
 
 As the attacker is able to freely create both txo and txo' , the attacker can mount a collision attack, which takes on the order of 2<sup>n/2</sup> computations, where n is the bit-length of the hash output.
 If we can restrict the attacker’s ability to create either side of the collision (the hash being inserted or the hash being falsely proven) this attack is no longer feasable.
@@ -430,7 +431,7 @@ A second preimage attack, where txo is ﬁxed and txo' alone can be iterated thr
 However, the attacker doesn’t need to collide with txo, but can in fact collide with any leaf present in the accumulator.
 This means the attack gets easier as the accumulator becomes larger; for 2<sup>32</sup> elements, the attack takes 2<sup>192</sup> attempts.
 
-第二次原像攻击（txo固定，只能更改txo'）似乎需要2<sup>256</sup>次操作才能成功。
+次原像攻击（txo固定，只能更改txo'）似乎需要2<sup>256</sup>次操作才能成功。
 但是，实际上攻击者并不需要和txo碰撞，
 而是可以与累加器中存在的任何叶子碰撞。
 这意味着随着累加器的增大，攻击会变得更加容易。
@@ -451,7 +452,7 @@ Additionally, the proof-of-work required to create a block in Bitcoin can decrea
 那么186位的哈希输出应该就足够了。
 这样可以将证明大小减少27％，复杂度是最小的。
 但是如果UTXO集变大，
-那么由于第二次原像攻击变得更容易发动，
+那么由于次原像攻击变得更容易发动，
 安全性可能就会降低。
 一旦哈希被截断，那就无法逆向恢复输出的大小，
 取而代之的是需要从头开始使用更大的哈希输出来重建累加器。
