@@ -1,18 +1,21 @@
 # 边学边译
-```
-希望大家能在学习的过程中能顺带帮助更多对技术感兴趣的朋友
-```
+翻译是很好的学习方法，不给自己留下任何偷懒的空间。学习完了，也留下了一个公开的详尽的读书笔记, 利人利己，更有可能和志同道合的朋友一同交流，实为美事一桩。
 
-### 分栏介绍
-- Blogs 收录优质博文,典型如medium专栏作家的普及型文章
-- Docs  技术文档, 一般来自GitHub上某个项目的WiKi
-- Events 跟踪热点事件, 常见是两大技术阵营的交锋
-- Papers 论文, 原文一般是PDF文档
+## 分栏介绍
+- Blogs 优质文章，科普入门
+- Papers 严肃论文, 深度学习
 
-### 排版Tips
-- 如果原文是在线的,建议用https://domchristie.github.io/turndown/ 或者 http://heckyesmarkdown.com/ 直接转成近似的MD;  
-- 如果原文是PDF文档, 建议用 http://pdf2md.morethan.io/ 转成MD,还原度不是很高, 我们会改进这个开发工具
-- 我们有建议的[中文排版指南](https://github.com/aakloxu/chinese-copywriting-guidelines)，建议可以用文中提到的格式化工具如[pangu.js](https://github.com/vinta/paranoid-auto-spacing)统一处理
+## 协定
+1. 翻译只是手段，学习才是目的，尽可能多加注释
+2. 机译直译意译均可，表达清楚即可
+3. 必须完全理解，即使不确定也要写清注释
 
-### 社群
-- 对DAG技术感兴趣的朋友可以加我微信savagetony，请注明**DAG fans**，我拉了一个技术氛围还不错的群，大家共同进步
+## 排版
+1. 文章头部贴上原文链接，对原作者表示尊重
+2. 简单的公式尽量用字符或者HTML表示
+3. 复杂的公式采用编辑器， https://latex.codecogs.com/eqneditor/editor.php，必须是SVG格式
+4. 编辑试图中每一句都要加单换行, 方便定位，但是不影响展示
+5. 脚注直接在所在段落后面添加，方便定位
+6. 每一章节都需要添加该章节的参考目录
+7. 标题到摘要合并为第0章, 鸣谢和参考可以合并为最后一章
+8. 一个项目对应Papers下面的一个文件夹，一章一个文档，标题为 [Chapter NO]-[Chapter Name].md
