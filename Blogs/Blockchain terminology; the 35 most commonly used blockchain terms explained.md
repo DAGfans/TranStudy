@@ -2,7 +2,7 @@
 
 # Blockchain terminology; the 35 most commonly used blockchain terms explained.
 
-# 区块链术语：解释了35个最常用的区块链术语
+# 区块链术语：解释35个最常用的区块链术语
 
 Blockchain is generally considered a topic of complex technical nature.
 An important requirement to advance in the blockchain space is to understand how certain technical elements mutually interact and cohere with each other (especially when trying to understand crypto-economics or crypto-law).
