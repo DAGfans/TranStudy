@@ -40,7 +40,7 @@ PoW has been hotly debated as a controversial consensus algorithm because of the
 ### 共识算法-工作量证明
 工作量证明共识算法可能是最常见的算法，并且应用于比特币。
 当采用PoW算法时，只有第一个提供区块“工作量证明”的矿工才合法。
-可以通过在（散列）公式中反复插入交易数据（区块）+随机数字字符串（区块的Nonce），直到找到理想的结果（工作量证明），来生成此工作量证明。
+可以通过在（散列）公式中反复输入交易数据（区块）+随机数字字符串（区块的Nonce），直到找到理想的结果（工作量证明），来生成此工作量证明。
 其他矿工可以通过将宣称为合法的的输入字符串并应用于相同的公式来验证工作量证明，以查看结果是否确实是所提供的内容。
 由于执行公式计算会涉及耗电，因此PoW作为有争议的共识算法引起了激烈的辩论。
 
@@ -51,8 +51,8 @@ In other words; it is the procedure of repeatedly inserting a random string of d
 This is an example of a hashing formulae (HSA1).
 
 ### 散列
-散列是工作量证明区块链上的矿工不断重复以查找合格签名（也称为工作量证明）的过程。
-换一种说法; 它是将数字的随机字符串重复插入到散列公式中直至找到所需输出的过程。
+散列是工作量证明区块链上的矿工不断更改输入数据以查找合格签名（也称为工作量证明）的过程。
+换一种说法; 它是将数字的随机字符串不断输入到散列公式中直至找到所需输出的过程。
 这是散列公式的示例(HSA1)。
 http://www.hashemall.com/
 
@@ -61,7 +61,7 @@ The nonce is an essential part of the blocks processed in a Proof-of-Work blockc
 The nonce is a small piece of data in the block that can be changed randomly and repeatedly all the time so miners can keep hashing the data of the entire block (changes every time the nonce changes) until they find a suitable outcome (signature).
 ### 随机数
 随机数是工作量证明区块链中处理的区块的重要组成部分。
-随机数是区块中的一小块数据，可以不断地进行随机重复更改，因此矿工可以持续对整个区块的数据进行散列处理（每次随机数变化时散列值都会变化），直到找到合适的结果（签名）为止。
+随机数是区块中的一小块数据，可以不断地进行随机更改，因此矿工可以持续对整个区块的数据进行散列处理（每次随机数变化时散列值都会变化），直到找到合适的结果（签名）为止。
 
 ![](https://miro.medium.com/max/3590/1*RzTfglLMQGM7xTaAtWSBlg.png)
 
@@ -73,7 +73,7 @@ If the miner violates the rules, the deposit will be ‘burned’ aka destroyed.
 In the contrary to PoW, PoS has less costs involved for the miners (PoW requires a lot of electricity and hardware costs for the hashing process, PoS only requires things like a server setup, DDoS protection, et cetera).
 
 ### 共识算法—权益证明
-权益证明权益证明算法有在Blackcoin(黑币)中使用，并被认为至少部分在以太坊区块链上实现。
+权益证明算法有在 Blackcoin (黑币) 中使用，并被认为至少部分在以太坊区块链上实现。
 当采用PoS算法时，矿工将抵押相应的加密货币，以增加他们被选中以验证区块的机会。
 加密货币作为押金被锁定，以确保矿工根据规则验证区块。
 如果矿工违反规定，则押金将被销毁。
@@ -116,7 +116,7 @@ Example: Bitcoin (BTC), Litecoin (LTC).
 
 ### 非许可链
 非许可链是一种区块链，用户无需网络上任何人的许可即可执行某些操作，包括加入网络。
-因此，任何人都可以公开获得它，通常非常透明且去中心化。
+因此，它对任何人开放，通常非常透明且去中心化。
 （投票）权力平均分配给所有网络参与者。
 例如：比特币（BTC），莱特币（LTC）。
 
@@ -130,10 +130,10 @@ These blockchains are often deployed in the area of internal business operations
 
 ### 许可链
 许可链则是相反的。
-这些区块链上的特定节点或实体具有对其他节点的授权的权力，从而允许他们指定验证者并允许或拒绝对网络的访问。
+这些区块链上的特定节点或实体具有对其他节点授权的权力，从而允许他们指定验证者并允许或拒绝对网络的访问。
 许可链具有集中的权限，可以是封闭的和私有的生态系统，通常透明度较低。
-示例：瑞波（XRP）。
-这些区块链通常部署在内部业务运营领域。
+例如：瑞波（XRP）。
+这些区块链通常部署在组织内部业务运营领域。
 
 
 ### Lightning network
@@ -164,7 +164,7 @@ The Ethereum community is currently experimenting with the concept of sharding.
 ### 分片
 分片是区块链分区的形式。
 与在一条区块链上处理所有交易不同，分片链(二层)会在主链(一层)之上运行。
-它们都处理交易，并定期将其账本的更新发送到一层区块链(一层链注册了二层链的更新)，因此一层链上的网络不会因为交易量大而被阻塞（类似于闪电网络中讨论的支付通道，只是形式上上主链上连接了更小的链）。
+它们都处理交易，并定期将其账本的更新发送到一层区块链(一层链注册了二层链的更新)，因此一层链上的网络不会因为交易量大而被阻塞（类似于闪电网络中讨论的支付通道，只是形式上是主链上连接了更小的链）。
 二块链可以同时处理更多的交易。
 以太坊社区目前正在试验分片的概念。
 
@@ -201,7 +201,7 @@ They can also choose to support only one of the versions, putting extra pressure
 ### 硬分叉
 通常是指区块链分叉，网络升级会迫使矿工和节点在升级的网络或网络的原始版本之间进行选择。
 这两个网络都将从此处独立运行，并且将不再相互影响。
-矿工只能将其资源用于其中一条链，而不能同时用于两条（对于PoW是这样，对于PoS则更复杂）。
+矿工只能将其资源用于其中一条链，而不能同时用于两条链（对于PoW是这样，对于PoS则更复杂）。
 硬分叉实际上意味着升级的网络已复制并调整了截至分叉点为止的区块链历史，从而形成了两个不同的链和两种不同的加密货币。
 但是，加密货币交易所和钱包应用程序也需要调整其软件，以继续支持新的加密货币。
 他们有时会选择为加密货币的升级版开发新软件，但还会保留原始软件，以便该应用程序同时支持两个链和币（例如，Bitcoin和Bitcoin Cash）。
@@ -268,7 +268,7 @@ Then log in on the old smart contract address and send all tokens over to the ne
 智能合约通常带有新通证。
 这些通证在合约部署的地址中铸造。
 这是一个智能合约如何工作的示例：部署了一个名为“ supercontract ” 的智能合约，并铸造了1,000个“ supercoin（超级币）”在同一地址上。
-合约被编程为自动向每个发送合约地址1个比特币的地址发送1个超级币。
+合约被编程为自动向每个给合约地址发送了1个比特币的地址发送1个超级币。
 尽管智能合约无法更改，但是有一些巧妙的技巧可以更新智能合约。
 一个例子是包含一个可替代的代码行，该代码行引用一个不存在的合约，该合约仅在将来由你才可创建（例如，通过包含你专有的地址），如果不存在，则将其忽略。
 另一个例子是通过复制智能合约，对其进行更新，更改地址并将其部署到该新地址上。
@@ -309,7 +309,7 @@ Fun fact: the Bitcoin genesis block quotes the headline of the New York Times th
 ### 创世块
 通常被称为区块链上的第一个块。
 比特币的起源区块于2009年1月3日创建；并指示比特币区块链的诞生。
-有趣的事实：比特币创世纪区块引用了创建之日《纽约时报》的头条：“ 2009年1月3日，财政大臣即将进行第二次银行救助”。
+有趣的事实：比特币创世纪区块引用了创建之日《纽约时报》的头条：“ 2009年1月3日，财政大臣即将对银行进行第二次救助”。
 
 
 ### Stale block
@@ -325,9 +325,9 @@ A stale block is a block that was once valid, but is no longer included in the t
 
 ### 过时的块
 一个过时的区块是一个有效的区块，曾经被一个矿工广播过，而另一个有效的区块正在被另一个矿工同时广播。
-节点将仅注册这些块其中之一，具体取决于哪个块首先到达。
-当两个块都传播后，某些节点会将块A作为其最后一个有效块，而另一些节点将具有块B。
-这两个块此时都有效，但是一旦在其上广播了新块，它们中的一个就将变为无效。
+节点将仅注册其中的一个块，具体取决于哪个块首先到达。
+当两个块都传播后，某些节点会将块A作为其最后一个有效块，而另一些节点将采用块B。
+这两个块此时都有效，但是一旦在另一个块上有新广播的块，它们中的一个就将变为无效。
 假设一位矿工之后找到了一个最高的新区块，并将区块B注册为之前的最后一个区块。
 现在，它将新块放在块B的顶部，并将此链广播到所有其他节点。
 其他节点，无论最后一个块是块A还是B，现在认识到该区块链记录比他们当前拥有的记录更长/更重，并被迫遵循此区块链记录。
@@ -351,9 +351,9 @@ Instead, it will request up to 500 of its parent blocks from the node that it re
 让我们以上面的过时块为例。
 假设具有最后一块A的节点5 现在收到一个矿工广播的新块，该矿工将块B作为最后一块。
 因此，区块B是正式父节点5包含了新广播的块，但节点5包含了块A而不是块B，因此它无法识别新块的父节点（尚未看到块B）。
-新广播的块被视为“孤立”。
+新广播的块被视为“孤块”。
 节点5无法验证无父区块。
-取而代之的是，它将从接收孤儿的节点请求最多500个其父块，以尝试识别其父代，祖父等（因此，到目前为止可能错过的块）。
+取而代之的是，它将从接收孤块的节点请求最多500个祖先块，以尝试识别其父块，祖父块等（直到追溯到可能错过的块）。
 
 
 ### Uncle blocks
@@ -365,7 +365,7 @@ When a blockchain processes blocks faster, this increases the amount of uncle/st
 
 ### 叔块
 叔块与过时的块相同，但在以太坊区块链上。
-以太坊区块链处理区块的速度比比特币区块链处理快得多，这也意味着它有更高的机会同时广播两个有效区块。
+以太坊处理区块的速度比比特币处理快得多，这也意味着它有更高的机会同时广播两个有效区块。
 这导致更多的过时/叔块。
 为了保持矿工的积极性，以太坊生态系统已决定实际上还奖励矿工的叔区块（原始奖励的75％），但是就像过时的区块一样，它们不包含在原始区块链中（所以叔区块的交易无效）。
 当区块链处理块的速度更快时，这会增加生成的叔/过时块的数量，通常称为“叔块率”。
@@ -447,7 +447,7 @@ When a wallet is online, aka connected to the internet, its data is more vulnera
 
 ### 热钱包
 热钱包是在线的钱包。
-在谈论热钱包时，我们通常指的是在线交易所钱包，因为资金需要快速可用并可以转移给用户，买家或者卖家。
+在谈论热钱包时，我们通常指的是交易所的在线钱包，因为资金需要快速可用并可以转移给用户，买家或者卖家。
 当钱包在线（即连上互联网时）时，其数据更容易受到黑客和/或恶意实体的攻击
 
 ### Cold wallet
@@ -466,7 +466,7 @@ A Satoshi is the smallest granularity of a given cryptocurrency, aka the smalles
 In example of Bitcoin, 0.00000001 BTC (8 decimals) is the smallest division of Bitcoin possible, and therefore reflects one Satoshi.
 
 ### 聪
-聪是给定加密货币的最小单位，又名加密货币的最小十进制单位。
+聪是给定加密货币的最小单位，即加密货币的最小十进制小数单位。
 在比特币的示例中，0.00000001 BTC（8位小数）是比特币可能的最小划分，因此对应一聪。
 
 
